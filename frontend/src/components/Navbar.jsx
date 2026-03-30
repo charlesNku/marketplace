@@ -106,7 +106,7 @@ const Navbar = () => {
           <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
 
           {userInfo ? (
-            <div className="flex items-center space-x-3">
+            <div className="hidden lg:flex items-center space-x-3">
               <Link to="/profile" className="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-xl hover:bg-slate-200 transition-colors group">
                 <div className="h-7 w-7 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold border-2 border-white">
                   {userInfo.name.charAt(0).toUpperCase()}
@@ -119,7 +119,7 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <div className="flex items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-4">
               <Link to="/login" className="text-sm font-bold text-slate-600 hover:text-indigo-600">Log in</Link>
               <Link to="/register" className="btn-primary py-2 px-5 text-sm">Join Now</Link>
             </div>
@@ -146,12 +146,26 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <div className="pt-4 border-t border-slate-100 flex flex-col space-y-3">
-              <Link to="/cart" className="flex items-center space-x-2 text-slate-600 font-bold">
-                <ShoppingCart size={20} /><span>My Cart</span>
+            
+            <div className="pt-4 border-t border-slate-100 flex flex-col space-y-4">
+              <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-slate-600 font-bold hover:text-indigo-600 transition-colors">
+                <ShoppingCart size={20} /><span>My Cart ({cartCount})</span>
               </Link>
-              {!userInfo && (
-                <Link to="/register" className="btn-primary w-full text-center">Get Started</Link>
+              
+              {userInfo ? (
+                <>
+                  <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-slate-600 font-bold hover:text-indigo-600 transition-colors">
+                    <User size={20} /><span>My Profile</span>
+                  </Link>
+                  <button onClick={() => { handleLogout(); setIsMenuOpen(false); }} className="flex items-center space-x-2 text-red-500 font-bold hover:text-red-600 transition-colors w-full text-left">
+                    <LogOut size={20} /><span>Log Out</span>
+                  </button>
+                </>
+              ) : (
+                <div className="flex flex-col space-y-3 pt-2">
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="btn-secondary w-full text-center py-3">Log In</Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="btn-primary w-full text-center py-3">Join MarketPro</Link>
+                </div>
               )}
             </div>
           </div>
