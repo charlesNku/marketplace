@@ -1,12 +1,25 @@
-const Cart = require('../models/Cart.js');
+const supabase = require('../config/supabaseClient');
 
 // GET /api/cart
 const getCart = async (req, res) => {
   try {
-    let cart = await Cart.findOne({ userId: req.user._id }).populate('products.productId');
-    if (!cart) {
-      cart = await Cart.create({ userId: req.user._id, products: [] });
-    }
+    const { data: cartItems, error } = await supabase
+      .from('carts')
+      .select('*, products(*)')
+      .eq('user_id', req.user.id);
+    
+    if (error) throw error;
+
+    // Map to match frontend expected structure
+    const cart = {
+      _id: req.user.id, // For parity with frontend logic
+      userId: req.user.id,
+      products: cartItems.map(item => ({
+        productId: { ...item.products, _id: item.products.id },
+        quantity: item.quantity
+      }))
+    };
+
     res.json(cart);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -18,23 +31,27 @@ const addToCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body;
     
-    let cart = await Cart.findOne({ userId: req.user._id });
-    if (!cart) {
-      cart = await Cart.create({ userId: req.user._id, products: [] });
-    }
+    // Check if product already in cart
+    const { data: existingItem } = await supabase
+      .from('carts')
+      .select('*')
+      .eq('user_id', req.user.id)
+      .eq('product_id', productId)
+      .single();
 
-    const itemIndex = cart.products.findIndex(p => p.productId.toString() === productId);
-    if (itemIndex > -1) {
-      cart.products[itemIndex].quantity += Number(quantity);
+    if (existingItem) {
+      await supabase
+        .from('carts')
+        .update({ quantity: existingItem.quantity + Number(quantity) })
+        .eq('id', existingItem.id);
     } else {
-      cart.products.push({ productId, quantity: Number(quantity) });
+      await supabase
+        .from('carts')
+        .insert([{ user_id: req.user.id, product_id: productId, quantity: Number(quantity) }]);
     }
 
-    await cart.save();
-    
     // Return populated cart
-    cart = await Cart.findOne({ userId: req.user._id }).populate('products.productId');
-    res.status(200).json(cart);
+    return getCart(req, res);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -44,16 +61,14 @@ const addToCart = async (req, res) => {
 const removeFromCart = async (req, res) => {
   try {
     const { productId } = req.body;
-    let cart = await Cart.findOne({ userId: req.user._id });
     
-    if (cart) {
-      cart.products = cart.products.filter(p => p.productId.toString() !== productId);
-      await cart.save();
-      cart = await Cart.findOne({ userId: req.user._id }).populate('products.productId');
-      res.json(cart);
-    } else {
-      res.status(404).json({ message: 'Cart not found' });
-    }
+    await supabase
+      .from('carts')
+      .delete()
+      .eq('user_id', req.user.id)
+      .eq('product_id', productId);
+
+    return getCart(req, res);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
