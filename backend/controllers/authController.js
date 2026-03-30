@@ -19,10 +19,11 @@ const registerUser = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    const newId = require('crypto').randomUUID();
 
     const { data: user, error } = await supabase
       .from('users')
-      .insert([{ name, email, password: hashedPassword, role }])
+      .insert([{ id: newId, name, email, password: hashedPassword, role }])
       .select()
       .single();
     
