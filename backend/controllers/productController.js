@@ -23,8 +23,19 @@ const getProducts = async (req, res) => {
     const maxPrice = req.query.maxPrice ? Number(req.query.maxPrice) : 1000000;
     query = query.gte('price', minPrice).lte('price', maxPrice);
 
+    // Sorting
+    const sortBy = req.query.sortBy || 'newest';
+    if (sortBy === 'price_asc') {
+      query = query.order('price', { ascending: true });
+    } else if (sortBy === 'price_desc') {
+      query = query.order('price', { ascending: false });
+    } else if (sortBy === 'rating_desc') {
+      query = query.order('average_rating', { ascending: false });
+    } else {
+      query = query.order('created_at', { ascending: false });
+    }
+
     const { data: products, count, error } = await query
-      .order('created_at', { ascending: false })
       .range((page - 1) * pageSize, page * pageSize - 1);
 
     if (error) throw error;
@@ -33,7 +44,9 @@ const getProducts = async (req, res) => {
     const mappedProducts = products.map(p => ({
       ...p,
       _id: p.id,
-      traderId: p.trader_id
+      traderId: p.trader_id,
+      averageRating: p.average_rating || 0,
+      reviewCount: p.review_count || 0
     }));
 
     res.json({ products: mappedProducts, page, pages: Math.ceil(count / pageSize) });
