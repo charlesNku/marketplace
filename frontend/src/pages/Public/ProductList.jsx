@@ -23,7 +23,7 @@ const ProductList = () => {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams(searchParams);
-      if (sortBy) queryParams.append('sort', sortBy);
+      if (sortBy) queryParams.set('sortBy', sortBy);
 
       const { data } = await api.get(`/products?${queryParams.toString()}`);
       setProducts(data.products || []);
@@ -153,9 +153,9 @@ const ProductList = () => {
                     className="w-full sm:w-48 pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
                   >
                     <option value="newest">Newest Arrivals</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="rating">Top Rated</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="rating_desc">Top Rated</option>
                   </select>
                 </div>
                 <div className="flex bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
@@ -225,7 +225,7 @@ const ProductList = () => {
                     <div className="px-3 pt-4 flex items-center justify-between mt-auto">
                       <div className="flex flex-col">
                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Price</span>
-                         <p className="text-2xl font-black text-slate-900 tracking-tight">${product.price.toFixed(2)}</p>
+                         <p className="text-2xl font-black text-slate-900 tracking-tight">RWF {product.price.toLocaleString()}</p>
                       </div>
                       <button className="h-12 w-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 transition-colors shadow-lg active:scale-90">
                         <ChevronRight size={20} />
