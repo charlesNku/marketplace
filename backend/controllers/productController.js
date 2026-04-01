@@ -3,7 +3,7 @@ const supabase = require('../config/supabaseClient');
 // GET /api/products
 const getProducts = async (req, res) => {
   try {
-    const pageSize = 10;
+    const pageSize = Number(req.query.pageSize) || 10;
     const page = Number(req.query.pageNumber) || 1;
     
     let query = supabase.from('products').select('*', { count: 'exact' });

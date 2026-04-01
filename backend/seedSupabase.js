@@ -1,3 +1,4 @@
+require('dotenv').config({ path: './backend/.env' });
 const supabase = require('./config/supabaseClient');
 const bcrypt = require('bcrypt');
 const { products } = require('./routes/seedRoutes.js');
