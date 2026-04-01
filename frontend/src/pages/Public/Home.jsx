@@ -99,7 +99,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section ... (omitted same part) */}
+      {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center pt-24 overflow-hidden bg-slate-900">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-indigo-600/20 rounded-full blur-[120px] animate-pulse"></div>
@@ -188,8 +188,6 @@ const Home = () => {
         badge="Best Value" 
         color="bg-emerald-500"
       />
-        </div>
-      </section>
 
       {/* Trust Badges */}
       <section className="py-16 border-t border-slate-100">
