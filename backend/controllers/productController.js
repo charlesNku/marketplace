@@ -72,10 +72,12 @@ const getProductById = async (req, res) => {
     const mappedProduct = {
       ...product,
       _id: product.id,
+      averageRating: product.average_rating || 0,
+      reviewCount: product.review_count || 0,
       traderId: {
         _id: product.trader_id,
-        name: product.users.name,
-        email: product.users.email
+        name: product.users?.name || 'Exclusive Seller',
+        email: product.users?.email || 'seller@marketplace.com'
       }
     };
 

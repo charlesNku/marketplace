@@ -196,7 +196,7 @@ const Home = () => {
             <div className="bg-indigo-50 p-4 rounded-2xl text-indigo-600"><Truck size={32} /></div>
             <div>
               <h4 className="font-black text-lg">Worldwide Delivery</h4>
-              <p className="text-sm font-medium text-slate-500">Free shipping on orders over $150</p>
+              <p className="text-sm font-medium text-slate-500">Free shipping on orders over RWF 150,000</p>
             </div>
           </div>
           <div className="flex items-center space-x-6 text-slate-900">

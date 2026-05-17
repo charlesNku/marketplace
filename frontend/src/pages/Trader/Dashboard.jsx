@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { 
   Package, DollarSign, List, Edit, Trash2, 
   TrendingUp, Users, ShoppingBag, Plus, MoreVertical,
-  Search, ExternalLink
+  Search, ExternalLink, X
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -13,21 +13,30 @@ const TraderDashboard = () => {
   const [loading, setLoading] = useState(true);
   const { userInfo } = useAuthStore();
 
+  const [showModal, setShowModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    title: '', description: '', price: '', category: '', image: '', stock: ''
+  });
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => {
-    const fetchTraderProducts = async () => {
-      try {
-        const { data } = await api.get('/products');
-        const myProducts = data.products.filter(p => p.traderId === userInfo._id || p.traderId?._id === userInfo._id);
-        setProducts(myProducts);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    if (userInfo) fetchTraderProducts();
+    fetchTraderProducts();
   }, [userInfo]);
+
+  const fetchTraderProducts = async () => {
+    if (!userInfo) return;
+    try {
+      const { data } = await api.get('/products');
+      const myProducts = data.products.filter(p => p.traderId === userInfo._id || p.traderId?._id === userInfo._id);
+      setProducts(myProducts);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (id) => {
     if (window.confirm('Confirm product removal from your collection?')) {
@@ -37,6 +46,49 @@ const TraderDashboard = () => {
       } catch (err) {
         console.error(err);
       }
+    }
+  };
+
+  const handleOpenModal = (product = null) => {
+    if (product) {
+      setEditingProduct(product);
+      setFormData({
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        category: product.category,
+        image: product.image,
+        stock: product.stock
+      });
+    } else {
+      setEditingProduct(null);
+      setFormData({ title: '', description: '', price: '', category: '', image: '', stock: '' });
+    }
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingProduct(null);
+    setFormData({ title: '', description: '', price: '', category: '', image: '', stock: '' });
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      if (editingProduct) {
+        await api.put(`/products/${editingProduct._id}`, formData);
+      } else {
+        await api.post('/products', formData);
+      }
+      await fetchTraderProducts();
+      handleCloseModal();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to save product');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -50,7 +102,7 @@ const TraderDashboard = () => {
 
   const stats = [
     { title: 'Total Inventory', value: products.length, icon: Package, color: 'indigo', trend: '+12%' },
-    { title: 'Store Revenue', value: '$8,432.00', icon: DollarSign, color: 'emerald', trend: '+18%' },
+    { title: 'Store Revenue', value: 'RWF 8,432,000', icon: DollarSign, color: 'emerald', trend: '+18%' },
     { title: 'Orders Today', value: '12', icon: ShoppingBag, color: 'amber', trend: '+5%' },
     { title: 'Profile Visits', value: '1.2k', icon: Users, color: 'slate', trend: '+24%' },
   ];
@@ -67,7 +119,7 @@ const TraderDashboard = () => {
             <p className="text-slate-500 mt-2 font-medium italic">Welcome back, {userInfo?.name?.split(' ')[0]}. Here's your store's performance at a glance.</p>
           </div>
           <div className="flex items-center space-x-4">
-             <button className="btn-primary py-4 px-8 inline-flex items-center space-x-2">
+             <button onClick={() => handleOpenModal()} className="btn-primary py-4 px-8 inline-flex items-center space-x-2">
                 <Plus size={18} />
                 <span>List New Product</span>
              </button>
@@ -88,7 +140,7 @@ const TraderDashboard = () => {
               </div>
               <div>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{stat.title}</p>
-                <p className="text-3xl font-black text-slate-900 tracking-tight">{stat.value}</p>
+                <p className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">{stat.value}</p>
               </div>
             </div>
           ))}
@@ -145,8 +197,8 @@ const TraderDashboard = () => {
                         </div>
                       </td>
                       <td className="px-6 py-6">
-                        <p className="text-sm font-black text-slate-900">${product.price.toFixed(2)}</p>
-                        <p className="text-[10px] font-bold text-slate-400 tracking-tight mt-0.5">MSRP $249.00</p>
+                        <p className="text-sm font-black text-slate-900">RWF {product.price.toLocaleString()}</p>
+                        <p className="text-[10px] font-bold text-slate-400 tracking-tight mt-0.5">MSRP RWF {(product.price * 1.2).toLocaleString()}</p>
                       </td>
                       <td className="px-6 py-6">
                         <div className="flex flex-col">
@@ -168,7 +220,7 @@ const TraderDashboard = () => {
                            <Link to={`/product/${product._id}`} className="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-900 hover:text-white transition-all">
                               <ExternalLink size={18} />
                            </Link>
-                           <button className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all">
+                           <button onClick={() => handleOpenModal(product)} className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all">
                               <Edit size={18} />
                            </button>
                            <button onClick={() => handleDelete(product._id)} className="p-3 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition-all">
@@ -183,6 +235,90 @@ const TraderDashboard = () => {
             </table>
           </div>
         </div>
+
+        {/* Add / Edit Product Modal */}
+        {showModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={handleCloseModal}></div>
+            <div className="bg-white rounded-[2.5rem] w-full max-w-2xl relative z-10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+              <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 className="text-2xl font-black text-slate-900">{editingProduct ? 'Edit Product' : 'List New Product'}</h3>
+                <button onClick={handleCloseModal} className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors">
+                  <X size={24} />
+                </button>
+              </div>
+              <form onSubmit={handleSave} className="p-8 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Product Title</label>
+                    <input 
+                      type="text" required 
+                      className="premium-input"
+                      value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})}
+                      placeholder="e.g. Premium Wireless Headphones"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Category</label>
+                    <select 
+                      required 
+                      className="premium-input"
+                      value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}
+                    >
+                      <option value="">Select Category</option>
+                      <option value="Electronics">Electronics</option>
+                      <option value="Clothing">Clothing</option>
+                      <option value="Home">Home</option>
+                      <option value="Beauty">Beauty</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (RWF)</label>
+                    <input 
+                      type="number" required min="0" step="1"
+                      className="premium-input"
+                      value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})}
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Initial Stock</label>
+                    <input 
+                      type="number" required min="0" step="1"
+                      className="premium-input"
+                      value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})}
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Image URL</label>
+                  <input 
+                    type="url" required 
+                    className="premium-input"
+                    value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Description</label>
+                  <textarea 
+                    required rows="4"
+                    className="premium-input resize-none"
+                    value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}
+                    placeholder="Describe your product in detail..."
+                  ></textarea>
+                </div>
+                <div className="pt-4 flex justify-end space-x-4">
+                  <button type="button" onClick={handleCloseModal} className="btn-secondary py-3 px-6">Cancel</button>
+                  <button type="submit" disabled={saving} className="btn-primary py-3 px-8">
+                    {saving ? 'Saving...' : editingProduct ? 'Save Changes' : 'Publish Product'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

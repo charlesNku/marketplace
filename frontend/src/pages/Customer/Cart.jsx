@@ -21,7 +21,7 @@ const Cart = () => {
 
   const calculateTotal = () => {
     if (!cart.products) return 0;
-    return cart.products.reduce((acc, item) => acc + item.quantity * (item.productId?.price || 0), 0).toFixed(2);
+    return cart.products.reduce((acc, item) => acc + item.quantity * (item.productId?.price || 0), 0);
   };
 
   const isCartEmpty = !cart.products || cart.products.length === 0;
@@ -31,25 +31,25 @@ const Cart = () => {
       <div className="max-w-[1400px] mx-auto">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <h1 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] mb-3">Your Selection</h1>
-            <h2 className="text-4xl font-black text-slate-900 tracking-tight">Shopping Bag</h2>
+            <p className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] mb-3">Your Selection</p>
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Shopping Cart</h1>
           </div>
           {!isCartEmpty && (
             <p className="text-sm font-bold text-slate-400 uppercase tracking-widest hidden sm:block">
-              {cart.products.length} Items Reserved
+              {cart.products.length} {cart.products.length === 1 ? 'item' : 'items'}
             </p>
           )}
         </div>
         
         {isCartEmpty ? (
-          <div className="bg-white border border-slate-100 rounded-[3rem] p-20 text-center shadow-xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <div className="bg-white border border-slate-100 rounded-[3rem] p-20 text-center shadow-xl">
             <div className="bg-slate-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-8">
               <ShoppingBag size={48} className="text-slate-200" />
             </div>
-            <h2 className="text-2xl font-black text-slate-900 mb-4">Your bag is empty</h2>
-            <p className="text-slate-500 mb-10 max-w-sm mx-auto font-medium">Looks like you haven't added any premium goods to your collection yet.</p>
+            <h2 className="text-2xl font-black text-slate-900 mb-4">Your cart is empty</h2>
+            <p className="text-slate-500 mb-10 max-w-sm mx-auto font-medium">You haven't added any items yet. Start shopping to fill it up!</p>
             <Link to="/products" className="btn-primary inline-flex py-4 px-10">
-              Start Exploring
+              Browse Products
             </Link>
           </div>
         ) : (
@@ -75,17 +75,17 @@ const Cart = () => {
                     </Link>
                     <div className="flex items-center justify-center sm:justify-start space-x-6 mt-4">
                        <div className="flex items-center space-x-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-                         <span>Quantity</span>
+                         <span>Qty</span>
                          <span className="bg-slate-100 text-slate-900 px-3 py-1 rounded-lg font-black">{item.quantity}</span>
                        </div>
                        <div className="h-4 w-px bg-slate-100"></div>
-                       <p className="text-lg font-black text-indigo-600">${item.productId?.price?.toFixed(2)}</p>
+                       <p className="text-base font-black text-indigo-600">RWF {(item.productId?.price || 0).toLocaleString()}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center space-x-6 mt-6 sm:mt-0 pt-6 sm:pt-0 border-t sm:border-t-0 border-slate-50 w-full sm:w-auto justify-center">
-                    <div className="text-2xl font-black text-slate-900 w-28 text-right">
-                      ${((item.productId?.price || 0) * item.quantity).toFixed(2)}
+                    <div className="text-xl font-black text-slate-900 w-36 text-right">
+                      RWF {((item.productId?.price || 0) * item.quantity).toLocaleString()}
                     </div>
                     <button 
                       onClick={() => removeFromCart(item.productId?._id)}
@@ -103,27 +103,27 @@ const Cart = () => {
                    <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl"><Truck size={24} /></div>
                    <div>
                      <p className="text-xs font-black text-slate-900 uppercase">Fast Delivery</p>
-                     <p className="text-[10px] font-bold text-slate-400 italic">2-3 Business Days</p>
+                     <p className="text-[10px] font-bold text-slate-400">2–3 Business Days</p>
                    </div>
                 </div>
                 <div className="flex items-center space-x-4 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl"><ShieldCheck size={24} /></div>
                    <div>
-                     <p className="text-xs font-black text-slate-900 uppercase">Purchase Protection</p>
-                     <p className="text-[10px] font-bold text-slate-400 italic">100% Secure Checkout</p>
+                     <p className="text-xs font-black text-slate-900 uppercase">Secure Checkout</p>
+                     <p className="text-[10px] font-bold text-slate-400">100% Protected</p>
                    </div>
                 </div>
                 <div className="flex items-center space-x-4 p-6 bg-white rounded-3xl border border-slate-100 shadow-sm">
                    <div className="p-3 bg-amber-50 text-amber-600 rounded-2xl"><CreditCard size={24} /></div>
                    <div>
-                     <p className="text-xs font-black text-slate-900 uppercase">Flexible Payments</p>
-                     <p className="text-[10px] font-bold text-slate-400 italic">All Cards Accepted</p>
+                     <p className="text-xs font-black text-slate-900 uppercase">Flexible Payment</p>
+                     <p className="text-[10px] font-bold text-slate-400">All Cards Accepted</p>
                    </div>
                 </div>
               </div>
             </div>
             
-            {/* Sidebar Summary */}
+            {/* Order Summary Sidebar */}
             <div className="lg:col-span-4">
               <div className="bg-slate-900 text-white rounded-[2.5rem] p-10 shadow-2xl sticky top-28 overflow-hidden">
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-indigo-600/20 rounded-full blur-3xl"></div>
@@ -132,31 +132,32 @@ const Cart = () => {
                 
                 <div className="space-y-6 relative z-10">
                   <div className="flex justify-between items-center text-slate-400 font-bold">
-                    <span>Subtotal</span>
-                    <span className="text-white">${calculateTotal()}</span>
+                    <span>Subtotal ({cart.products.length} items)</span>
+                    <span className="text-white">RWF {calculateTotal().toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center text-slate-400 font-bold border-b border-white/10 pb-6">
                     <span>Shipping</span>
-                    <span className="text-emerald-400 uppercase text-xs tracking-widest font-black">Complementary</span>
+                    <span className="text-emerald-400 uppercase text-xs tracking-widest font-black">Free</span>
                   </div>
                   <div className="flex justify-between items-end pt-2">
                     <div>
-                      <span className="block text-xs font-black text-indigo-400 uppercase tracking-widest mb-1">Total Amount</span>
-                      <span className="text-4xl font-black tracking-tight">${calculateTotal()}</span>
+                      <span className="block text-xs font-black text-indigo-400 uppercase tracking-widest mb-1">Order Total</span>
+                      <span className="text-4xl font-black tracking-tight">RWF {calculateTotal().toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
                 
                 <button 
+                  id="checkout-btn"
                   onClick={() => navigate('/checkout')}
                   className="w-full mt-10 btn-primary py-5 text-lg group bg-white text-slate-900 hover:bg-slate-100 border-none"
                 >
-                  <span>Complete Checkout</span>
+                  <span>Proceed to Checkout</span>
                   <ArrowRight className="group-hover:translate-x-2 transition-transform" size={24} />
                 </button>
 
-                <p className="mt-8 text-[10px] text-center font-bold text-slate-500 uppercase tracking-[0.2em]">
-                  Secure encrypted transaction 
+                <p className="mt-6 text-[10px] text-center font-bold text-slate-500 uppercase tracking-[0.15em]">
+                  Secure & encrypted transaction
                 </p>
               </div>
               

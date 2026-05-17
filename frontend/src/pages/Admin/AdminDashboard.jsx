@@ -37,7 +37,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     if (!userInfo || userInfo.role !== 'admin') {
-      navigate('/admin-login-99');
+      navigate('/admin/login');
     }
   }, [userInfo, navigate]);
 
@@ -74,7 +74,7 @@ const AdminDashboard = () => {
           showNotif('Session expired. Please log in again.', 'error');
           setTimeout(() => {
             logout();
-            navigate('/admin-login-99');
+            navigate('/admin/login');
           }, 2000);
         }
       } finally {
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin-login-99');
+    navigate('/admin/login');
   };
 
   const filteredProducts = products.filter(p =>

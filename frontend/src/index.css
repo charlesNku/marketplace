@@ -42,6 +42,12 @@ body {
   .btn-primary {
     @apply btn-premium bg-indigo-600 text-white hover:bg-indigo-700;
   }
+  .btn-indigo {
+    @apply btn-premium bg-indigo-600 text-white hover:bg-indigo-700;
+  }
+  .btn-emerald {
+    @apply btn-premium bg-emerald-600 text-white hover:bg-emerald-700;
+  }
   .btn-secondary {
     @apply btn-premium bg-white text-slate-900 border border-slate-200 hover:bg-slate-50;
   }
@@ -51,6 +57,24 @@ body {
   .premium-input {
     @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm;
   }
+  .page-container {
+    @apply min-h-screen bg-slate-50 pt-24 pb-20 px-4 sm:px-6;
+  }
+  .section-label {
+    @apply text-xs font-black text-indigo-600 uppercase tracking-[0.2em] mb-3;
+  }
+  .section-title {
+    @apply text-4xl font-black text-slate-900 tracking-tight;
+  }
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Custom Animations */

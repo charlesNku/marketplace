@@ -74,16 +74,16 @@ const Navbar = () => {
 
         {/* Search Bar */}
         <div className="hidden md:flex items-center flex-grow max-w-md mx-8">
-          <div className="relative w-full group">
+          <form onSubmit={(e) => { e.preventDefault(); if (searchQuery.trim()) navigate(`/products?keyword=${encodeURIComponent(searchQuery.trim())}`); }} className="relative w-full group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" size={18} />
             <input 
               type="text" 
-              placeholder="Search premium products..." 
+              placeholder="Search products..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-100 border-none rounded-2xl py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all shadow-inner"
             />
-          </div>
+          </form>
         </div>
 
         {/* Right Actions */}

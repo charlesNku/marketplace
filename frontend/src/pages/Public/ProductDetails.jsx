@@ -93,8 +93,8 @@ const ProductDetails = () => {
                   </span>
                   <div className="flex items-center space-x-1 text-amber-500">
                     <Star size={16} fill="currentColor" />
-                    <span className="text-sm font-black text-slate-900">{product.averageRating.toFixed(1)}</span>
-                    <span className="text-xs font-bold text-slate-400">({product.reviewCount} reviews)</span>
+                    <span className="text-sm font-black text-slate-900">{(product.averageRating || 0).toFixed(1)}</span>
+                    <span className="text-xs font-bold text-slate-400">({product.reviewCount || 0} reviews)</span>
                   </div>
                 </div>
                 
@@ -122,9 +122,10 @@ const ProductDetails = () => {
                 </div>
                 
                 <div className="flex items-baseline space-x-3 mb-10">
-                  <span className="text-5xl font-black text-slate-900 tracking-tight">${product.price.toFixed(2)}</span>
-                  <span className="text-lg text-slate-400 font-bold line-through">${(product.price * 1.2).toFixed(2)}</span>
-                  <span className="text-xs font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Save 20%</span>
+                  <span className="text-5xl font-black text-slate-900 tracking-tight">RWF {product.price.toLocaleString()}</span>
+                  {product.stock > 0 && product.stock <= 10 && (
+                    <span className="text-xs font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Only {product.stock} left</span>
+                  )}
                 </div>
               </div>
 
@@ -142,24 +143,25 @@ const ProductDetails = () => {
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button 
+                    id="add-to-cart-btn"
                     disabled={product.stock === 0 || cartLoading || !userInfo}
                     onClick={() => addToCart(product._id, quantity)}
                     className="flex-1 btn-primary py-4 text-base space-x-3"
                   >
-                    {cartLoading ? <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent" /> : <><ShoppingCart size={22} /><span>Add to Experience</span></>}
+                    {cartLoading ? <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent" /> : <><ShoppingCart size={22} /><span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span></>}
                   </button>
                   
                   {userInfo && (
                     <Link to={`/chat/${product.traderId?._id}/${product._id}`} className="btn-secondary py-4 px-8 text-base group">
                       <MessageCircle size={22} className="text-indigo-500 group-hover:rotate-12 transition-transform" />
-                      <span>Inquire Now</span>
+                      <span>Ask Seller</span>
                     </Link>
                   )}
                 </div>
 
                 {!userInfo && (
-                  <p className="text-xs text-center font-bold text-slate-400 uppercase tracking-widest pt-2">
-                    <Link to="/login" className="text-indigo-600 hover:underline">Log in</Link> to unlock premium purchasing
+                  <p className="text-sm text-center font-medium text-slate-400 pt-2">
+                    <Link to="/login" className="text-indigo-600 hover:underline font-bold">Sign in</Link> to add items to your cart
                   </p>
                 )}
               </div>
@@ -171,15 +173,16 @@ const ProductDetails = () => {
         <section className="mt-20">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
             <div>
-               <h2 className="text-3xl font-black text-slate-900 tracking-tight">Community Feedback</h2>
-               <p className="text-xs font-black text-indigo-500 uppercase tracking-widest mt-1">Insights from our elite circle</p>
+               <h2 className="text-3xl font-black text-slate-900 tracking-tight">Customer Reviews</h2>
+               <p className="text-xs font-black text-indigo-500 uppercase tracking-widest mt-1">{reviews.length} verified {reviews.length === 1 ? 'review' : 'reviews'}</p>
             </div>
             {userInfo && (
               <button 
+                id="write-review-btn"
                 onClick={() => document.getElementById('review-form')?.scrollIntoView({ behavior: 'smooth' })}
-                className="btn-emerald py-3 px-6 text-[10px] font-black uppercase tracking-widest shadow-xl shadow-emerald-500/10"
+                className="btn-emerald py-3 px-6 text-sm font-bold"
               >
-                Share Your Experience
+                Write a Review
               </button>
             )}
           </div>
@@ -306,10 +309,11 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
 
       <button 
         type="submit" 
+        id="submit-review-btn"
         disabled={submitting}
-        className="w-full btn-indigo py-4 rounded-2xl flex items-center justify-center space-x-3 text-xs font-black uppercase tracking-widest shadow-xl shadow-indigo-500/10 active:scale-95 transition-all"
+        className="w-full btn-primary py-4 rounded-2xl flex items-center justify-center space-x-3 text-sm font-bold active:scale-95 transition-all"
       >
-        {submitting ? 'Authenticating...' : 'Publish Insight'}
+        {submitting ? 'Submitting...' : 'Submit Review'}
       </button>
     </form>
   );

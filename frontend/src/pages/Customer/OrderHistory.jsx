@@ -36,11 +36,11 @@ const OrderHistory = () => {
           <div>
             <h1 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] mb-4">Past Purchases</h1>
             <h2 className="text-4xl font-black text-slate-900 tracking-tight">Order History</h2>
-            <p className="text-slate-500 mt-2 font-medium italic">Review and track your premium acquisitions.</p>
+            <p className="text-slate-500 mt-2 font-medium italic">Review and track your recent orders.</p>
           </div>
           <Link to="/products" className="btn-primary py-4 px-8 inline-flex items-center space-x-3">
              <ShoppingBag size={18} />
-             <span>Buy Something New</span>
+             <span>Continue Shopping</span>
           </Link>
         </div>
         
@@ -66,8 +66,8 @@ const OrderHistory = () => {
                       <span className="text-sm font-black tracking-tight">{new Date(order.createdAt).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                     </div>
                     <div>
-                      <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Total Investment</span>
-                      <span className="text-sm font-black tracking-tight text-indigo-400">${order.totalPrice.toFixed(2)}</span>
+                      <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Order Total</span>
+                      <span className="text-sm font-black tracking-tight text-indigo-400">RWF {order.totalPrice.toLocaleString()}</span>
                     </div>
                   </div>
                   
@@ -112,11 +112,11 @@ const OrderHistory = () => {
                     <div className="lg:w-72 space-y-4">
                        <Link to={`/tracking/${order._id}`} className="w-full btn-primary py-4 px-6 inline-flex items-center justify-center space-x-3 group-hover:bg-indigo-700 transition-colors">
                           <MapPin size={18} />
-                          <span>Track Logistics</span>
+                          <span>Track Order</span>
                        </Link>
                        <button className="w-full py-4 px-6 bg-slate-50 text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all border border-slate-100 inline-flex items-center justify-center space-x-3">
                           <CreditCard size={18} />
-                          <span>Invoice Details</span>
+                          <span>View Invoice</span>
                        </button>
                     </div>
                   </div>

@@ -19,7 +19,7 @@ const Profile = () => {
     <div className="min-h-screen bg-slate-50 pt-24 pb-20 px-6">
       <div className="max-w-[1000px] mx-auto">
         <div className="mb-12">
-           <h1 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] mb-4">Personal Space</h1>
+           <h1 className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] mb-4">My Account</h1>
            <h2 className="text-4xl font-black text-slate-900 tracking-tight">Your Profile</h2>
         </div>
 
@@ -62,20 +62,20 @@ const Profile = () => {
                   <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-6">Account Information</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div className="bg-slate-50 p-6 rounded-2xl shadow-inner">
-                       <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Full Identity</p>
+                       <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Full Name</p>
                        <p className="text-sm font-black text-slate-900">{userInfo.name}</p>
                     </div>
                     <div className="bg-slate-50 p-6 rounded-2xl shadow-inner">
-                       <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Email Communication</p>
+                       <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Email Address</p>
                        <p className="text-sm font-black text-slate-900">{userInfo.email}</p>
                     </div>
                     <div className="bg-slate-50 p-6 rounded-2xl shadow-inner">
-                       <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Membership Authority</p>
-                       <p className="text-sm font-black text-slate-900 capitalize">{userInfo.role} privileges</p>
+                       <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Role</p>
+                       <p className="text-sm font-black text-slate-900 capitalize">{userInfo.role}</p>
                     </div>
                     <div className="bg-slate-50 p-6 rounded-2xl shadow-inner">
-                       <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Loyalty Tier</p>
-                       <p className="text-sm font-black text-slate-900">Premium Elite</p>
+                       <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">Account Status</p>
+                       <p className="text-sm font-black text-slate-900">Active</p>
                     </div>
                   </div>
                 </div>
@@ -101,13 +101,13 @@ const Profile = () => {
                   {userInfo.role === 'trader' && (
                     <Link to="/trader/dashboard" className="flex items-center group p-4 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 hover:scale-[1.02] transition-all">
                        <Shield size={18} className="mr-4" />
-                       <span className="text-xs font-black uppercase tracking-widest">Merchant Control</span>
+                       <span className="text-xs font-black uppercase tracking-widest">Trader Dashboard</span>
                     </Link>
                   )}
                   {userInfo.role === 'admin' && (
                     <Link to="/admin/dashboard" className="flex items-center group p-4 bg-slate-900 text-white rounded-2xl shadow-lg transition-all">
                        <Shield size={18} className="mr-4 text-indigo-400" />
-                       <span className="text-xs font-black uppercase tracking-widest">System Administration</span>
+                       <span className="text-xs font-black uppercase tracking-widest">Admin Dashboard</span>
                     </Link>
                   )}
 
@@ -116,7 +116,7 @@ const Profile = () => {
                     className="w-full flex items-center group p-4 bg-rose-50 text-rose-600 rounded-2xl hover:bg-rose-600 hover:text-white transition-all mt-6"
                   >
                      <LogOut size={18} className="mr-4" />
-                     <span className="text-xs font-black uppercase tracking-widest">Terminate Session</span>
+                     <span className="text-xs font-black uppercase tracking-widest">Sign Out</span>
                   </button>
                 </div>
               </div>
