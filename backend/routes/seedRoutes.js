@@ -69,17 +69,46 @@ router.post('/', async (req, res) => {
     // Clear products and users (except admins if they exist)
     await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000'); 
     
-    // Find or create trader
-    let { data: trader } = await supabase.from('users').select('*').eq('role', 'trader').single();
+    // Find or create admin
+    let { data: admins, error: adminQueryError } = await supabase.from('users').select('*').eq('email', 'admin@marketplace.com');
+    if (adminQueryError) {
+      console.error("Admin query error:", adminQueryError);
+    }
+    let adminUser = admins && admins.length > 0 ? admins[0] : null;
+    if (!adminUser) {
+      const adminSalt = await bcrypt.genSalt(10);
+      const adminHashedPassword = await bcrypt.hash('Admin@123', adminSalt);
+      const adminId = require('crypto').randomUUID();
+      const { error: adminInsertError } = await supabase
+        .from('users')
+        .insert([{ id: adminId, name: 'System Admin', email: 'admin@marketplace.com', password: adminHashedPassword, role: 'admin' }]);
+      if (adminInsertError) {
+        throw new Error("Admin insert failed: " + adminInsertError.message);
+      }
+    }
+
+    // Find or create trader by email (since email is unique)
+    let { data: traders, error: traderQueryError } = await supabase.from('users').select('*').eq('email', 'seller@marketplace.com');
+    if (traderQueryError) {
+      console.error("Trader query error:", traderQueryError);
+    }
+    let trader = traders && traders.length > 0 ? traders[0] : null;
     if (!trader) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('Seller@123', salt);
-      const { data: newTrader } = await supabase
+      const traderId = require('crypto').randomUUID();
+      const { data: newTraders, error: insertError } = await supabase
         .from('users')
-        .insert([{ name: 'Demo Seller', email: 'seller@marketplace.com', password: hashedPassword, role: 'trader' }])
-        .select()
-        .single();
-      trader = newTrader;
+        .insert([{ id: traderId, name: 'Demo Seller', email: 'seller@marketplace.com', password: hashedPassword, role: 'trader' }])
+        .select();
+      if (insertError) {
+        throw new Error("Trader insert failed: " + insertError.message);
+      }
+      trader = newTraders && newTraders.length > 0 ? newTraders[0] : null;
+    }
+
+    if (!trader) {
+      throw new Error("Failed to resolve trader account after insert.");
     }
 
     const productsWithTrader = products.map((p) => ({ 
@@ -96,7 +125,7 @@ router.post('/', async (req, res) => {
 
     await supabase.from('products').insert(productsWithTrader);
 
-    res.json({ message: `✅ Seeded ${products.length} products!` });
+    res.json({ message: `✅ Seeded ${products.length} products and created default admin & seller credentials!` });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
