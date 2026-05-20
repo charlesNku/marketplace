@@ -106,7 +106,7 @@ const Chat = () => {
       });
 
       if (!conversationId) {
-        setConversationId(sentMessage.conversationId);
+        setConversationId(sentMessage.conversation_id || sentMessage.conversationId);
       }
 
       setMessages((prev) => [...prev, sentMessage]);
