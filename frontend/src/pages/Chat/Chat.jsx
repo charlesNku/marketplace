@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { io } from 'socket.io-client';
 import { 
   Send, ArrowLeft, Check, CheckCheck, MoreHorizontal, 
   Info, ShoppingBag, ShieldCheck, Phone, Video
@@ -22,7 +21,6 @@ const Chat = () => {
   const endOfMessagesRef = useRef(null);
 
   useEffect(() => {
-    socketRef.current = io(`http://${window.location.hostname}:5000`);
 
     const initializeChat = async () => {
       try {
@@ -49,12 +47,7 @@ const Chat = () => {
            const { data: msgs } = await api.get(`/chat/messages/${targetConvId}`);
            setMessages(msgs);
            
-           api.put(`/chat/read/${targetConvId}`);
-           socketRef.current.emit('messages_read', { conversationId: targetConvId, readerId: userInfo._id });
-        }
-
-        if (targetConvId) {
-          socketRef.current.emit('join_conversation', targetConvId);
+           api.put(`/chat/read/${targetConvId}`).catch(() => {});
         }
 
       } catch (err) {
@@ -69,26 +62,29 @@ const Chat = () => {
       initializeChat();
     }
 
-    socketRef.current.on('receive_message', (messageData) => {
-      if (messageData.conversationId === conversationId || 
-         (messageData.senderId === receiverId && messageData.receiverId === userInfo._id)) {
-        setMessages((prev) => [...prev, messageData]);
-        
-        if (conversationId && messageData.senderId === receiverId) {
-          api.put(`/chat/read/${conversationId}`);
-          socketRef.current.emit('messages_read', { conversationId, readerId: userInfo._id });
+    // Set up polling interval to check for new messages
+    let pollInterval;
+    if (conversationId) {
+      pollInterval = setInterval(async () => {
+        try {
+          const { data: msgs } = await api.get(`/chat/messages/${conversationId}`);
+          // Update messages if there are new ones
+          setMessages(current => {
+            if (msgs.length > current.length) {
+              // Mark as read when receiving new messages
+              api.put(`/chat/read/${conversationId}`).catch(() => {});
+              return msgs;
+            }
+            return current;
+          });
+        } catch (err) {
+          console.error('Polling error', err);
         }
-      }
-    });
-
-    socketRef.current.on('messages_read', (data) => {
-      if (data.conversationId === conversationId && data.readerId !== userInfo._id) {
-        setMessages((prev) => prev.map(m => ({ ...m, isRead: true })));
-      }
-    });
+      }, 3000);
+    }
 
     return () => {
-      socketRef.current.disconnect();
+      if (pollInterval) clearInterval(pollInterval);
     };
   }, [receiverId, productId, userInfo, conversationId]);
 
@@ -111,10 +107,8 @@ const Chat = () => {
 
       if (!conversationId) {
         setConversationId(sentMessage.conversationId);
-        socketRef.current.emit('join_conversation', sentMessage.conversationId);
       }
 
-      socketRef.current.emit('send_message', sentMessage);
       setMessages((prev) => [...prev, sentMessage]);
       setNewMessage('');
 

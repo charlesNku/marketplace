@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import FloatingChat from './components/FloatingChat';
 import Home from './pages/Public/Home';
 import Login from './pages/Public/Login';
 import Register from './pages/Public/Register';

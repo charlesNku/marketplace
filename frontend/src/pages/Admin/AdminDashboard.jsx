@@ -64,7 +64,7 @@ const AdminDashboard = () => {
 
         const revenue = allOrders.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
         setProducts(allProducts);
-        setUsers(allUsers);
+        setUsers(allUsers.map(u => ({ ...u, _id: u.id || u._id })));
         setOrders(allOrders);
         setReviews(allReviews);
         setStats({ users: allUsers.length, products: allProducts.length, orders: allOrders.length, revenue });
