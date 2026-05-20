@@ -46,9 +46,9 @@ const Navbar = () => {
       {/* 🌟 Nihemart Top utility bar */}
       <div className="bg-orange-500 text-white text-xs py-2 px-6 flex items-center justify-between w-full font-medium tracking-wide">
         <div className="flex items-center space-x-6">
-          <a href="tel:+250792412177" className="flex items-center space-x-1.5 hover:underline font-bold">
+          <a href="tel:0790087715" className="flex items-center space-x-1.5 hover:underline font-bold">
             <Phone size={13} />
-            <span>HELPLINE: +250 792 412 177</span>
+            <span>HELPLINE: 0790087715</span>
           </a>
           <span className="hidden sm:inline text-white/50">|</span>
           <div className="hidden sm:flex items-center space-x-2 bg-white/10 backdrop-blur-md px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider">
