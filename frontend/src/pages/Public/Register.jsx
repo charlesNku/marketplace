@@ -73,6 +73,10 @@ const Register = () => {
                 <CheckCircle2 size={18} className="text-orange-500" />
                 <span className="text-sm font-semibold">Verified premium vendors only</span>
               </div>
+              <div className="flex items-center space-x-3 text-slate-300">
+                <CheckCircle2 size={18} className="text-orange-500" />
+                <span className="text-sm font-semibold">Direct real-time chat with sellers</span>
+              </div>
             </div>
           </div>
         </div>

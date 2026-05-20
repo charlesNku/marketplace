@@ -158,6 +158,11 @@ const Navbar = () => {
                   </span>
                 )}
               </Link>
+              {userInfo && (
+                <Link to="/messages" className="text-slate-500 hover:text-orange-500 transition-colors relative p-2 hover:bg-slate-50 rounded-xl">
+                  <MessageSquare size={20} />
+                </Link>
+              )}
               {userInfo && <NotificationBell />}
             </div>
 
@@ -217,6 +222,9 @@ const Navbar = () => {
               
               {userInfo ? (
                 <>
+                  <Link to="/messages" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-slate-600 font-bold hover:text-orange-500 transition-colors">
+                    <MessageSquare size={20} /><span>Messages</span>
+                  </Link>
                   <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-slate-600 font-bold hover:text-orange-500 transition-colors">
                     <User size={20} /><span>My Profile</span>
                   </Link>
