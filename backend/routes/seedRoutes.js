@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabaseClient');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const categories = [
   { name: 'Electronics', description: 'Gadgets, phones, and more', icon: 'Smartphone', image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800' },
