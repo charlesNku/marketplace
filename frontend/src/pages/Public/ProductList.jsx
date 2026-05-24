@@ -190,9 +190,13 @@ const ProductList = () => {
                     {/* Image Container */}
                     <div className="relative aspect-square bg-slate-50 overflow-hidden border-b border-slate-100">
                       <img 
-                        src={product.image || 'https://via.placeholder.com/400'} 
+                        src={product.image || `https://source.unsplash.com/400x400/?${encodeURIComponent(product.category || 'product')}`} 
                         alt={product.title} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = `https://source.unsplash.com/400x400/?${encodeURIComponent(product.category || 'product,shopping')}`;
+                        }}
                       />
                       
                       {/* Wishlist badge */}

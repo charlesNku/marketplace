@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Star, MessageCircle, ShoppingCart, ArrowLeft, 
@@ -64,7 +64,7 @@ const ProductDetails = () => {
           <span>Back to products</span>
         </Link>
 
-        {/* 🌟 Nihemart split-row product card */}
+        {/* ðŸŒŸ Nihemart split-row product card */}
         <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             
@@ -72,9 +72,13 @@ const ProductDetails = () => {
             <div className="p-6 md:p-10 border-r border-slate-100 flex flex-col justify-between">
               <div className="relative rounded-2xl overflow-hidden aspect-square bg-slate-50 border border-slate-100 group">
                 <img 
-                  src={activeImage || product.image || 'https://via.placeholder.com/800'} 
+                  src={activeImage || product.image || `https://source.unsplash.com/800x800/?${encodeURIComponent(product.category || 'product')}`} 
                   alt={product.title} 
-                  className="w-full h-full object-cover transition-transform duration-500" 
+                  className="w-full h-full object-cover transition-transform duration-500"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `https://source.unsplash.com/800x800/?${encodeURIComponent(product.category || 'product,shopping')}`;
+                  }}
                 />
                 <button className="absolute top-4 right-4 p-3 bg-white/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 transition-colors shadow-md">
                   <Heart size={18} />
@@ -156,7 +160,7 @@ const ProductDetails = () => {
                     <button onClick={() => setQuantity(q => Math.min(product.stock, q + 1))} className="p-2 hover:bg-white rounded-xl transition-all text-slate-600 active:scale-95 shadow-sm"><Plus size={15} /></button>
                   </div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                    {product.stock > 10 ? <span className="text-emerald-600">● In Stock</span> : <span className="text-amber-500">● Low stock limit</span>}
+                    {product.stock > 10 ? <span className="text-emerald-600">â— In Stock</span> : <span className="text-amber-500">â— Low stock limit</span>}
                   </p>
                 </div>
 
@@ -340,3 +344,4 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
 };
 
 export default ProductDetails;
+
