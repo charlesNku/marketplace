@@ -47,7 +47,7 @@ const Home = () => {
   ];
 
   const ProductCard = ({ p, badge, color }) => (
-    <div key={p._id} className="group bg-white rounded-3xl p-4 border border-slate-100 hover:shadow-2xl hover:border-orange-500/10 transition-all duration-500 flex flex-col relative overflow-hidden h-full">
+    <div key={p._id} className="group bg-white rounded-3xl p-3 sm:p-4 border border-slate-100 hover:shadow-2xl hover:border-orange-500/10 transition-all duration-500 flex flex-col relative overflow-hidden h-full">
       {/* 🌟 Nihemart Top-Left Price Overlay badge */}
       <div className="absolute top-0 left-0 bg-orange-500 text-white px-4 py-1.5 rounded-br-2xl text-[10px] font-black uppercase tracking-wider z-20 shadow-md">
         RWF {p.price.toLocaleString()}
@@ -72,7 +72,7 @@ const Home = () => {
             </div>
           </div>
           <Link to={`/product/${p._id}`}>
-            <h4 className="font-bold text-slate-800 hover:text-orange-500 transition-colors text-sm line-clamp-2 leading-snug">{p.title}</h4>
+            <h4 className="font-bold text-slate-800 hover:text-orange-500 transition-colors text-xs sm:text-sm line-clamp-2 leading-snug">{p.title}</h4>
           </Link>
         </div>
 

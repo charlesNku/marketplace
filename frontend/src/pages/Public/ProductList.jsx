@@ -156,9 +156,9 @@ const ProductList = () => {
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                  <div key={i} className="bg-white rounded-3xl h-[28rem] animate-pulse border border-slate-100"></div>
+                  <div key={i} className="bg-white rounded-3xl h-64 sm:h-[28rem] animate-pulse border border-slate-100"></div>
                 ))}
               </div>
             ) : products.length === 0 ? (
@@ -180,7 +180,7 @@ const ProductList = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
                 {products.map(product => (
                   <Link 
                     key={product._id} 
@@ -212,9 +212,9 @@ const ProductList = () => {
                     </div>
                     
                     {/* Content */}
-                    <div className="p-4 flex-grow flex flex-col justify-between">
+                    <div className="p-3 sm:p-4 flex-grow flex flex-col justify-between">
                       <div>
-                        <h3 className="font-semibold text-slate-800 group-hover:text-orange-500 transition-colors text-sm line-clamp-2 mb-1">{product.title}</h3>
+                        <h3 className="font-semibold text-slate-800 group-hover:text-orange-500 transition-colors text-xs sm:text-sm line-clamp-2 mb-1">{product.title}</h3>
                         <div className="flex items-center space-x-1 mb-2">
                           <Star size={12} className="text-amber-500" fill="currentColor" />
                           <span className="text-xs font-medium text-slate-500">{(product.averageRating || 0).toFixed(1)}</span>
@@ -224,7 +224,7 @@ const ProductList = () => {
                       </div>
                       
                       <div className="flex items-end justify-between mt-2 pt-2 border-t border-slate-50">
-                        <p className="text-lg font-bold text-slate-900 tracking-tight">RWF {product.price.toLocaleString()}</p>
+                        <p className="text-sm sm:text-lg font-bold text-slate-900 tracking-tight">RWF {product.price.toLocaleString()}</p>
                       </div>
                     </div>
                   </Link>
