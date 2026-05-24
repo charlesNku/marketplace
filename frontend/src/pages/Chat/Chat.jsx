@@ -180,9 +180,14 @@ const Chat = () => {
                 <p className="text-sm font-black text-slate-900">{product.title}</p>
               </div>
            </div>
-           <Link to={`/product/${product._id}`} className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center hover:underline">
-             View Product <Info size={14} className="ml-1" />
-           </Link>
+           <div className="flex items-center space-x-4">
+             <Link to={`/product/${product._id}#review-form`} className="text-[10px] font-black text-emerald-600 uppercase tracking-widest flex items-center hover:underline bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+               Leave Feedback <Star size={12} className="ml-1" fill="currentColor" />
+             </Link>
+             <Link to={`/product/${product._id}`} className="text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center hover:underline">
+               View Product <Info size={14} className="ml-1" />
+             </Link>
+           </div>
         </div>
       )}
 
@@ -196,9 +201,14 @@ const Chat = () => {
                  <ShoppingBag className="text-indigo-600" size={32} />
                </div>
                <h3 className="text-xl font-black text-slate-900 mb-2">Start a Professional Dialogue</h3>
-               <p className="text-sm text-slate-500 max-w-xs font-medium leading-relaxed">
+               <p className="text-sm text-slate-500 max-w-xs font-medium leading-relaxed mb-6">
                  Reach out to the trader regarding your interest in this premium selection.
                </p>
+               <div className="flex flex-col space-y-2 max-w-xs mx-auto">
+                 <button onClick={() => setNewMessage('Hello, is this product still available?')} className="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 py-2 px-4 rounded-xl transition-colors border border-indigo-100">"Is this still available?"</button>
+                 <button onClick={() => setNewMessage('Can you provide more real photos of this item?')} className="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 py-2 px-4 rounded-xl transition-colors border border-indigo-100">"Can you send more photos?"</button>
+                 <button onClick={() => setNewMessage('I am interested but would like to discuss the price.')} className="text-xs font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 py-2 px-4 rounded-xl transition-colors border border-indigo-100">"Is the price negotiable?"</button>
+               </div>
             </div>
           </div>
         ) : (
@@ -240,8 +250,15 @@ const Chat = () => {
       </div>
 
       {/* Premium Input Area */}
-      <div className="bg-white/80 backdrop-blur-xl border-t border-slate-100 p-6 lg:p-8 z-20">
-        <form onSubmit={handleSendMessage} className="max-w-[1000px] mx-auto relative group">
+      <div className="bg-white/80 backdrop-blur-xl border-t border-slate-100 p-6 lg:p-8 z-20 flex flex-col">
+        {messages.length > 0 && (
+          <div className="flex space-x-2 mb-3 overflow-x-auto scrollbar-hide pb-1">
+             <button onClick={() => setNewMessage('Yes, that works for me.')} className="whitespace-nowrap text-[10px] font-bold text-slate-600 bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 py-1.5 px-3 rounded-full transition-colors">Yes, that works</button>
+             <button onClick={() => setNewMessage('Can we arrange delivery?')} className="whitespace-nowrap text-[10px] font-bold text-slate-600 bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 py-1.5 px-3 rounded-full transition-colors">Arrange delivery</button>
+             <button onClick={() => setNewMessage('Thank you!')} className="whitespace-nowrap text-[10px] font-bold text-slate-600 bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 py-1.5 px-3 rounded-full transition-colors">Thank you!</button>
+          </div>
+        )}
+        <form onSubmit={handleSendMessage} className="max-w-[1000px] w-full mx-auto relative group">
           <input
             type="text"
             className="w-full bg-slate-50 border-none rounded-[2rem] py-5 pl-8 pr-20 text-[15px] font-medium focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-inner outline-none placeholder:text-slate-400"
@@ -258,7 +275,7 @@ const Chat = () => {
           </button>
         </form>
         <p className="text-center mt-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">
-          End-to-End Encryption Enabled
+          End-to-End Encryption Enabled • Professional Feedback Encouraged
         </p>
       </div>
     </div>
