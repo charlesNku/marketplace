@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Send, ArrowLeft, Check, CheckCheck, MoreHorizontal, 
-  Info, ShoppingBag, ShieldCheck, Phone, Video
+  Info, ShoppingBag, ShieldCheck, Phone, Video, Star
 } from 'lucide-react';
 
 import useAuthStore from '../../store/authStore';
