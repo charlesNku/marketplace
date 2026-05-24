@@ -36,7 +36,7 @@ const useAuthStore = create((set) => ({
 
   logout: () => {
     localStorage.removeItem('userInfo');
-    set({ userInfo: null });
+    set({ userInfo: null, error: null });
   }
 }));
 

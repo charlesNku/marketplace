@@ -60,13 +60,13 @@ const ProductList = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20">
-      <div className="max-w-[1400px] mx-auto px-6">
-        <div className="flex flex-col lg:flex-row gap-10">
+      <div className="max-w-[1600px] mx-auto px-6 xl:px-10">
+        <div className="flex flex-col lg:flex-row gap-8">
           
           {/* Sidebar Filters */}
-          <aside className="lg:w-72 flex-shrink-0 space-y-8">
-            <div className="glass-card p-8 rounded-[2rem] border-slate-100 bg-white">
-              <div className="flex items-center justify-between mb-8">
+          <aside className="lg:w-64 flex-shrink-0">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200">
+              <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center">
                   <SlidersHorizontal size={15} className="mr-2 text-orange-500" />
                   Filters
@@ -119,16 +119,6 @@ const ProductList = () => {
                 </div>
               </div>
             </div>
-
-            {/* Promo Card Mockup */}
-            <div className="bg-gradient-to-br from-orange-500 to-amber-500 rounded-[2rem] p-8 text-white relative overflow-hidden shadow-xl shadow-orange-500/10 hidden lg:block">
-               <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-               <h4 className="text-xl font-black mb-2 relative z-10 leading-tight">Elite Membership</h4>
-               <p className="text-xs font-medium text-orange-50 mb-6 relative z-10">Get free shipping and early access to drops.</p>
-               <button className="w-full py-3 bg-white text-orange-600 rounded-xl font-black text-[10px] uppercase tracking-widest relative z-10 hover:bg-slate-50 transition-colors shadow-lg shadow-black/5">
-                 Join Premium
-               </button>
-            </div>
           </aside>
 
           {/* Main Content */}
@@ -166,8 +156,8 @@ const ProductList = () => {
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3, 4, 5, 6].map(i => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                   <div key={i} className="bg-white rounded-3xl h-[28rem] animate-pulse border border-slate-100"></div>
                 ))}
               </div>
@@ -190,64 +180,54 @@ const ProductList = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
                 {products.map(product => (
-                  <div key={product._id} className="group bg-white rounded-3xl p-4 border border-slate-100 hover:shadow-2xl hover:border-orange-500/10 transition-all duration-500 flex flex-col h-full relative overflow-hidden">
-                    
-                    {/* Price Overlay tag */}
-                    <div className="absolute top-0 left-0 bg-orange-500 text-white px-4 py-1.5 rounded-br-2xl text-[10px] font-black uppercase tracking-wider z-20 shadow-md">
-                      RWF {product.price.toLocaleString()}
-                    </div>
-
-                    {/* Wishlist badge */}
-                    <button className="absolute top-3 right-3 bg-white/95 backdrop-blur-md p-2.5 rounded-full text-slate-400 hover:text-rose-500 shadow-md transition-colors z-20">
-                      <Heart size={15} fill="none" />
-                    </button>
-
-                    <div className="relative rounded-2xl overflow-hidden aspect-[4/5] mb-6 bg-slate-50 border border-slate-100">
+                  <Link 
+                    key={product._id} 
+                    to={`/product/${product._id}`}
+                    className="group bg-white rounded-2xl border border-slate-200 hover:border-orange-500 hover:shadow-lg transition-all duration-300 flex flex-col h-full overflow-hidden"
+                  >
+                    {/* Image Container */}
+                    <div className="relative aspect-square bg-slate-50 overflow-hidden border-b border-slate-100">
                       <img 
                         src={product.image || 'https://via.placeholder.com/400'} 
                         alt={product.title} 
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
+                      
+                      {/* Wishlist badge */}
+                      <button 
+                        onClick={(e) => { e.preventDefault(); /* wishlist logic */ }}
+                        className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full text-slate-400 hover:text-rose-500 shadow-sm transition-colors z-20"
+                      >
+                        <Heart size={16} fill="none" />
+                      </button>
+
+                      {/* Stock Status */}
                       {product.stock === 0 && (
-                        <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] flex items-center justify-center z-10">
-                          <span className="text-white text-[10px] font-black uppercase tracking-[0.2em] border border-white/30 px-6 py-2 rounded-full">Reserve Only</span>
+                        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-10">
+                          <span className="bg-white/90 text-slate-900 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg">Out of Stock</span>
                         </div>
                       )}
                     </div>
                     
-                    <div className="px-1 pb-4 space-y-3 flex-grow flex flex-col justify-between">
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{product.category}</span>
-                          <div className="flex items-center space-x-0.5 text-amber-500">
-                            <Star size={12} fill="currentColor" />
-                            <span className="text-[11px] font-black text-slate-900">{(product.averageRating || 0).toFixed(1)}</span>
-                          </div>
+                    {/* Content */}
+                    <div className="p-4 flex-grow flex flex-col justify-between">
+                      <div>
+                        <h3 className="font-semibold text-slate-800 group-hover:text-orange-500 transition-colors text-sm line-clamp-2 mb-1">{product.title}</h3>
+                        <div className="flex items-center space-x-1 mb-2">
+                          <Star size={12} className="text-amber-500" fill="currentColor" />
+                          <span className="text-xs font-medium text-slate-500">{(product.averageRating || 0).toFixed(1)}</span>
+                          <span className="text-xs text-slate-300 px-1">•</span>
+                          <span className="text-xs text-slate-500">{product.category}</span>
                         </div>
-                        <Link to={`/product/${product._id}`}>
-                          <h3 className="font-bold text-slate-800 hover:text-orange-500 transition-colors text-base line-clamp-1 leading-snug">{product.title}</h3>
-                        </Link>
-                        <p className="text-xs font-semibold text-slate-400 line-clamp-2 leading-relaxed">
-                          {product.description}
-                        </p>
                       </div>
-
-                      <div className="pt-6 flex items-center justify-between mt-auto">
-                        <div className="flex flex-col">
-                           <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pricing Options</span>
-                           <p className="text-lg font-black text-slate-900 tracking-tight">RWF {product.price.toLocaleString()}</p>
-                        </div>
-                        <Link 
-                          to={`/product/${product._id}`} 
-                          className="h-10 w-10 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all shadow-sm group-hover:shadow-md border border-slate-100 hover:border-transparent active:scale-95"
-                        >
-                          <ChevronRight size={18} />
-                        </Link>
+                      
+                      <div className="flex items-end justify-between mt-2 pt-2 border-t border-slate-50">
+                        <p className="text-lg font-bold text-slate-900 tracking-tight">RWF {product.price.toLocaleString()}</p>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

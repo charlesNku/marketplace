@@ -22,11 +22,12 @@ import NotFound from './pages/NotFound';
 
 const AppContent = () => {
   const location = useLocation();
-  const hideFooter = location.pathname.startsWith('/chat/');
+  const isAdminRoute = location.pathname.startsWith('/admin');
+  const hideFooter = location.pathname.startsWith('/chat/') || isAdminRoute;
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-900 selection:bg-indigo-500/30">
-      <Navbar />
+      {!isAdminRoute && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<ProductList />} />

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ShoppingBag, Facebook, Twitter, Instagram, 
-  Linkedin, Youtube, Mail, MapPin, Phone, ArrowRight
+  Linkedin, Youtube, Mail, MapPin, Phone, ArrowRight, Shield
 } from 'lucide-react';
 
 const Footer = () => {
@@ -79,12 +79,17 @@ const Footer = () => {
       </div>
 
       <div className="max-w-[1400px] mx-auto pt-10 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex flex-wrap justify-center md:justify-start gap-8">
+        <div className="flex flex-wrap justify-center md:justify-start items-center gap-8">
            {['Privacy Policy', 'Terms of Service', 'Cookie Settings'].map(link => (
              <a key={link} href="#" className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors">
                {link}
              </a>
            ))}
+           <div className="w-px h-3 bg-white/10 hidden md:block"></div>
+           <Link to="/admin/login" className="text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-indigo-300 transition-colors flex items-center space-x-1.5">
+             <Shield size={12} />
+             <span>Admin Portal</span>
+           </Link>
         </div>
         <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">
           &copy; {new Date().getFullYear()} MARKETPRO GLOBAL. ALL RIGHTS RESERVED.

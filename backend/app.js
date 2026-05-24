@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
+const path = require('path');
 
 dotenv.config();
 
@@ -18,6 +19,9 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
+// Serve static uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 const authRoutes = require('./routes/authRoutes.js');
 const productRoutes = require('./routes/productRoutes.js');
@@ -28,6 +32,7 @@ const paymentRoutes = require('./routes/paymentRoutes.js');
 const chatRoutes = require('./routes/chatRoutes.js');
 const notificationRoutes = require('./routes/notificationRoutes.js');
 const seedRoutes = require('./routes/seedRoutes.js');
+const uploadRoutes = require('./routes/uploadRoutes.js');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -38,6 +43,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/seed', seedRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Attach io to app for use in controllers
 app.set('socketio', io);

@@ -41,7 +41,7 @@ const getProducts = async (req, res) => {
     if (error) throw error;
 
     // Map fields for frontend compatibility
-    const mappedProducts = products.map(p => ({
+    const mappedProducts = (products || []).map(p => ({
       ...p,
       _id: p.id,
       traderId: p.trader_id,
@@ -51,7 +51,8 @@ const getProducts = async (req, res) => {
 
     res.json({ products: mappedProducts, page, pages: Math.ceil(count / pageSize) });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error in getProducts:', error);
+    res.status(500).json({ message: error.message || 'Internal Server Error' });
   }
 };
 

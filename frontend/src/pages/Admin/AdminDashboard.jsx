@@ -4,7 +4,8 @@ import {
   Users, ShoppingBag, ShoppingCart, Activity, TrendingUp,
   AlertCircle, CheckCircle2, Clock, Search, Settings, Bell,
   LogOut, ChevronRight, MoreVertical, BarChart3, Lock,
-  Edit, Trash2, Plus, X, Save, Package, DollarSign, Tag, Eye, MessageSquare
+  Edit, Trash2, Plus, X, Save, Package, DollarSign, Tag, Eye, MessageSquare,
+  UploadCloud
 } from 'lucide-react';
 import api from '../../services/api';
 import useAuthStore from '../../store/authStore';
@@ -22,17 +23,45 @@ const AdminDashboard = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   const [newProduct, setNewProduct] = useState({
     title: '', price: '', description: '', category: '', stock: '', image: ''
   });
+  const [uploadingState, setUploadingState] = useState({ add: false, edit: false });
 
   const [stats, setStats] = useState({ users: 0, products: 0, orders: 0, revenue: 0 });
 
   const showNotif = (msg, type = 'success') => {
     setNotification({ msg, type });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleImageUpload = async (file, type) => {
+    setUploadingState(prev => ({ ...prev, [type]: true }));
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const { data } = await api.post('/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (type === 'edit') {
+        setEditingProduct(prev => ({ ...prev, image: data.imageUrl }));
+      } else {
+        setNewProduct(prev => ({ ...prev, image: data.imageUrl }));
+      }
+      showNotif('Image uploaded successfully!');
+    } catch (err) {
+      console.error(err);
+      showNotif(err.response?.data?.message || 'Failed to upload image.', 'error');
+    } finally {
+      setUploadingState(prev => ({ ...prev, [type]: false }));
+    }
   };
 
   useEffect(() => {
@@ -86,15 +115,22 @@ const AdminDashboard = () => {
 
 
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to permanently delete this product?')) return;
+  const handleDelete = (id) => {
+    setProductToDelete(id);
+  };
+
+  const confirmDelete = async (id) => {
+    setActionLoading(true);
     try {
       await api.delete(`/products/${id}`);
       setProducts(prev => prev.filter(p => p._id !== id));
       setStats(prev => ({ ...prev, products: prev.products - 1 }));
       showNotif('Product deleted successfully!');
+      setProductToDelete(null);
     } catch (err) {
-      showNotif('Failed to delete product.', 'error');
+      showNotif(err.response?.data?.message || 'Failed to delete product.', 'error');
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -166,19 +202,92 @@ const AdminDashboard = () => {
       {/* Edit Modal */}
       {showEditModal && editingProduct && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-slate-900">Edit Product</h3>
               <button onClick={() => setShowEditModal(false)} className="text-slate-400 hover:text-slate-600"><X size={22} /></button>
             </div>
             <div className="space-y-4">
-              {[['Title', 'title', 'text'], ['Price', 'price', 'number'], ['Stock', 'stock', 'number'], ['Category', 'category', 'text'], ['Image URL', 'image', 'text']].map(([label, key, type]) => (
+              {[['Title', 'title', 'text'], ['Price', 'price', 'number'], ['Stock', 'stock', 'number'], ['Category', 'category', 'text']].map(([label, key, type]) => (
                 <div key={key}>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{label}</label>
                   <input type={type} value={editingProduct[key] || ''} onChange={e => setEditingProduct(prev => ({ ...prev, [key]: e.target.value }))}
                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
                 </div>
               ))}
+              
+              {/* Premium Image Upload Area */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Product Image</label>
+                <div 
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file) handleImageUpload(file, 'edit');
+                  }}
+                  className="border-2 border-dashed border-slate-200 hover:border-blue-500 rounded-2xl p-5 transition-all bg-slate-50 hover:bg-blue-50/20 cursor-pointer flex flex-col items-center justify-center group relative overflow-hidden min-h-[140px]"
+                >
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    id="file-upload-edit"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) handleImageUpload(file, 'edit');
+                    }}
+                  />
+                  {uploadingState.edit ? (
+                    <div className="flex flex-col items-center space-y-2">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                      <p className="text-xs font-bold text-slate-500 animate-pulse">Uploading image...</p>
+                    </div>
+                  ) : editingProduct.image ? (
+                    <div className="flex flex-col items-center space-y-2 w-full">
+                      <img src={editingProduct.image} alt="Preview" className="h-16 w-16 object-cover rounded-xl border border-slate-200 shadow-sm" />
+                      <div className="text-center">
+                        <p className="text-xs font-semibold text-emerald-600 flex items-center justify-center space-x-1">
+                          <CheckCircle2 size={12} /> <span>Image uploaded successfully</span>
+                        </p>
+                        <p className="text-[10px] text-slate-400 mt-0.5 max-w-[250px] truncate mx-auto">{editingProduct.image}</p>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setEditingProduct(prev => ({ ...prev, image: '' }));
+                        }}
+                        className="text-[10px] font-black uppercase text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-center space-y-1">
+                      <UploadCloud className="mx-auto text-slate-400 group-hover:text-blue-500 transition-colors" size={28} />
+                      <p className="text-xs font-bold text-slate-700">Drag & drop your product image here</p>
+                      <p className="text-[10px] text-slate-400 font-semibold">Or click to browse from files</p>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Fallback Image URL Input */}
+                <div className="relative flex py-1 items-center">
+                  <div className="flex-grow border-t border-slate-100"></div>
+                  <span className="flex-shrink mx-3 text-[10px] font-black uppercase text-slate-400 tracking-wider">Or Paste URL</span>
+                  <div className="flex-grow border-t border-slate-100"></div>
+                </div>
+                <input 
+                  type="text" 
+                  value={editingProduct.image || ''} 
+                  onChange={e => setEditingProduct(prev => ({ ...prev, image: e.target.value }))}
+                  placeholder="https://example.com/image.jpg"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Description</label>
                 <textarea value={editingProduct.description || ''} onChange={e => setEditingProduct(prev => ({ ...prev, description: e.target.value }))}
@@ -196,22 +305,114 @@ const AdminDashboard = () => {
         </div>
       )}
 
+      {/* Delete Confirmation Modal */}
+      {productToDelete && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+              <Trash2 size={32} />
+            </div>
+            <h3 className="text-xl font-black text-slate-900 mb-2">Delete Product</h3>
+            <p className="text-slate-500 text-sm mb-6">Are you sure you want to permanently delete this product? This action cannot be undone.</p>
+            <div className="flex space-x-3">
+              <button onClick={() => setProductToDelete(null)} className="flex-1 py-3 border border-slate-200 rounded-xl text-slate-600 font-bold hover:bg-slate-50 transition-all">Cancel</button>
+              <button onClick={() => confirmDelete(productToDelete)} disabled={actionLoading} className="flex-1 py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-all flex items-center justify-center space-x-2">
+                {actionLoading ? <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent" /> : <span>Delete</span>}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Add Product Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-xl font-black text-slate-900">Add New Product</h3>
               <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600"><X size={22} /></button>
             </div>
             <div className="space-y-4">
-              {[['Title', 'title', 'text'], ['Price', 'price', 'number'], ['Stock', 'stock', 'number'], ['Category', 'category', 'text'], ['Image URL', 'image', 'text']].map(([label, key, type]) => (
+              {[['Title', 'title', 'text'], ['Price', 'price', 'number'], ['Stock', 'stock', 'number'], ['Category', 'category', 'text']].map(([label, key, type]) => (
                 <div key={key}>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">{label}</label>
                   <input type={type} value={newProduct[key]} onChange={e => setNewProduct(prev => ({ ...prev, [key]: e.target.value }))}
                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
                 </div>
               ))}
+              
+              {/* Premium Image Upload Area */}
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Product Image</label>
+                <div 
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file) handleImageUpload(file, 'add');
+                  }}
+                  className="border-2 border-dashed border-slate-200 hover:border-blue-500 rounded-2xl p-5 transition-all bg-slate-50 hover:bg-blue-50/20 cursor-pointer flex flex-col items-center justify-center group relative overflow-hidden min-h-[140px]"
+                >
+                  <input 
+                    type="file" 
+                    accept="image/*"
+                    id="file-upload-add"
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) handleImageUpload(file, 'add');
+                    }}
+                  />
+                  {uploadingState.add ? (
+                    <div className="flex flex-col items-center space-y-2">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                      <p className="text-xs font-bold text-slate-500 animate-pulse">Uploading image...</p>
+                    </div>
+                  ) : newProduct.image ? (
+                    <div className="flex flex-col items-center space-y-2 w-full">
+                      <img src={newProduct.image} alt="Preview" className="h-16 w-16 object-cover rounded-xl border border-slate-200 shadow-sm" />
+                      <div className="text-center">
+                        <p className="text-xs font-semibold text-emerald-600 flex items-center justify-center space-x-1">
+                          <CheckCircle2 size={12} /> <span>Image uploaded successfully</span>
+                        </p>
+                        <p className="text-[10px] text-slate-400 mt-0.5 max-w-[250px] truncate mx-auto">{newProduct.image}</p>
+                      </div>
+                      <button 
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setNewProduct(prev => ({ ...prev, image: '' }));
+                        }}
+                        className="text-[10px] font-black uppercase text-red-500 hover:text-red-700 transition-colors"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="text-center space-y-1">
+                      <UploadCloud className="mx-auto text-slate-400 group-hover:text-blue-500 transition-colors" size={28} />
+                      <p className="text-xs font-bold text-slate-700">Drag & drop your product image here</p>
+                      <p className="text-[10px] text-slate-400 font-semibold">Or click to browse from files</p>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Fallback Image URL Input */}
+                <div className="relative flex py-1 items-center">
+                  <div className="flex-grow border-t border-slate-100"></div>
+                  <span className="flex-shrink mx-3 text-[10px] font-black uppercase text-slate-400 tracking-wider">Or Paste URL</span>
+                  <div className="flex-grow border-t border-slate-100"></div>
+                </div>
+                <input 
+                  type="text" 
+                  value={newProduct.image} 
+                  onChange={e => setNewProduct(prev => ({ ...prev, image: e.target.value }))}
+                  placeholder="https://example.com/image.jpg"
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                />
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Description</label>
                 <textarea value={newProduct.description} onChange={e => setNewProduct(prev => ({ ...prev, description: e.target.value }))}

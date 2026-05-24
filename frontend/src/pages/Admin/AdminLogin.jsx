@@ -6,7 +6,7 @@ import useAuthStore from '../../store/authStore';
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, userInfo, error, loading } = useAuthStore();
+  const { login, logout, userInfo, error, loading } = useAuthStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,11 +14,11 @@ const AdminLogin = () => {
       if (userInfo.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
-        // If logged in as non-admin, they shouldn't be here
-        // But for now just let the store handle it or logout
+        // Silently clear any non-admin session so no error banner appears
+        logout();
       }
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, navigate, logout]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -44,11 +44,7 @@ const AdminLogin = () => {
               </div>
             )}
             
-            {userInfo && userInfo.role !== 'admin' && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-xl text-sm font-medium">
-                Unauthorized access. Only admins can enter here.
-              </div>
-            )}
+
 
             <div>
               <label className="block text-sm font-medium text-slate-400 mb-2 ml-1">Admin Email</label>
