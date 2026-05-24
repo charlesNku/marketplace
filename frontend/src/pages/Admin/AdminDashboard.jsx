@@ -431,7 +431,7 @@ const AdminDashboard = () => {
       )}
 
       {/* Top Navigation */}
-      <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-8 sticky top-0 z-10 shadow-sm">
+      <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 sm:px-8 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center space-x-4">
           <div className="bg-blue-600 p-2 rounded-lg">
             <Activity className="text-white" size={20} />
@@ -460,7 +460,7 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      <main className="flex-grow p-6 max-w-[1600px] mx-auto w-full">
+      <main className="flex-grow p-4 sm:p-6 max-w-[1600px] mx-auto w-full">
         {/* Page Header + Tabs */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -484,7 +484,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Stat Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
           <StatCard title="Total Users" value={stats.users} change="+12.5%" positive icon={<Users className="text-blue-600" size={22} />} bg="bg-blue-50" />
           <StatCard title="Total Products" value={stats.products} change="+4.2%" positive icon={<ShoppingBag className="text-emerald-600" size={22} />} bg="bg-emerald-50" />
           <StatCard title="Total Orders" value={stats.orders} change="+8.3%" positive icon={<ShoppingCart className="text-purple-600" size={22} />} bg="bg-purple-50" />
@@ -824,8 +824,8 @@ const AdminDashboard = () => {
         )}
       </main>
 
-      <footer className="py-6 border-t border-slate-200 px-8 flex justify-between items-center bg-white/50">
-        <p className="text-xs text-slate-500 font-medium">© 2026 Marketplace Platform. Admin Console v2.4.0</p>
+      <footer className="py-6 border-t border-slate-200 px-4 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/50">
+        <p className="text-xs text-slate-500 font-medium text-center sm:text-left">© 2026 Marketplace Platform. Admin Console v2.4.0</p>
         <div className="flex items-center space-x-1.5">
           <div className="h-1.5 w-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
           <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">All Systems Operational</span>

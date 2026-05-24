@@ -44,7 +44,7 @@ const Navbar = () => {
   return (
     <div className="w-full z-50 fixed top-0 flex flex-col shadow-sm">
       {/* 🌟 Nihemart Top utility bar */}
-      <div className="bg-orange-500 text-white text-xs py-2 px-6 flex items-center justify-between w-full font-medium tracking-wide">
+      <div className="bg-orange-500 text-white text-xs py-2 px-4 sm:px-6 flex items-center justify-between w-full font-medium tracking-wide">
         <div className="flex items-center space-x-6">
           <a href="tel:0790087715" className="flex items-center space-x-1.5 hover:underline font-bold">
             <Phone size={13} />
@@ -93,7 +93,7 @@ const Navbar = () => {
       </div>
 
       {/* 🌟 Nihemart main sticky glass bar */}
-      <nav className="bg-white/90 backdrop-blur-md border-b border-slate-100 py-3 px-6 w-full flex items-center justify-between">
+      <nav className="bg-white/90 backdrop-blur-md border-b border-slate-100 py-3 px-4 sm:px-6 w-full flex items-center justify-between">
         <div className="max-w-[1400px] mx-auto w-full flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 group">
