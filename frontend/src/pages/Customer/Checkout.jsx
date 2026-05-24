@@ -12,6 +12,7 @@ const Checkout = () => {
   const [city, setCity] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [country, setCountry] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('Credit Card');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -140,15 +141,31 @@ const Checkout = () => {
                   <div className="p-3 bg-orange-50 text-orange-500 rounded-2xl">
                     <CreditCard size={22} />
                   </div>
-                  <h2 className="text-xl font-black text-slate-900">Payment Processing</h2>
+                  <h2 className="text-xl font-black text-slate-900">Payment Procedure</h2>
+                </div>
+
+                <div className="space-y-4 mb-8">
+                  {['Credit Card', 'Mobile Money', 'Cash on Delivery'].map((method) => (
+                    <label key={method} className={`flex items-center p-4 border rounded-2xl cursor-pointer transition-all ${paymentMethod === method ? 'border-orange-500 bg-orange-50' : 'border-slate-100 hover:border-orange-200'}`}>
+                      <input 
+                        type="radio" 
+                        name="paymentMethod" 
+                        value={method} 
+                        checked={paymentMethod === method} 
+                        onChange={(e) => setPaymentMethod(e.target.value)} 
+                        className="mr-4 text-orange-500 focus:ring-orange-500 w-4 h-4"
+                      />
+                      <span className="text-sm font-bold text-slate-800">{method}</span>
+                    </label>
+                  ))}
                 </div>
 
                 <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 mb-8 flex items-center justify-between">
                    <div className="flex items-center space-x-4">
                      <ShieldCheck className="text-emerald-500" size={28} />
                      <div>
-                       <p className="font-bold text-slate-900 text-sm">Secure Payment Simulation</p>
-                       <p className="text-xs text-slate-400 font-semibold mt-0.5">Your order will be simulated for direct bank transfers.</p>
+                       <p className="font-bold text-slate-900 text-sm">Secure Payment</p>
+                       <p className="text-xs text-slate-400 font-semibold mt-0.5">Your order will be processed using {paymentMethod}.</p>
                      </div>
                    </div>
                 </div>
