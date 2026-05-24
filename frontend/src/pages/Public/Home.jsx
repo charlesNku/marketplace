@@ -60,12 +60,12 @@ const Home = () => {
 
       <Link to={`/product/${p._id}`} className="block relative rounded-2xl overflow-hidden aspect-square mb-4 bg-slate-50 border border-slate-100">
         <img
-          src={p.image || `https://source.unsplash.com/400x400/?${encodeURIComponent(p.category || 'product')}`}
+          src={p.image || `https://placehold.co/400x400/f8fafc/94a3b8?text=${encodeURIComponent(p.category || 'Product')}`}
           alt={p.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = `https://source.unsplash.com/400x400/?${encodeURIComponent(p.category || 'product,shopping')}`;
+            e.target.src = `https://placehold.co/400x400/f8fafc/94a3b8?text=${encodeURIComponent(p.category || 'Product')}`;
           }}
         />
       </Link>

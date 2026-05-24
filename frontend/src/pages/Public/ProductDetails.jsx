@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
   Star, MessageCircle, ShoppingCart, ArrowLeft, 
@@ -72,12 +72,12 @@ const ProductDetails = () => {
             <div className="p-6 md:p-10 border-r border-slate-100 flex flex-col justify-between">
               <div className="relative rounded-2xl overflow-hidden aspect-square bg-slate-50 border border-slate-100 group">
                 <img 
-                  src={activeImage || product.image || `https://source.unsplash.com/800x800/?${encodeURIComponent(product.category || 'product')}`} 
+                  src={activeImage || product.image || `https://placehold.co/800x800/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`} 
                   alt={product.title} 
                   className="w-full h-full object-cover transition-transform duration-500"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = `https://source.unsplash.com/800x800/?${encodeURIComponent(product.category || 'product,shopping')}`;
+                    e.target.src = `https://placehold.co/800x800/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
                   }}
                 />
                 <button className="absolute top-4 right-4 p-3 bg-white/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 transition-colors shadow-md">
@@ -95,7 +95,15 @@ const ProductDetails = () => {
                        activeImage === imgUrl ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-slate-200 hover:border-slate-300'
                      }`}
                    >
-                     <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                     <img
+                       src={imgUrl || `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`}
+                       alt=""
+                       className="w-full h-full object-cover"
+                       onError={(e) => {
+                         e.target.onerror = null;
+                         e.target.src = `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
+                       }}
+                     />
                    </div>
                  ))}
               </div>
