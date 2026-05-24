@@ -160,14 +160,60 @@ const Checkout = () => {
                   ))}
                 </div>
 
-                <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 mb-8 flex items-center justify-between">
-                   <div className="flex items-center space-x-4">
-                     <ShieldCheck className="text-emerald-500" size={28} />
-                     <div>
-                       <p className="font-bold text-slate-900 text-sm">Secure Payment</p>
-                       <p className="text-xs text-slate-400 font-semibold mt-0.5">Your order will be processed using {paymentMethod}.</p>
-                     </div>
-                   </div>
+                {/* Conditional Payment Interface */}
+                <div className="mb-8 p-6 bg-slate-50 border border-slate-100 rounded-2xl">
+                  {paymentMethod === 'Credit Card' && (
+                    <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Card Number</label>
+                        <input type="text" placeholder="0000 0000 0000 0000" className="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-xs font-bold outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Expiry Date</label>
+                          <input type="text" placeholder="MM/YY" className="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-xs font-bold outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all" />
+                        </div>
+                        <div>
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">CVV</label>
+                          <input type="text" placeholder="123" className="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-xs font-bold outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Cardholder Name</label>
+                        <input type="text" placeholder="John Doe" className="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-xs font-bold outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all" />
+                      </div>
+                    </div>
+                  )}
+
+                  {paymentMethod === 'Mobile Money' && (
+                    <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="flex gap-4 mb-4">
+                        <label className="flex-1 text-center cursor-pointer">
+                          <input type="radio" name="momo_provider" className="peer sr-only" defaultChecked />
+                          <div className="py-2 px-4 rounded-xl border-2 border-transparent peer-checked:border-yellow-400 peer-checked:bg-yellow-50 bg-white font-black text-[#000066] text-xs transition-all shadow-sm">MTN MoMo</div>
+                        </label>
+                        <label className="flex-1 text-center cursor-pointer">
+                          <input type="radio" name="momo_provider" className="peer sr-only" />
+                          <div className="py-2 px-4 rounded-xl border-2 border-transparent peer-checked:border-red-500 peer-checked:bg-red-50 bg-white font-black text-red-600 text-xs transition-all shadow-sm">Airtel Money</div>
+                        </label>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Mobile Number</label>
+                        <input type="tel" placeholder="07XX XXX XXX" className="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-xs font-bold outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all" />
+                        <p className="text-[10px] text-slate-400 font-semibold mt-2">A prompt will be sent to your phone to confirm the payment.</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {paymentMethod === 'Cash on Delivery' && (
+                    <div className="text-center py-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="mx-auto w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-3">
+                        <ShieldCheck size={24} />
+                      </div>
+                      <h4 className="text-sm font-black text-slate-900 mb-1">Pay at your doorstep</h4>
+                      <p className="text-xs text-slate-500 font-semibold">Please have the exact amount in cash when our courier arrives.</p>
+                    </div>
+                  )}
                 </div>
 
                 <button 
