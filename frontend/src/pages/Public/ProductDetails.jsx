@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { 
   Star, MessageCircle, ShoppingCart, ArrowLeft, 
   ShieldCheck, Truck, RefreshCw, Heart, Share2, Plus, Minus,
-  AlertCircle
+  AlertCircle, X
 } from 'lucide-react';
 import api from '../../services/api';
 import useCartStore from '../../store/cartStore';
@@ -17,6 +17,7 @@ const ProductDetails = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState('');
+  const [selectedPaymentInfo, setSelectedPaymentInfo] = useState(null);
   
   const { addToCart, loading: cartLoading } = useCartStore();
   const { userInfo } = useAuthStore();
@@ -201,22 +202,22 @@ const ProductDetails = () => {
                 <div className="mt-8 pt-6 border-t border-slate-100">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">Accepted Payment Procedures</p>
                   <div className="flex flex-wrap justify-center gap-3 mb-6">
-                    <div className="px-4 py-2 bg-white border border-slate-200 rounded-xl flex items-center space-x-1 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    <button onClick={() => setSelectedPaymentInfo('VISA')} className="px-4 py-2 bg-white border border-slate-200 rounded-xl flex items-center space-x-1 shadow-sm hover:shadow-md transition-shadow hover:scale-105">
                       <span className="text-sm font-black text-blue-900 italic tracking-tighter">VISA</span>
-                    </div>
-                    <div className="px-4 py-2 bg-white border border-slate-200 rounded-xl flex items-center space-x-1 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    </button>
+                    <button onClick={() => setSelectedPaymentInfo('Mastercard')} className="px-4 py-2 bg-white border border-slate-200 rounded-xl flex items-center space-x-1 shadow-sm hover:shadow-md transition-shadow hover:scale-105">
                       <div className="flex -space-x-1.5">
                         <div className="w-4 h-4 rounded-full bg-red-500 mix-blend-multiply"></div>
                         <div className="w-4 h-4 rounded-full bg-amber-500 mix-blend-multiply"></div>
                       </div>
                       <span className="text-xs font-black text-slate-800 ml-1.5">Mastercard</span>
-                    </div>
-                    <div className="px-4 py-2 bg-[#ffcc00] border border-[#e6b800] rounded-xl flex items-center shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    </button>
+                    <button onClick={() => setSelectedPaymentInfo('MTN MoMo')} className="px-4 py-2 bg-[#ffcc00] border border-[#e6b800] rounded-xl flex items-center shadow-sm hover:shadow-md transition-shadow hover:scale-105">
                       <span className="text-xs font-black text-[#000066] tracking-tight">MTN MoMo</span>
-                    </div>
-                    <div className="px-4 py-2 bg-[#ff0000] border border-[#cc0000] rounded-xl flex items-center shadow-sm hover:shadow-md transition-shadow cursor-default">
+                    </button>
+                    <button onClick={() => setSelectedPaymentInfo('Airtel Money')} className="px-4 py-2 bg-[#ff0000] border border-[#cc0000] rounded-xl flex items-center shadow-sm hover:shadow-md transition-shadow hover:scale-105">
                       <span className="text-xs font-black text-white tracking-tight">Airtel Money</span>
-                    </div>
+                    </button>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-4">
@@ -314,6 +315,66 @@ const ProductDetails = () => {
             </div>
           </div>
         </section>
+
+        {/* Payment Procedure Info Modal */}
+        {selectedPaymentInfo && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100">
+              <div className="bg-slate-50 p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-black text-slate-900 tracking-tight">Payment Procedure</h3>
+                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">{selectedPaymentInfo}</p>
+                </div>
+                <button 
+                  onClick={() => setSelectedPaymentInfo(null)}
+                  className="p-2 bg-white rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors shadow-sm border border-slate-100"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="p-8 space-y-6">
+                {(selectedPaymentInfo === 'VISA' || selectedPaymentInfo === 'Mastercard') && (
+                  <div className="space-y-4">
+                     <p className="text-sm font-semibold text-slate-600 leading-relaxed">
+                       To complete your purchase with your {selectedPaymentInfo} card, please add the item to your cart and proceed to checkout.
+                     </p>
+                     <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl flex items-start space-x-3 text-blue-800">
+                        <ShieldCheck size={20} className="flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs font-black uppercase tracking-wider">Bank-Grade Encryption</p>
+                          <p className="text-xs font-medium text-blue-700/80 mt-1">Your card details are fully encrypted and never stored on our servers.</p>
+                        </div>
+                     </div>
+                  </div>
+                )}
+                
+                {(selectedPaymentInfo === 'MTN MoMo' || selectedPaymentInfo === 'Airtel Money') && (
+                  <div className="space-y-4">
+                     <p className="text-sm font-semibold text-slate-600 leading-relaxed">
+                       Mobile Money payments are integrated directly into our secure checkout.
+                     </p>
+                     <ol className="list-decimal list-inside space-y-2 text-sm font-bold text-slate-800 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                       <li>Click <span className="text-orange-500">Add to Cart</span></li>
+                       <li>Proceed to Checkout</li>
+                       <li>Select <span className="text-orange-500">Mobile Money</span></li>
+                       <li>Enter your mobile number</li>
+                       <li>Approve the prompt on your phone</li>
+                     </ol>
+                  </div>
+                )}
+                
+                <button 
+                  onClick={() => setSelectedPaymentInfo(null)}
+                  className="w-full py-4 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20"
+                >
+                  Understood
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
