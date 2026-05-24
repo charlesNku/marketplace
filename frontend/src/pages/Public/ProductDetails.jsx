@@ -178,24 +178,58 @@ const ProductDetails = () => {
                     id="add-to-cart-btn"
                     disabled={product.stock === 0 || cartLoading || !userInfo}
                     onClick={() => addToCart(product._id, quantity)}
-                    className="flex-1 btn-primary py-4 text-xs font-black uppercase tracking-wider space-x-2 shadow-lg shadow-orange-500/20 flex items-center justify-center"
+                    className="flex-1 btn-primary py-4 text-xs font-black uppercase tracking-wider space-x-2 shadow-lg shadow-orange-500/20 flex items-center justify-center hover:scale-[1.02] transition-transform"
                   >
                     {cartLoading ? <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent" /> : <><ShoppingCart size={18} /><span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span></>}
                   </button>
                   
                   {userInfo && (
-                    <Link to={`/chat/${product.traderId?._id}/${product._id}`} className="btn-secondary py-4 px-8 text-xs font-black uppercase tracking-wider group flex items-center justify-center space-x-2">
-                      <MessageCircle size={18} className="text-orange-500 group-hover:rotate-12 transition-transform" />
-                      <span>Ask Seller</span>
+                    <Link to={`/chat/${product.traderId?._id}/${product._id}`} className="flex-1 bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 rounded-xl py-4 px-4 text-xs font-black uppercase tracking-wider group flex items-center justify-center space-x-2 transition-all hover:scale-[1.02]">
+                      <MessageCircle size={18} className="group-hover:rotate-12 transition-transform" />
+                      <span>Chat with Seller</span>
                     </Link>
                   )}
                 </div>
 
                 {!userInfo && (
                   <p className="text-xs text-center font-bold text-slate-400 pt-2">
-                    <Link to="/login" className="text-orange-500 hover:underline">Sign in</Link> to purchase this item
+                    <Link to="/login" className="text-orange-500 hover:underline">Sign in</Link> to purchase this item or chat with the seller
                   </p>
                 )}
+
+                {/* Secure Payment Procedures & Guarantees */}
+                <div className="mt-8 pt-6 border-t border-slate-100">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">Accepted Payment Procedures</p>
+                  <div className="flex flex-wrap justify-center gap-3 mb-6">
+                    <div className="px-4 py-2 bg-white border border-slate-200 rounded-xl flex items-center space-x-1 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                      <span className="text-sm font-black text-blue-900 italic tracking-tighter">VISA</span>
+                    </div>
+                    <div className="px-4 py-2 bg-white border border-slate-200 rounded-xl flex items-center space-x-1 shadow-sm hover:shadow-md transition-shadow cursor-default">
+                      <div className="flex -space-x-1.5">
+                        <div className="w-4 h-4 rounded-full bg-red-500 mix-blend-multiply"></div>
+                        <div className="w-4 h-4 rounded-full bg-amber-500 mix-blend-multiply"></div>
+                      </div>
+                      <span className="text-xs font-black text-slate-800 ml-1.5">Mastercard</span>
+                    </div>
+                    <div className="px-4 py-2 bg-[#ffcc00] border border-[#e6b800] rounded-xl flex items-center shadow-sm hover:shadow-md transition-shadow cursor-default">
+                      <span className="text-xs font-black text-[#000066] tracking-tight">MTN MoMo</span>
+                    </div>
+                    <div className="px-4 py-2 bg-[#ff0000] border border-[#cc0000] rounded-xl flex items-center shadow-sm hover:shadow-md transition-shadow cursor-default">
+                      <span className="text-xs font-black text-white tracking-tight">Airtel Money</span>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                     <div className="flex items-center space-x-3 p-3.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100">
+                        <ShieldCheck size={20} className="flex-shrink-0" />
+                        <span className="text-xs font-bold leading-tight">100% Secure & Encrypted</span>
+                     </div>
+                     <div className="flex items-center space-x-3 p-3.5 bg-blue-50 text-blue-700 rounded-xl border border-blue-100">
+                        <RefreshCw size={20} className="flex-shrink-0" />
+                        <span className="text-xs font-bold leading-tight">Easy Local Returns</span>
+                     </div>
+                  </div>
+                </div>
               </div>
             </div>
 
