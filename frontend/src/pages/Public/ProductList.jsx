@@ -192,7 +192,7 @@ const ProductList = () => {
                       <img 
                         src={product.image || `https://placehold.co/400x400/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`} 
                         alt={product.title} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${product.stock === 0 ? 'opacity-85 grayscale-[20%]' : ''}`}
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = `https://placehold.co/400x400/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
@@ -209,8 +209,8 @@ const ProductList = () => {
 
                       {/* Stock Status */}
                       {product.stock === 0 && (
-                        <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-10">
-                          <span className="bg-white/90 text-slate-900 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-xl shadow-lg">Out of Stock</span>
+                        <div className="absolute inset-0 bg-slate-950/15 flex items-center justify-center z-10">
+                          <span className="bg-white/95 text-slate-900 text-[10px] font-black uppercase tracking-widest px-3.5 py-1.5 rounded-xl shadow-md border border-slate-100">Out of Stock</span>
                         </div>
                       )}
                     </div>

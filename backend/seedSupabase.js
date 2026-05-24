@@ -9,7 +9,8 @@ const seedDb = async () => {
     await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000'); 
     
     console.log('Finding or creating trader account...');
-    let { data: trader } = await supabase.from('users').select('*').eq('role', 'trader').single();
+    let { data: existingUsers } = await supabase.from('users').select('*').eq('email', 'seller@marketplace.com');
+    let trader = existingUsers && existingUsers.length > 0 ? existingUsers[0] : null;
     if (!trader) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('Seller@123', salt);
@@ -21,7 +22,6 @@ const seedDb = async () => {
         .single();
       if (userError) {
         console.error("Failed to create trader:", userError);
-        // Fallback to a hardcoded admin/trader ID if you know one, or throw
         throw new Error("Could not create trader account");
       }
       trader = newTrader;
