@@ -16,8 +16,6 @@ const Navbar = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [langDropdown, setLangDropdown] = useState(false);
-  const [language, setLanguage] = useState('English');
 
   useEffect(() => {
     if (userInfo) fetchCart();
@@ -58,29 +56,10 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center space-x-6">
-          {/* Mock Language dropdown selector */}
-          <div className="relative">
-            <button 
-              onClick={() => setLangDropdown(!langDropdown)}
-              className="flex items-center space-x-1.5 hover:text-white/80 focus:outline-none transition-colors"
-            >
-              <Globe size={13} />
-              <span>{language}</span>
-              <ChevronDown size={11} />
-            </button>
-            {langDropdown && (
-              <div className="absolute right-0 mt-2 bg-white text-slate-800 rounded-xl shadow-2xl py-2 w-32 border border-slate-100 z-50 text-left font-semibold">
-                {['English', 'Ikinyarwanda', 'Français'].map((lang) => (
-                  <button 
-                    key={lang}
-                    onClick={() => { setLanguage(lang); setLangDropdown(false); }}
-                    className="w-full text-left px-4 py-2 hover:bg-slate-50 text-xs transition-colors"
-                  >
-                    {lang}
-                  </button>
-                ))}
-              </div>
-            )}
+          {/* Google Translate Widget Container */}
+          <div className="relative flex items-center">
+            <Globe size={13} className="mr-1.5 opacity-80" />
+            <div id="google_translate_element" className="h-[24px] overflow-hidden rounded-md bg-transparent"></div>
           </div>
 
           <div className="hidden md:flex items-center space-x-3 text-white/90">
