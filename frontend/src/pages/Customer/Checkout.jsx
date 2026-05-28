@@ -100,7 +100,7 @@ const Checkout = () => {
                       type="text" required 
                       className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 px-4 text-xs font-semibold focus:ring-2 focus:ring-orange-500 focus:bg-white focus:border-transparent outline-none transition-all placeholder:text-slate-400"
                       value={address} onChange={(e) => setAddress(e.target.value)}
-                      placeholder="123 MarketPro Avenue"
+                      placeholder="123 Kigali Avenue"
                     />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

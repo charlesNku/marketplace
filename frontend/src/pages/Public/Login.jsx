@@ -41,7 +41,7 @@ const Login = () => {
 
           <div className="relative z-10 text-right">
             <Link to="/" className="inline-flex items-center space-x-2 text-white hover:text-orange-400 transition-colors">
-              <span className="text-xl font-black tracking-tight">MarketPro</span>
+              <span className="text-xl font-black tracking-tight">Rwanda Digital Market</span>
               <ShoppingBag className="text-orange-500" size={28} />
             </Link>
           </div>
@@ -77,7 +77,7 @@ const Login = () => {
             
             <div className="mb-10 text-center lg:text-left">
               <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-3">Sign In</h2>
-              <p className="text-sm font-semibold text-slate-500">Welcome back to MarketPro.</p>
+              <p className="text-sm font-semibold text-slate-500">Welcome back to Rwanda Digital Market.</p>
             </div>
 
             {error && (
@@ -154,7 +154,7 @@ const Login = () => {
             </div>
             
             <p className="text-center mt-8 text-[10px] font-medium text-slate-400">
-              Your data is encrypted and protected by MarketPro.
+              Your data is encrypted and protected by Rwanda Digital Market.
             </p>
           </div>
         </div>

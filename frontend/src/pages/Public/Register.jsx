@@ -44,7 +44,7 @@ const Register = () => {
           <div className="relative z-10">
             <Link to="/" className="inline-flex items-center space-x-2 text-white hover:text-orange-400 transition-colors">
               <ShoppingBag className="text-orange-500" size={28} />
-              <span className="text-xl font-black tracking-tight">MarketPro</span>
+              <span className="text-xl font-black tracking-tight">Rwanda Digital Market</span>
             </Link>
           </div>
 

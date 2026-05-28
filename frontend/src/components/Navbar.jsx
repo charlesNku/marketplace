@@ -125,8 +125,8 @@ const Navbar = () => {
             <div className="bg-orange-500 p-2.5 rounded-2xl group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-orange-500/20">
               <ShoppingBag className="text-white" size={22} />
             </div>
-            <span className="text-2xl font-black tracking-tight text-slate-900">
-              MARKET<span className="text-orange-500 font-extrabold">PRO</span>
+            <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
+              RWANDA <span className="text-orange-500 font-extrabold">DIGITAL MARKET</span>
             </span>
           </Link>
 
@@ -260,7 +260,7 @@ const Navbar = () => {
               ) : (
                 <div className="flex flex-col space-y-3 pt-2">
                   <Link to="/login" onClick={() => setIsMenuOpen(false)} className="btn-secondary w-full text-center py-3 font-bold uppercase tracking-wider">Log In</Link>
-                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="btn-primary w-full text-center py-3 font-bold uppercase tracking-wider">Join MarketPro</Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="btn-primary w-full text-center py-3 font-bold uppercase tracking-wider">Join Rwanda Digital Market</Link>
                 </div>
               )}
             </div>
