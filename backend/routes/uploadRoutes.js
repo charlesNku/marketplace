@@ -45,8 +45,8 @@ router.post('/', protect, trader, upload.single('image'), (req, res) => {
     return res.status(400).json({ message: 'No file uploaded' });
   }
   
-  // Dynamic full URL based on protocol and host of incoming request
-  const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  // Use relative URL to work on both Vercel and local
+  const imageUrl = `/api/uploads/${req.file.filename}`;
   res.status(200).json({
     message: 'Image uploaded successfully',
     imageUrl
