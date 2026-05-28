@@ -16,6 +16,18 @@ const Navbar = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [langDropdown, setLangDropdown] = useState(false);
+  const [currentLang, setCurrentLang] = useState('English');
+
+  const handleTranslate = (langCode, langName) => {
+    setCurrentLang(langName);
+    setLangDropdown(false);
+    const select = document.querySelector('.goog-te-combo');
+    if (select) {
+      select.value = langCode;
+      select.dispatchEvent(new Event('change'));
+    }
+  };
 
   useEffect(() => {
     if (userInfo) fetchCart();
@@ -56,10 +68,44 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center space-x-6">
-          {/* Google Translate Widget Container */}
-          <div className="relative flex items-center">
-            <Globe size={13} className="mr-1.5 opacity-80" />
-            <div id="google_translate_element" className="h-[24px] overflow-hidden rounded-md bg-transparent"></div>
+          {/* Custom Language Selector */}
+          <div className="relative">
+            <button 
+              onClick={() => setLangDropdown(!langDropdown)}
+              className="flex items-center space-x-1.5 hover:text-white/80 focus:outline-none transition-colors"
+            >
+              <Globe size={13} />
+              <span>{currentLang}</span>
+              <ChevronDown size={11} />
+            </button>
+            
+            <div className={`absolute right-0 mt-2 bg-white text-slate-800 rounded-xl shadow-2xl p-2 w-48 border border-slate-100 z-50 text-left font-semibold ${langDropdown ? 'block' : 'hidden'}`}>
+              <button 
+                onClick={() => handleTranslate('en', 'English')}
+                className="w-full text-left px-3 py-2 hover:bg-slate-50 rounded-lg text-xs transition-colors"
+              >
+                English
+              </button>
+              <button 
+                onClick={() => handleTranslate('fr', 'Français')}
+                className="w-full text-left px-3 py-2 hover:bg-slate-50 rounded-lg text-xs transition-colors"
+              >
+                Français
+              </button>
+              <button 
+                onClick={() => handleTranslate('sw', 'Kiswahili')}
+                className="w-full text-left px-3 py-2 hover:bg-slate-50 rounded-lg text-xs transition-colors"
+              >
+                Kiswahili
+              </button>
+              <div className="h-px bg-slate-100 my-1"></div>
+              <div className="px-3 py-1.5 text-[10px] text-slate-400 uppercase tracking-wider font-black">
+                Any Language:
+              </div>
+              <div className="px-1 pb-1">
+                 <div id="google_translate_element" className="w-full overflow-hidden rounded-md"></div>
+              </div>
+            </div>
           </div>
 
           <div className="hidden md:flex items-center space-x-3 text-white/90">

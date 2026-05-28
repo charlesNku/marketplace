@@ -94,13 +94,19 @@ body {
 
 /* Google Translate Customization */
 #google_translate_element select {
-  background: transparent;
-  color: white;
-  border: none;
+  background: #f8fafc;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 8px 12px;
+  width: 100%;
   font-size: 11px;
   font-weight: 700;
   outline: none;
   cursor: pointer;
+}
+#google_translate_element select:hover {
+  background: #f1f5f9;
 }
 #google_translate_element select option {
   color: #1e293b;
