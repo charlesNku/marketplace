@@ -352,14 +352,16 @@ const ProductDetails = () => {
                 {(selectedPaymentInfo === 'MTN MoMo' || selectedPaymentInfo === 'Airtel Money') && (
                   <div className="space-y-4">
                      <p className="text-sm font-semibold text-slate-600 leading-relaxed">
-                       Mobile Money payments are integrated directly into our secure checkout.
+                       To complete your purchase via Mobile Money, please follow these steps to send the money:
                      </p>
-                     <ol className="list-decimal list-inside space-y-2 text-sm font-bold text-slate-800 bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                       <li>Click <span className="text-orange-500">Add to Cart</span></li>
-                       <li>Proceed to Checkout</li>
-                       <li>Select <span className="text-orange-500">Mobile Money</span></li>
-                       <li>Enter your mobile number</li>
-                       <li>Approve the prompt on your phone</li>
+                     <ol className="list-decimal list-inside space-y-3 text-sm font-bold text-slate-800 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                       <li>Dial <span className="text-orange-500 font-black">*182#</span> on your mobile phone</li>
+                       <li>Select <span className="text-orange-500 font-black">1</span> (Send Money)</li>
+                       <li>Select <span className="text-orange-500 font-black">1</span> (To MTN number)</li>
+                       <li>Enter our payment number: <span className="text-orange-500 font-black">0790087715</span></li>
+                       <li>Enter the total amount for your order</li>
+                       <li>Confirm the payment with your Mobile Money PIN</li>
+                       <li>Keep your transaction message and click <span className="text-orange-500">Add to Cart</span> to checkout</li>
                      </ol>
                   </div>
                 )}

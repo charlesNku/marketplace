@@ -39,7 +39,15 @@ const getMessages = async (req, res) => {
 
     if (error) throw error;
 
-    const mappedMessages = messages.map(m => ({ ...m, _id: m.id }));
+    const mappedMessages = messages.map(m => ({
+      ...m,
+      _id: m.id,
+      senderId: m.sender_id,
+      receiverId: m.receiver_id,
+      createdAt: m.created_at,
+      isRead: m.is_read,
+      conversationId: m.conversation_id,
+    }));
     res.json(mappedMessages);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -106,7 +114,17 @@ const sendMessage = async (req, res) => {
       io.to(receiverId).emit('new_notification', { ...notification, _id: notification.id });
     }
 
-    res.status(201).json({ ...message, _id: message.id });
+    const normalizedMessage = {
+      ...message,
+      _id: message.id,
+      senderId: message.sender_id,
+      receiverId: message.receiver_id,
+      createdAt: message.created_at,
+      isRead: message.is_read,
+      conversationId: message.conversation_id,
+    };
+
+    res.status(201).json(normalizedMessage);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

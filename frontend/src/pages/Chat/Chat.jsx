@@ -16,6 +16,18 @@ const Chat = () => {
   const [conversationId, setConversationId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
+  const [sendError, setSendError] = useState(null);
+  const [sending, setSending] = useState(false);
+
+  // Normalize Supabase snake_case message fields to camelCase
+  const normalizeMessage = (m) => ({
+    ...m,
+    _id: m.id || m._id,
+    senderId: m.sender_id || m.senderId,
+    receiverId: m.receiver_id || m.receiverId,
+    createdAt: m.created_at || m.createdAt,
+    isRead: m.is_read ?? m.isRead,
+  });
   
   const socketRef = useRef(null);
   const endOfMessagesRef = useRef(null);
@@ -45,7 +57,7 @@ const Chat = () => {
            targetConvId = existingConv._id;
            setConversationId(targetConvId);
            const { data: msgs } = await api.get(`/chat/messages/${targetConvId}`);
-           setMessages(msgs);
+           setMessages(msgs.map(normalizeMessage));
            
            api.put(`/chat/read/${targetConvId}`).catch(() => {});
         }
@@ -73,7 +85,7 @@ const Chat = () => {
             if (msgs.length > current.length) {
               // Mark as read when receiving new messages
               api.put(`/chat/read/${conversationId}`).catch(() => {});
-              return msgs;
+              return msgs.map(normalizeMessage);
             }
             return current;
           });
@@ -96,24 +108,33 @@ const Chat = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || sending) return;
+    setSendError(null);
+    setSending(true);
+    const textToSend = newMessage;
+    setNewMessage('');
 
     try {
       const { data: sentMessage } = await api.post('/chat/message', {
         receiverId,
         productId,
-        messageText: newMessage
+        messageText: textToSend
       });
 
+      const normalized = normalizeMessage(sentMessage);
+
       if (!conversationId) {
-        setConversationId(sentMessage.conversation_id || sentMessage.conversationId);
+        setConversationId(normalized.conversation_id || sentMessage.conversation_id);
       }
 
-      setMessages((prev) => [...prev, sentMessage]);
-      setNewMessage('');
+      setMessages((prev) => [...prev, normalized]);
 
     } catch (err) {
       console.error('Failed to send message', err);
+      setSendError(err.response?.data?.message || 'Failed to send. Please check your connection and try again.');
+      setNewMessage(textToSend); // Restore message on failure
+    } finally {
+      setSending(false);
     }
   };
 
@@ -251,6 +272,12 @@ const Chat = () => {
 
       {/* Premium Input Area */}
       <div className="bg-white/80 backdrop-blur-xl border-t border-slate-100 p-6 lg:p-8 z-20 flex flex-col">
+        {/* Send Error Banner */}
+        {sendError && (
+          <div className="mb-3 bg-rose-50 border border-rose-200 text-rose-600 text-xs font-bold rounded-xl px-4 py-3 text-center">
+            ⚠️ {sendError}
+          </div>
+        )}
         {messages.length > 0 && (
           <div className="flex space-x-2 mb-3 overflow-x-auto scrollbar-hide pb-1">
              <button onClick={() => setNewMessage('Yes, that works for me.')} className="whitespace-nowrap text-[10px] font-bold text-slate-600 bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 py-1.5 px-3 rounded-full transition-colors">Yes, that works</button>
@@ -264,14 +291,18 @@ const Chat = () => {
             className="w-full bg-slate-50 border-none rounded-[2rem] py-5 pl-8 pr-20 text-[15px] font-medium focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-inner outline-none placeholder:text-slate-400"
             placeholder="Compose your message..."
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) => { setNewMessage(e.target.value); setSendError(null); }}
+            onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(e); } }}
           />
           <button 
             type="submit" 
-            disabled={!newMessage.trim()}
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-indigo-600 text-white p-3.5 rounded-[1.2rem] hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg active:scale-90"
+            disabled={!newMessage.trim() || sending}
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-indigo-600 text-white p-3.5 rounded-[1.2rem] hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg active:scale-90 flex items-center justify-center"
           >
-            <Send size={20} className="translate-x-[-1px] translate-y-[1px]" />
+            {sending 
+              ? <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              : <Send size={20} className="translate-x-[-1px] translate-y-[1px]" />
+            }
           </button>
         </form>
         <p className="text-center mt-4 text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">

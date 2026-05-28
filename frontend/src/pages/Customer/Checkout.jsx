@@ -197,10 +197,21 @@ const Checkout = () => {
                           <div className="py-2 px-4 rounded-xl border-2 border-transparent peer-checked:border-red-500 peer-checked:bg-red-50 bg-white font-black text-red-600 text-xs transition-all shadow-sm">Airtel Money</div>
                         </label>
                       </div>
-                      <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Mobile Number</label>
-                        <input type="tel" placeholder="07XX XXX XXX" className="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-xs font-bold outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all" />
-                        <p className="text-[10px] text-slate-400 font-semibold mt-2">A prompt will be sent to your phone to confirm the payment.</p>
+                      <div className="bg-slate-50 border border-slate-200 p-5 rounded-2xl">
+                        <p className="text-sm font-bold text-slate-800 mb-3">Please follow these steps to send the money:</p>
+                        <ol className="list-decimal list-inside space-y-2 text-xs font-semibold text-slate-600">
+                           <li>Dial <span className="text-orange-500 font-black">*182#</span> on your mobile phone</li>
+                           <li>Select <span className="text-orange-500 font-black">1</span> (Send Money)</li>
+                           <li>Select <span className="text-orange-500 font-black">1</span> (To MTN number)</li>
+                           <li>Enter our payment number: <span className="text-orange-500 font-black">0790087715</span></li>
+                           <li>Enter your order total amount</li>
+                           <li>Confirm with your Mobile Money PIN</li>
+                        </ol>
+                        <div className="mt-4 border-t border-slate-200 pt-4">
+                          <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-2">Once sent, verify your payment below to continue:</p>
+                          <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Phone Number Used To Pay</label>
+                          <input type="tel" placeholder="07XX XXX XXX" required className="w-full bg-white border border-slate-200 rounded-xl py-3 px-4 text-xs font-bold outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all" />
+                        </div>
                       </div>
                     </div>
                   )}
