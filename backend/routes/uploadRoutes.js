@@ -1,15 +1,24 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { protect } = require('../middleware/authMiddleware');
 const { trader } = require('../middleware/roleMiddleware');
 
 const router = express.Router();
 
+// Ensure uploads directory exists
+const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
+const uploadDir = isVercel ? '/tmp' : path.join(__dirname, '../uploads');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // Configure storage
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    cb(null, uploadDir);
   },
   filename(req, file, cb) {
     cb(
