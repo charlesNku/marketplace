@@ -71,17 +71,17 @@ const ProductDetails = () => {
             
             {/* Left Media Gallery */}
             <div className="p-6 md:p-10 border-r border-slate-100 flex flex-col justify-between">
-              <div className="relative rounded-2xl overflow-hidden aspect-square bg-slate-50 border border-slate-100 group">
+              <div className="relative rounded-2xl overflow-hidden aspect-square bg-white flex items-center justify-center group">
                 <img 
-                  src={activeImage || product.image || `https://placehold.co/800x800/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`} 
+                  src={activeImage || product.image || `https://placehold.co/800x800/ffffff/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`} 
                   alt={product.title} 
-                  className="w-full h-full object-contain p-4 transition-transform duration-500"
+                  className="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = `https://placehold.co/800x800/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
+                    e.target.src = `https://placehold.co/800x800/ffffff/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
                   }}
                 />
-                <button className="absolute top-4 right-4 p-3 bg-white/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 transition-colors shadow-md">
+                <button className="absolute top-4 right-4 p-3 bg-white/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 transition-colors shadow-md border border-slate-100">
                   <Heart size={18} />
                 </button>
               </div>                {/* Thumbnail Previews with dynamic orange outline on active */}
@@ -91,7 +91,7 @@ const ProductDetails = () => {
                      <div 
                        key={i} 
                        onClick={() => setActiveImage(imgUrl.trim())}
-                       className={`relative flex-shrink-0 w-20 h-20 rounded-xl bg-slate-50 overflow-hidden border cursor-pointer transition-all ${
+                       className={`relative flex-shrink-0 w-20 h-20 rounded-xl bg-white overflow-hidden border cursor-pointer transition-all ${
                          activeImage === imgUrl.trim() ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-slate-200 hover:border-slate-300'
                        }`}
                      >
