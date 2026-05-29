@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { User, Mail, Lock, UserPlus, ShieldCheck, ArrowRight, LogIn, Briefcase, ShoppingBag, Sparkles, CheckCircle2 } from 'lucide-react';
+import { User, Mail, Lock, UserPlus, ShieldCheck, ArrowRight, LogIn, Briefcase, ShoppingBag, Sparkles, CheckCircle2, Store, TrendingUp, DollarSign, Package } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 
 const Register = () => {
@@ -13,7 +13,17 @@ const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const redirect = new URLSearchParams(location.search).get('redirect');
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get('redirect');
+  const urlRole = params.get('role');
+  const isSellerFlow = urlRole === 'trader';
+
+  // Auto-set role from URL param
+  useEffect(() => {
+    if (urlRole === 'trader' || urlRole === 'customer') {
+      setRole(urlRole);
+    }
+  }, [urlRole]);
 
   useEffect(() => {
     if (userInfo) {
@@ -61,29 +71,59 @@ const Register = () => {
               <span className="text-xs font-bold text-white tracking-widest uppercase">Premium Experience</span>
             </div>
             <h1 className="text-4xl xl:text-5xl font-black text-white leading-tight mb-6 tracking-tight">
-              Join the future <br/>of <span className="text-orange-500">shopping.</span>
+              {isSellerFlow ? (
+                <>Sell on <br/><span className="text-orange-500">Rwanda Digital Market.</span></>
+              ) : (
+                <>Join the future <br/>of <span className="text-orange-500">shopping.</span></>
+              )}
             </h1>
             <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm mb-10">
-              Discover verified quality products, exclusive vendors, and experience a seamless, secure local checkout.
+              {isSellerFlow 
+                ? 'Create your seller account and start listing products. Reach thousands of buyers across Rwanda with zero upfront costs.'
+                : 'Discover verified quality products, exclusive vendors, and experience a seamless, secure local checkout.'
+              }
             </p>
 
             <div className="space-y-4">
-              <div className="flex items-center space-x-3 text-slate-300">
-                <CheckCircle2 size={18} className="text-orange-500" />
-                <span className="text-sm font-semibold">Free shipping on premium orders</span>
-              </div>
-              <div className="flex items-center space-x-3 text-slate-300">
-                <CheckCircle2 size={18} className="text-orange-500" />
-                <span className="text-sm font-semibold">100% secure encrypted payments</span>
-              </div>
-              <div className="flex items-center space-x-3 text-slate-300">
-                <CheckCircle2 size={18} className="text-orange-500" />
-                <span className="text-sm font-semibold">Verified premium vendors only</span>
-              </div>
-              <div className="flex items-center space-x-3 text-slate-300">
-                <CheckCircle2 size={18} className="text-orange-500" />
-                <span className="text-sm font-semibold">Direct real-time chat with sellers</span>
-              </div>
+              {isSellerFlow ? (
+                <>
+                  <div className="flex items-center space-x-3 text-slate-300">
+                    <CheckCircle2 size={18} className="text-orange-500" />
+                    <span className="text-sm font-semibold">Zero registration fees</span>
+                  </div>
+                  <div className="flex items-center space-x-3 text-slate-300">
+                    <CheckCircle2 size={18} className="text-orange-500" />
+                    <span className="text-sm font-semibold">Powerful seller dashboard</span>
+                  </div>
+                  <div className="flex items-center space-x-3 text-slate-300">
+                    <CheckCircle2 size={18} className="text-orange-500" />
+                    <span className="text-sm font-semibold">Direct chat with your buyers</span>
+                  </div>
+                  <div className="flex items-center space-x-3 text-slate-300">
+                    <CheckCircle2 size={18} className="text-orange-500" />
+                    <span className="text-sm font-semibold">Secure Mobile Money payouts</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center space-x-3 text-slate-300">
+                    <CheckCircle2 size={18} className="text-orange-500" />
+                    <span className="text-sm font-semibold">Free shipping on premium orders</span>
+                  </div>
+                  <div className="flex items-center space-x-3 text-slate-300">
+                    <CheckCircle2 size={18} className="text-orange-500" />
+                    <span className="text-sm font-semibold">100% secure encrypted payments</span>
+                  </div>
+                  <div className="flex items-center space-x-3 text-slate-300">
+                    <CheckCircle2 size={18} className="text-orange-500" />
+                    <span className="text-sm font-semibold">Verified premium vendors only</span>
+                  </div>
+                  <div className="flex items-center space-x-3 text-slate-300">
+                    <CheckCircle2 size={18} className="text-orange-500" />
+                    <span className="text-sm font-semibold">Direct real-time chat with sellers</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -93,8 +133,15 @@ const Register = () => {
           <div className="max-w-md w-full mx-auto">
             
             <div className="mb-10 text-center lg:text-left">
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-3">Create Account</h2>
-              <p className="text-sm font-semibold text-slate-500">Join thousands of shoppers and sellers today.</p>
+              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-3">
+                Create Account
+              </h2>
+              <p className="text-sm font-semibold text-slate-500">
+                {isSellerFlow 
+                  ? 'Register as a vendor to list and sell your products today.' 
+                  : 'Join thousands of shoppers and sellers today.'
+                }
+              </p>
             </div>
 
             {error && (
@@ -157,44 +204,6 @@ const Register = () => {
                 <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 peer-focus:text-orange-500 transition-colors pointer-events-none" size={18} />
               </div>
 
-              <div className="pt-2">
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Choose Your Account Type</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <button 
-                    type="button"
-                    onClick={() => setRole('customer')}
-                    className={`relative flex flex-col items-center p-5 rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
-                      role === 'customer' 
-                        ? 'border-orange-500 bg-orange-50 shadow-lg shadow-orange-500/10' 
-                        : 'border-slate-100 bg-white hover:border-slate-300 hover:bg-slate-50'
-                    }`}
-                  >
-                    {role === 'customer' && <div className="absolute inset-0 bg-orange-500/5 animate-pulse"></div>}
-                    <div className={`p-3 rounded-full mb-3 relative z-10 transition-colors ${role === 'customer' ? 'bg-orange-100 text-orange-500' : 'bg-slate-100 text-slate-400'}`}>
-                      <ShoppingBag size={22} />
-                    </div>
-                    <span className={`text-xs font-black uppercase tracking-widest relative z-10 ${role === 'customer' ? 'text-orange-600' : 'text-slate-600'}`}>Shopper</span>
-                    <span className="text-[10px] font-semibold text-slate-500 mt-1 relative z-10">Browse & Buy</span>
-                  </button>
-
-                  <button 
-                    type="button"
-                    onClick={() => setRole('trader')}
-                    className={`relative flex flex-col items-center p-5 rounded-2xl border-2 transition-all duration-300 overflow-hidden ${
-                      role === 'trader' 
-                        ? 'border-indigo-500 bg-indigo-50 shadow-lg shadow-indigo-500/10' 
-                        : 'border-slate-100 bg-white hover:border-slate-300 hover:bg-slate-50'
-                    }`}
-                  >
-                    {role === 'trader' && <div className="absolute inset-0 bg-indigo-500/5 animate-pulse"></div>}
-                    <div className={`p-3 rounded-full mb-3 relative z-10 transition-colors ${role === 'trader' ? 'bg-indigo-100 text-indigo-500' : 'bg-slate-100 text-slate-400'}`}>
-                      <Briefcase size={22} />
-                    </div>
-                    <span className={`text-xs font-black uppercase tracking-widest relative z-10 ${role === 'trader' ? 'text-indigo-600' : 'text-slate-600'}`}>Vendor</span>
-                    <span className="text-[10px] font-semibold text-slate-500 mt-1 relative z-10">List & Earn</span>
-                  </button>
-                </div>
-              </div>
 
               <button 
                 type="submit" 

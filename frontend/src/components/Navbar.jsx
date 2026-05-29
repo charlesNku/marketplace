@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   ShoppingBag, User, LogOut, Menu, X, Search, 
   ShoppingCart, Heart, MessageSquare, ChevronDown,
-  Phone, Globe, Smartphone, Facebook, Instagram, Twitter, Youtube
+  Phone, Globe, Smartphone, Facebook, Instagram, Twitter, Youtube,
+  Store, PlusCircle
 } from 'lucide-react';
 import useAuthStore from '../store/authStore';
 import useCartStore from '../store/cartStore';
@@ -50,6 +51,17 @@ const Navbar = () => {
   } else if (userInfo?.role === 'trader') {
     navLinks.push({ name: 'Seller Hub', path: '/trader/dashboard' });
   }
+
+  // Determine sell button destination based on auth state
+  const getSellLink = () => {
+    if (!userInfo) return '/register?redirect=/trader/dashboard&role=trader';
+    if (userInfo.role === 'trader') return '/trader/dashboard';
+    return '/register?redirect=/trader/dashboard&role=trader';
+  };
+  const getSellLabel = () => {
+    if (userInfo?.role === 'trader') return 'Seller Hub';
+    return 'Start Selling';
+  };
 
   return (
     <div className="w-full z-50 fixed top-0 flex flex-col shadow-sm">
@@ -146,6 +158,16 @@ const Navbar = () => {
                 }`} />
               </Link>
             ))}
+            {/* Sell Button — always visible in desktop nav */}
+            {userInfo?.role !== 'admin' && (
+              <Link 
+                to={getSellLink()} 
+                className="relative py-2.5 px-5 text-xs font-black uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 flex items-center space-x-2 group"
+              >
+                <Store size={15} className="group-hover:rotate-12 transition-transform" />
+                <span>{getSellLabel()}</span>
+              </Link>
+            )}
           </div>
 
           {/* Search Bar */}
@@ -239,6 +261,17 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+              {/* Mobile Sell Button */}
+              {userInfo?.role !== 'admin' && (
+                <Link 
+                  to={getSellLink()} 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center space-x-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-5 py-4 rounded-2xl font-black uppercase tracking-wider text-sm shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all"
+                >
+                  <Store size={20} />
+                  <span>{getSellLabel()}</span>
+                </Link>
+              )}
             
             <div className="pt-4 border-t border-slate-100 flex flex-col space-y-4">
               <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-slate-600 font-bold hover:text-orange-500 transition-colors">
