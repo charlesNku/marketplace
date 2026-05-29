@@ -21,8 +21,10 @@ app.use(express.json());
 
 // Serve static uploads
 const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
-const uploadDir = isVercel ? '/tmp' : path.join(__dirname, 'uploads');
-app.use('/api/uploads', express.static(uploadDir));
+if (isVercel) {
+  app.use('/api/uploads', express.static('/tmp'));
+}
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 const authRoutes = require('./routes/authRoutes.js');
