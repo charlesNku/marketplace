@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, LogIn, ShieldCheck, ArrowRight, UserPlus, ShoppingBag, Sparkles, CheckCircle2 } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 
@@ -9,14 +9,21 @@ const Login = () => {
   
   const { login, userInfo, error, loading } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirect = new URLSearchParams(location.search).get('redirect');
 
   useEffect(() => {
     if (userInfo) {
-      if (userInfo.role === 'admin') navigate('/admin/dashboard');
-      else if (userInfo.role === 'trader') navigate('/trader/dashboard');
-      else navigate('/');
+      if (redirect) {
+        navigate(redirect);
+      } else {
+        if (userInfo.role === 'admin') navigate('/admin/dashboard');
+        else if (userInfo.role === 'trader') navigate('/trader/dashboard');
+        else navigate('/');
+      }
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, navigate, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -147,7 +154,7 @@ const Login = () => {
             <div className="mt-10 pt-8 border-t border-slate-100 text-center">
               <p className="text-sm font-semibold text-slate-500">
                 Don't have an account?{' '}
-                <Link to="/register" className="font-black text-orange-500 hover:text-orange-600 transition-colors ml-1 inline-flex items-center">
+                <Link to={redirect ? `/register?redirect=${redirect}` : '/register'} className="font-black text-orange-500 hover:text-orange-600 transition-colors ml-1 inline-flex items-center">
                   Create one <UserPlus size={14} className="ml-1" />
                 </Link>
               </p>

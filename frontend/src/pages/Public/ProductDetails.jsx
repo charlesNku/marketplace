@@ -84,30 +84,35 @@ const ProductDetails = () => {
                 <button className="absolute top-4 right-4 p-3 bg-white/90 backdrop-blur-md rounded-full text-slate-400 hover:text-rose-500 transition-colors shadow-md">
                   <Heart size={18} />
                 </button>
-              </div>
-
-              {/* Thumbnail Previews with dynamic orange outline on active */}
-              <div className="grid grid-cols-4 gap-4 mt-6">
-                 {[product.image, product.image, product.image, product.image].map((imgUrl, i) => (
-                   <div 
-                     key={i} 
-                     onClick={() => setActiveImage(imgUrl)}
-                     className={`aspect-square rounded-xl bg-slate-50 overflow-hidden border cursor-pointer transition-all ${
-                       activeImage === imgUrl ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-slate-200 hover:border-slate-300'
-                     }`}
-                   >
-                     <img
-                       src={imgUrl || `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`}
-                       alt=""
-                       className="w-full h-full object-cover"
-                       onError={(e) => {
-                         e.target.onerror = null;
-                         e.target.src = `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
-                       }}
-                     />
-                   </div>
-                 ))}
-              </div>
+              </div>                {/* Thumbnail Previews with dynamic orange outline on active */}
+              {product.image && product.image.split(',').length > 1 && (
+                <div className="flex gap-4 mt-6 overflow-x-auto pb-2">
+                   {product.image.split(',').map((imgUrl, i) => (
+                     <div 
+                       key={i} 
+                       onClick={() => setActiveImage(imgUrl.trim())}
+                       className={`relative flex-shrink-0 w-20 h-20 rounded-xl bg-slate-50 overflow-hidden border cursor-pointer transition-all ${
+                         activeImage === imgUrl.trim() ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-slate-200 hover:border-slate-300'
+                       }`}
+                     >
+                       <img
+                         src={imgUrl.trim() || `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`}
+                         alt={`View ${i + 1}`}
+                         className="w-full h-full object-cover"
+                         onError={(e) => {
+                           e.target.onerror = null;
+                           e.target.src = `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
+                         }}
+                       />
+                       <div className={`absolute top-1 left-1 h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                          activeImage === imgUrl.trim() ? 'bg-orange-500 text-white' : 'bg-slate-900/50 text-white backdrop-blur-sm'
+                       }`}>
+                          {i + 1}
+                       </div>
+                     </div>
+                   ))}
+                </div>
+              )}
             </div>
             
             {/* Right Details Panel */}
@@ -169,34 +174,42 @@ const ProductDetails = () => {
                     <button onClick={() => setQuantity(q => Math.min(product.stock, q + 1))} className="p-2 hover:bg-white rounded-xl transition-all text-slate-600 active:scale-95 shadow-sm"><Plus size={15} /></button>
                   </div>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                    {product.stock > 10 ? <span className="text-emerald-600">â— In Stock</span> : <span className="text-amber-500">â— Low stock limit</span>}
+                    {product.stock > 10 ? <span className="text-emerald-600">● In Stock</span> : <span className="text-amber-500">● Low stock limit</span>}
                   </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
                   {/* Solid Orange Add to Cart Button */}
-                  <button 
-                    id="add-to-cart-btn"
-                    disabled={product.stock === 0 || cartLoading || !userInfo}
-                    onClick={() => addToCart(product._id, quantity)}
-                    className="flex-1 btn-primary py-4 text-xs font-black uppercase tracking-wider space-x-2 shadow-lg shadow-orange-500/20 flex items-center justify-center hover:scale-[1.02] transition-transform"
-                  >
-                    {cartLoading ? <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent" /> : <><ShoppingCart size={18} /><span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span></>}
-                  </button>
+                  {userInfo ? (
+                    <button 
+                      id="add-to-cart-btn"
+                      disabled={product.stock === 0 || cartLoading}
+                      onClick={() => addToCart(product._id, quantity)}
+                      className="flex-1 btn-primary py-4 text-xs font-black uppercase tracking-wider space-x-2 shadow-lg shadow-orange-500/20 flex items-center justify-center hover:scale-[1.02] transition-transform"
+                    >
+                      {cartLoading ? <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent" /> : <><ShoppingCart size={18} /><span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span></>}
+                    </button>
+                  ) : (
+                    <Link 
+                      to={`/register?redirect=/product/${product._id}`}
+                      className="flex-1 btn-primary py-4 text-xs font-black uppercase tracking-wider space-x-2 shadow-lg shadow-orange-500/20 flex items-center justify-center hover:scale-[1.02] transition-transform"
+                    >
+                      <ShoppingCart size={18} /><span>Sign in to Buy</span>
+                    </Link>
+                  )}
                   
-                  {userInfo && (
+                  {userInfo ? (
                     <Link to={`/chat/${product.traderId?._id}/${product._id}`} className="flex-1 bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 rounded-xl py-4 px-4 text-xs font-black uppercase tracking-wider group flex items-center justify-center space-x-2 transition-all hover:scale-[1.02]">
                       <MessageCircle size={18} className="group-hover:rotate-12 transition-transform" />
                       <span>Chat with Seller</span>
                     </Link>
+                  ) : (
+                    <Link to={`/register?redirect=/product/${product._id}`} className="flex-1 bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 rounded-xl py-4 px-4 text-xs font-black uppercase tracking-wider group flex items-center justify-center space-x-2 transition-all hover:scale-[1.02]">
+                      <MessageCircle size={18} className="group-hover:rotate-12 transition-transform" />
+                      <span>Chat with Seller</span>
+                    </Link>
                   )}
-                </div>
-
-                {!userInfo && (
-                  <p className="text-xs text-center font-bold text-slate-400 pt-2">
-                    <Link to="/login" className="text-orange-500 hover:underline">Sign in</Link> to purchase this item or chat with the seller
-                  </p>
-                )}
+                </div>          )}
 
                 {/* Secure Payment Procedures & Guarantees */}
                 <div className="mt-8 pt-6 border-t border-slate-100">

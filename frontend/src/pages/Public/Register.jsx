@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { User, Mail, Lock, UserPlus, ShieldCheck, ArrowRight, LogIn, Briefcase, ShoppingBag, Sparkles, CheckCircle2 } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 
@@ -11,14 +11,21 @@ const Register = () => {
   
   const { register, userInfo, error, loading } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const redirect = new URLSearchParams(location.search).get('redirect');
 
   useEffect(() => {
     if (userInfo) {
-      if (userInfo.role === 'admin') navigate('/admin/dashboard');
-      else if (userInfo.role === 'trader') navigate('/trader/dashboard');
-      else navigate('/');
+      if (redirect) {
+        navigate(redirect);
+      } else {
+        if (userInfo.role === 'admin') navigate('/admin/dashboard');
+        else if (userInfo.role === 'trader') navigate('/trader/dashboard');
+        else navigate('/');
+      }
     }
-  }, [userInfo, navigate]);
+  }, [userInfo, navigate, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -208,7 +215,7 @@ const Register = () => {
             <div className="mt-10 pt-8 border-t border-slate-100 text-center">
               <p className="text-sm font-semibold text-slate-500">
                 Already have an account?{' '}
-                <Link to="/login" className="font-black text-orange-500 hover:text-orange-600 transition-colors ml-1 inline-flex items-center">
+                <Link to={redirect ? `/login?redirect=${redirect}` : '/login'} className="font-black text-orange-500 hover:text-orange-600 transition-colors ml-1 inline-flex items-center">
                   Sign in <LogIn size={14} className="ml-1" />
                 </Link>
               </p>
