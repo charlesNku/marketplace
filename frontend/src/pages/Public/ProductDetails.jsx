@@ -209,7 +209,7 @@ const ProductDetails = () => {
                       <span>Chat with Seller</span>
                     </Link>
                   )}
-                </div>          )}
+                </div>
 
                 {/* Secure Payment Procedures & Guarantees */}
                 <div className="mt-8 pt-6 border-t border-slate-100">
