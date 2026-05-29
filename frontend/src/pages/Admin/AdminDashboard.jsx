@@ -147,7 +147,7 @@ const AdminDashboard = () => {
       setShowEditModal(false);
       showNotif('Product updated successfully!');
     } catch (err) {
-      showNotif('Failed to update product.', 'error');
+      showNotif(err.response?.data?.message || 'Failed to update product.', 'error');
     } finally {
       setActionLoading(false);
     }
@@ -163,7 +163,7 @@ const AdminDashboard = () => {
       setNewProduct({ title: '', price: '', description: '', category: '', stock: '', image: '' });
       showNotif('Product added successfully!');
     } catch (err) {
-      showNotif('Failed to add product.', 'error');
+      showNotif(err.response?.data?.message || 'Failed to add product.', 'error');
     } finally {
       setActionLoading(false);
     }

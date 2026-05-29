@@ -98,11 +98,11 @@ const createProduct = async (req, res) => {
       .insert([{
         trader_id: req.user.id,
         title: title || 'Sample title',
-        price: price || 0,
+        price: Number(price) || 0,
         description: description || 'Sample description',
         image: image || '/images/sample.jpg',
         category: category || 'Uncategorized',
-        stock: stock || 0
+        stock: Number(stock) || 0
       }])
       .select()
       .single();
@@ -139,11 +139,11 @@ const updateProduct = async (req, res) => {
       .from('products')
       .update({
         title: title || undefined,
-        price: price || undefined,
+        price: price !== undefined && price !== '' ? Number(price) : undefined,
         description: description || undefined,
         image: image || undefined,
         category: category || undefined,
-        stock: stock || undefined
+        stock: stock !== undefined && stock !== '' ? Number(stock) : undefined
       })
       .eq('id', req.params.id)
       .select()
