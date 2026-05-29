@@ -158,6 +158,13 @@ const Login = () => {
                   Create one <UserPlus size={14} className="ml-1" />
                 </Link>
               </p>
+              {redirect && (
+                <p className="mt-4">
+                  <Link to={redirect} className="text-xs font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest transition-colors border-b border-slate-300 pb-0.5">
+                    Cancel & Return to Product
+                  </Link>
+                </p>
+              )}
             </div>
             
             <p className="text-center mt-8 text-[10px] font-medium text-slate-400">
