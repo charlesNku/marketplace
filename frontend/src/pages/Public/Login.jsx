@@ -36,49 +36,49 @@ const Login = () => {
       <div className="absolute top-[-10%] left-[-5%] w-[40vw] h-[40vw] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] bg-amber-400/10 rounded-full blur-[100px] pointer-events-none"></div>
 
-      <div className="w-full max-w-6xl bg-white rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl shadow-slate-200/50 flex flex-row-reverse overflow-hidden relative z-10 border border-slate-100 min-h-[700px]">
+      <div className="w-full max-w-6xl bg-white rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl shadow-slate-200/50 flex overflow-hidden relative z-10 border border-slate-100 min-h-[700px]">
         
-        {/* Right Marketing Panel (Hidden on Mobile) */}
+        {/* Left Marketing Panel (Hidden on Mobile) */}
         <div className="hidden lg:flex w-5/12 bg-slate-900 relative flex-col justify-between p-12 overflow-hidden">
           <div className="absolute inset-0 pointer-events-none z-0">
-             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-bl from-orange-500/20 to-transparent"></div>
+             <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-orange-500/20 to-transparent"></div>
              <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Login" className="w-full h-full object-cover opacity-20 mix-blend-luminosity" />
              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
           </div>
 
-          <div className="relative z-10 text-right">
+          <div className="relative z-10">
             <Link to="/" className="inline-flex items-center space-x-2 text-white hover:text-orange-400 transition-colors">
-              <span className="text-xl font-black tracking-tight">Rwanda Digital Market</span>
               <ShoppingBag className="text-orange-500" size={28} />
+              <span className="text-xl font-black tracking-tight">Rwanda Digital Market</span>
             </Link>
           </div>
 
-          <div className="relative z-10 mt-auto mb-8 text-right">
+          <div className="relative z-10 mt-auto mb-8">
             <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 mb-6">
-              <span className="text-xs font-bold text-white tracking-widest uppercase">Welcome Back</span>
               <Sparkles className="text-amber-400" size={14} />
+              <span className="text-xs font-bold text-white tracking-widest uppercase">Welcome Back</span>
             </div>
             <h1 className="text-4xl xl:text-5xl font-black text-white leading-tight mb-6 tracking-tight">
               Ready to <br/><span className="text-orange-500">resume</span> shopping?
             </h1>
-            <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm ml-auto mb-10">
+            <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm mb-10">
               Access your personalized dashboard, track your orders, and explore the latest premium drops.
             </p>
 
-            <div className="space-y-4 flex flex-col items-end">
+            <div className="space-y-4">
               <div className="flex items-center space-x-3 text-slate-300">
-                <span className="text-sm font-semibold">Fast, 1-click checkout</span>
                 <CheckCircle2 size={18} className="text-orange-500" />
+                <span className="text-sm font-semibold">Fast, 1-click checkout</span>
               </div>
               <div className="flex items-center space-x-3 text-slate-300">
-                <span className="text-sm font-semibold">Track your delivery in real-time</span>
                 <CheckCircle2 size={18} className="text-orange-500" />
+                <span className="text-sm font-semibold">Track your delivery in real-time</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Left Form Panel */}
+        {/* Right Form Panel */}
         <div className="w-full lg:w-7/12 p-8 sm:p-14 lg:p-16 flex flex-col justify-center bg-white">
           <div className="max-w-md w-full mx-auto">
             
