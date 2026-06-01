@@ -359,8 +359,8 @@ const Messages = () => {
                       <div className="flex flex-col max-w-[85%] lg:max-w-[70%]">
                         <div className={`rounded-2xl px-4 lg:px-5 py-2.5 lg:py-3 shadow-sm ${
                           isMe 
-                            ? 'bg-[#E0F2FE] border border-[#BAE6FD] text-[#0369A1] rounded-tr-sm' 
-                            : 'bg-white border border-slate-100 text-slate-800 rounded-tl-sm'
+                            ? 'bg-white border border-slate-200 text-slate-800 rounded-tr-sm' 
+                            : 'bg-slate-100 border border-slate-200 text-slate-800 rounded-tl-sm'
                         }`}>
                           <p className="text-[14px] lg:text-[15px] font-medium leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
                           <div className={`flex items-center space-x-1.5 mt-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
@@ -368,12 +368,8 @@ const Messages = () => {
                               {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                             </span>
                             {isMe && (
-                              <span className="flex items-center">
-                                {msg.isRead ? (
-                                  <CheckCheck size={12} className="text-sky-500" />
-                                ) : (
-                                  <Check size={12} className="text-slate-400" />
-                                )}
+                              <span className="flex items-center ml-1">
+                                <CheckCheck size={14} className={msg.isRead ? "text-blue-500" : "text-slate-400"} />
                               </span>
                             )}
                           </div>
