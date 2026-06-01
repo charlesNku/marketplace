@@ -18,3 +18,4 @@ yarn-error.log*
 
 # Uploaded files
 !backend/uploads/.gitkeep
+backend/data/*.json
