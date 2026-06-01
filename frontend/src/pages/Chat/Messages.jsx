@@ -216,7 +216,7 @@ const Messages = () => {
   return (
     <div className="flex bg-slate-50 h-[calc(100vh-130px)] lg:h-[calc(100vh-160px)] pt-[104px] overflow-hidden max-w-[1600px] mx-auto w-full">
       {/* Sidebar: Conversations List */}
-      <div className={`${activeConversation && window.innerWidth < 1024 ? 'hidden' : 'flex'} flex-col w-full lg:w-[400px] border-r border-slate-200 bg-white h-full z-10`}>
+      <div className={`${activeConversation ? 'hidden lg:flex' : 'flex'} flex-col w-full lg:w-[400px] border-r border-slate-200 bg-white h-full z-10`}>
         <div className="p-4 lg:p-6 border-b border-slate-100 flex flex-col gap-4">
           <div className="flex justify-between items-center">
              <h2 className="text-2xl font-black text-slate-900 tracking-tight">Messages</h2>
@@ -279,7 +279,7 @@ const Messages = () => {
       </div>
 
       {/* Main Area: Active Chat */}
-      <div className={`${!activeConversation && window.innerWidth < 1024 ? 'hidden' : 'flex'} flex-1 flex-col h-full bg-[#F4F6F8] relative overflow-hidden`}>
+      <div className={`${!activeConversation ? 'hidden lg:flex' : 'flex'} flex-1 flex-col h-full bg-[#F4F6F8] relative overflow-hidden`}>
         {activeConversation ? (
           <>
             {/* Chat Header */}
