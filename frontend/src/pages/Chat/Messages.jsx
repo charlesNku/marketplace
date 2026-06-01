@@ -359,12 +359,18 @@ const Messages = () => {
                       <div className="flex flex-col max-w-[85%] lg:max-w-[70%]">
                         <div className={`rounded-2xl px-4 lg:px-5 py-2.5 lg:py-3 shadow-sm ${
                           isMe 
-                            ? 'bg-white border border-slate-200 text-slate-800 rounded-tr-sm' 
-                            : 'bg-slate-100 border border-slate-200 text-slate-800 rounded-tl-sm'
+                            ? 'bg-[#dcf8c6] border border-[#cfebba] text-slate-800 rounded-tr-sm' 
+                            : 'bg-white border border-slate-100 text-slate-800 rounded-tl-sm'
                         }`}>
+                          <div className={`text-[10px] font-black mb-1 uppercase tracking-widest ${isMe ? 'text-emerald-700 text-right' : 'text-indigo-500 text-left'}`}>
+                            {isMe 
+                               ? `${userInfo?.role || 'Customer'} (You)` 
+                               : activeConversation?.participants?.find(p => p._id === msg.senderId)?.role || 'Customer'
+                            }
+                          </div>
                           <p className="text-[14px] lg:text-[15px] font-medium leading-relaxed whitespace-pre-wrap break-words">{msg.message}</p>
                           <div className={`flex items-center space-x-1.5 mt-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
-                            <span className="text-[9px] font-bold text-slate-400 uppercase">
+                            <span className="text-[9px] font-bold text-slate-500 uppercase">
                               {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                             </span>
                             {isMe && (
