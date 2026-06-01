@@ -1,4 +1,7 @@
 const supabase = require('../config/supabaseClient');
+const path = require('path');
+
+const DATA_FILE = path.join(require('os').tmpdir(), 'chats.json');
 
 // GET /api/chat/conversations
 const getConversations = async (req, res) => {
