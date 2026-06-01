@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { 
   Package, DollarSign, List, Edit, Trash2, 
   TrendingUp, Users, ShoppingBag, Plus, MoreVertical,
-  Search, ExternalLink, X
+  Search, ExternalLink, X, MessageSquare
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
@@ -119,6 +119,10 @@ const TraderDashboard = () => {
             <p className="text-slate-500 mt-2 font-medium italic">Welcome back, {userInfo?.name?.split(' ')[0]}. Here's your store's performance at a glance.</p>
           </div>
           <div className="flex items-center space-x-4">
+             <Link to="/messages" className="bg-white text-slate-700 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 font-bold py-4 px-6 rounded-2xl transition-all shadow-sm flex items-center space-x-2">
+                <MessageSquare size={18} />
+                <span>Customer Inquiries</span>
+             </Link>
              <button onClick={() => handleOpenModal()} className="btn-primary py-4 px-8 inline-flex items-center space-x-2">
                 <Plus size={18} />
                 <span>List New Product</span>
