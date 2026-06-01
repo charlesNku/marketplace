@@ -214,7 +214,7 @@ const Messages = () => {
   });
 
   return (
-    <div className="flex bg-slate-50 h-[calc(100vh-130px)] lg:h-[calc(100vh-160px)] pt-[104px] overflow-hidden max-w-[1600px] mx-auto w-full">
+    <div className="flex bg-slate-50 h-[100dvh] pt-[104px] overflow-hidden max-w-[1600px] mx-auto w-full">
       {/* Sidebar: Conversations List */}
       <div className={`${activeConversation ? 'hidden lg:flex' : 'flex'} flex-col w-full lg:w-[400px] border-r border-slate-200 bg-white h-full z-10`}>
         <div className="p-4 lg:p-6 border-b border-slate-100 flex flex-col gap-4">
