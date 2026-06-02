@@ -61,7 +61,7 @@ app.get('/', (req, res) => {
 // Socket.io
 io.on('connection', (socket) => {
   console.log('User connected socket ID:', socket.id);
-  
+
   socket.on('join_conversation', (conversationId) => {
     socket.join(conversationId);
     console.log(`User joined conversation: ${conversationId}`);
@@ -76,8 +76,12 @@ io.on('connection', (socket) => {
     io.to(data.conversationId).emit('receive_message', data);
   });
 
-  socket.on('messages_read', (data) => {
-    io.to(data.conversationId).emit('messages_read', data);
+  socket.on('typing', (data) => {
+    socket.to(data.conversationId).emit('user_typing', { userId: data.userId, conversationId: data.conversationId });
+  });
+
+  socket.on('stop_typing', (data) => {
+    socket.to(data.conversationId).emit('user_stop_typing', { userId: data.userId, conversationId: data.conversationId });
   });
 
   socket.on('disconnect', () => {

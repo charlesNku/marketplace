@@ -80,7 +80,7 @@ const sendMessage = async (req, res) => {
         }])
         .select()
         .single();
-      
+
       if (convError) throw convError;
       conversation = newConv;
     } else {
@@ -112,11 +112,6 @@ const sendMessage = async (req, res) => {
       .select()
       .single();
 
-    const io = req.app.get('socketio');
-    if (io && notification) {
-      io.to(receiverId).emit('new_notification', { ...notification, _id: notification.id });
-    }
-
     const normalizedMessage = {
       ...message,
       _id: message.id,
@@ -126,6 +121,15 @@ const sendMessage = async (req, res) => {
       isRead: message.is_read,
       conversationId: message.conversation_id,
     };
+
+    const io = req.app.get('socketio');
+    if (io) {
+      if (notification) {
+        io.to(receiverId).emit('new_notification', { ...notification, _id: notification.id });
+      }
+      // Emit the message to both sender and receiver rooms (or conversation room)
+      io.to(conversation.id).to(req.user.id).to(receiverId).emit('receive_message', normalizedMessage);
+    }
 
     res.status(201).json(normalizedMessage);
   } catch (error) {
