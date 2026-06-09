@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { 
-  Star, MessageCircle, ShoppingCart, ArrowLeft, 
+import {
+  Star, MessageCircle, ShoppingCart, ArrowLeft,
   ShieldCheck, Truck, RefreshCw, Heart, Share2, Plus, Minus,
   AlertCircle, X
 } from 'lucide-react';
 import api from '../../services/api';
+import { getImageUrl } from '../../utils/urlHelper';
 import useCartStore from '../../store/cartStore';
 import useAuthStore from '../../store/authStore';
 
@@ -18,26 +19,26 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState('');
   const [selectedPaymentInfo, setSelectedPaymentInfo] = useState(null);
-  
+
   const { addToCart, loading: cartLoading } = useCartStore();
   const { userInfo } = useAuthStore();
 
   useEffect(() => {
     const fetchProductDetails = async () => {
-       try {
-         const { data: productData } = await api.get(`/products/${id}`);
-         setProduct(productData);
-         setActiveImage(productData.image);
-         
-         const { data: reviewsData } = await api.get(`/reviews/${id}`);
-         setReviews(reviewsData);
-       } catch (err) {
-         setError('Failed to load product details');
-       } finally {
-         setLoading(false);
-       }
-     };
-     fetchProductDetails();
+      try {
+        const { data: productData } = await api.get(`/products/${id}`);
+        setProduct(productData);
+        setActiveImage(productData.image);
+
+        const { data: reviewsData } = await api.get(`/reviews/${id}`);
+        setReviews(reviewsData);
+      } catch (err) {
+        setError('Failed to load product details');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProductDetails();
   }, [id]);
 
   if (loading) return (
@@ -68,13 +69,13 @@ const ProductDetails = () => {
         {/* ðŸŒŸ Nihemart split-row product card */}
         <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden mb-16">
           <div className="grid grid-cols-1 lg:grid-cols-2">
-            
+
             {/* Left Media Gallery */}
             <div className="p-6 md:p-10 border-r border-slate-100 flex flex-col justify-between">
               <div className="relative rounded-2xl overflow-hidden aspect-square bg-white flex items-center justify-center group">
-                <img 
-                  src={activeImage || product.image || `https://placehold.co/800x800/ffffff/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`} 
-                  alt={product.title} 
+                <img
+                  src={getImageUrl(activeImage || product.image)}
+                  alt={product.title}
                   className="w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
                     e.target.onerror = null;
@@ -87,34 +88,32 @@ const ProductDetails = () => {
               </div>                {/* Thumbnail Previews with dynamic orange outline on active */}
               {product.image && product.image.split(',').length > 1 && (
                 <div className="flex gap-4 mt-6 overflow-x-auto pb-2">
-                   {product.image.split(',').map((imgUrl, i) => (
-                     <div 
-                       key={i} 
-                       onClick={() => setActiveImage(imgUrl.trim())}
-                       className={`relative flex-shrink-0 w-20 h-20 rounded-xl bg-white overflow-hidden border cursor-pointer transition-all ${
-                         activeImage === imgUrl.trim() ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-slate-200 hover:border-slate-300'
-                       }`}
-                     >
-                       <img
-                         src={imgUrl.trim() || `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`}
-                         alt={`View ${i + 1}`}
-                         className="w-full h-full object-contain p-1 bg-white"
-                         onError={(e) => {
-                           e.target.onerror = null;
-                           e.target.src = `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
-                         }}
-                       />
-                       <div className={`absolute top-1 left-1 h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black ${
-                          activeImage === imgUrl.trim() ? 'bg-orange-500 text-white' : 'bg-slate-900/50 text-white backdrop-blur-sm'
-                       }`}>
-                          {i + 1}
-                       </div>
-                     </div>
-                   ))}
+                  {product.image.split(',').map((imgUrl, i) => (
+                    <div
+                      key={i}
+                      onClick={() => setActiveImage(imgUrl.trim())}
+                      className={`relative flex-shrink-0 w-20 h-20 rounded-xl bg-white overflow-hidden border cursor-pointer transition-all ${activeImage === imgUrl.trim() ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-slate-200 hover:border-slate-300'
+                        }`}
+                    >
+                      <img
+                        src={getImageUrl(imgUrl.trim())}
+                        alt={`View ${i + 1}`}
+                        className="w-full h-full object-contain p-1 bg-white"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = `https://placehold.co/200x200/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
+                        }}
+                      />
+                      <div className={`absolute top-1 left-1 h-5 w-5 rounded-full flex items-center justify-center text-[10px] font-black ${activeImage === imgUrl.trim() ? 'bg-orange-500 text-white' : 'bg-slate-900/50 text-white backdrop-blur-sm'
+                        }`}>
+                        {i + 1}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
-            
+
             {/* Right Details Panel */}
             <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-between">
               <div>
@@ -128,11 +127,11 @@ const ProductDetails = () => {
                     <span className="text-xs font-bold text-slate-400">({product.reviewCount || 0} reviews)</span>
                   </div>
                 </div>
-                
+
                 <h1 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight tracking-tight mb-4">
                   {product.title}
                 </h1>
-                
+
                 <div className="flex items-center space-x-3 mb-8">
                   <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-black shadow-md shadow-orange-500/20">
                     {product.traderId?.name?.charAt(0) || 'S'}
@@ -146,7 +145,7 @@ const ProductDetails = () => {
                   <p className="text-sm text-slate-600 leading-relaxed font-semibold">
                     {product.description}
                   </p>
-                  
+
                   {/* Delivery notification notice bar */}
                   <div className="bg-orange-50 border border-orange-500/10 rounded-2xl p-4 flex items-start space-x-3 text-orange-800">
                     <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
@@ -156,7 +155,7 @@ const ProductDetails = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex items-baseline space-x-3 mb-10">
                   <span className="text-4xl font-black text-slate-900 tracking-tight">RWF {product.price.toLocaleString()}</span>
                   {product.stock > 0 && product.stock <= 10 && (
@@ -181,7 +180,7 @@ const ProductDetails = () => {
                 <div className="flex flex-col sm:flex-row gap-4">
                   {/* Solid Orange Add to Cart Button */}
                   {userInfo ? (
-                    <button 
+                    <button
                       id="add-to-cart-btn"
                       disabled={product.stock === 0 || cartLoading}
                       onClick={() => addToCart(product._id, quantity)}
@@ -190,14 +189,14 @@ const ProductDetails = () => {
                       {cartLoading ? <div className="animate-spin h-5 w-5 border-2 border-white rounded-full border-t-transparent" /> : <><ShoppingCart size={18} /><span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span></>}
                     </button>
                   ) : (
-                    <Link 
+                    <Link
                       to={`/register?redirect=/product/${product._id}`}
                       className="flex-1 btn-primary py-4 text-xs font-black uppercase tracking-wider space-x-2 shadow-lg shadow-orange-500/20 flex items-center justify-center hover:scale-[1.02] transition-transform"
                     >
                       <ShoppingCart size={18} /><span>Sign in to Buy</span>
                     </Link>
                   )}
-                  
+
                   {userInfo ? (
                     <Link to={`/chat/${product.traderId?._id}/${product._id}`} className="flex-1 bg-white border-2 border-orange-500 text-orange-500 hover:bg-orange-50 rounded-xl py-4 px-4 text-xs font-black uppercase tracking-wider group flex items-center justify-center space-x-2 transition-all hover:scale-[1.02]">
                       <MessageCircle size={18} className="group-hover:rotate-12 transition-transform" />
@@ -232,16 +231,16 @@ const ProductDetails = () => {
                       <span className="text-xs font-black text-white tracking-tight">Airtel Money</span>
                     </button>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
-                     <div className="flex items-center space-x-3 p-3.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100">
-                        <ShieldCheck size={20} className="flex-shrink-0" />
-                        <span className="text-xs font-bold leading-tight">100% Secure & Encrypted</span>
-                     </div>
-                     <div className="flex items-center space-x-3 p-3.5 bg-blue-50 text-blue-700 rounded-xl border border-blue-100">
-                        <RefreshCw size={20} className="flex-shrink-0" />
-                        <span className="text-xs font-bold leading-tight">Easy Local Returns</span>
-                     </div>
+                    <div className="flex items-center space-x-3 p-3.5 bg-emerald-50 text-emerald-700 rounded-xl border border-emerald-100">
+                      <ShieldCheck size={20} className="flex-shrink-0" />
+                      <span className="text-xs font-bold leading-tight">100% Secure & Encrypted</span>
+                    </div>
+                    <div className="flex items-center space-x-3 p-3.5 bg-blue-50 text-blue-700 rounded-xl border border-blue-100">
+                      <RefreshCw size={20} className="flex-shrink-0" />
+                      <span className="text-xs font-bold leading-tight">Easy Local Returns</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -254,11 +253,11 @@ const ProductDetails = () => {
         <section className="mt-20">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
             <div>
-               <h2 className="text-3xl font-black text-slate-900 tracking-tight">Customer Reviews</h2>
-               <p className="text-xs font-black text-orange-500 uppercase tracking-widest mt-1">{reviews.length} verified {reviews.length === 1 ? 'review' : 'reviews'}</p>
+              <h2 className="text-3xl font-black text-slate-900 tracking-tight">Customer Reviews</h2>
+              <p className="text-xs font-black text-orange-500 uppercase tracking-widest mt-1">{reviews.length} verified {reviews.length === 1 ? 'review' : 'reviews'}</p>
             </div>
             {userInfo && (
-              <button 
+              <button
                 id="write-review-btn"
                 onClick={() => document.getElementById('review-form')?.scrollIntoView({ behavior: 'smooth' })}
                 className="btn-emerald py-3 px-6 text-xs font-black uppercase tracking-wider"
@@ -287,19 +286,19 @@ const ProductDetails = () => {
                         </div>
                         <div>
                           <div className="flex items-center space-x-2">
-                             <p className="text-sm font-bold text-slate-800">{review.userId.name}</p>
-                             {review.isVerified && (
-                               <span className="flex items-center space-x-1 bg-emerald-50 text-emerald-600 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100">
-                                 <ShieldCheck size={10} />
-                                 <span>Verified</span>
-                               </span>
-                             )}
+                            <p className="text-sm font-bold text-slate-800">{review.userId.name}</p>
+                            {review.isVerified && (
+                              <span className="flex items-center space-x-1 bg-emerald-50 text-emerald-600 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100">
+                                <ShieldCheck size={10} />
+                                <span>Verified</span>
+                              </span>
+                            )}
                           </div>
                           <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">{new Date(review.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                         </div>
                       </div>
                       <div className="flex text-amber-500 bg-amber-50 px-3 py-1 rounded-xl">
-                        {[1,2,3,4,5].map(i => <Star key={i} size={12} fill={i <= review.rating ? "currentColor" : "none"} className="mr-0.5" />)}
+                        {[1, 2, 3, 4, 5].map(i => <Star key={i} size={12} fill={i <= review.rating ? "currentColor" : "none"} className="mr-0.5" />)}
                       </div>
                     </div>
                     <p className="text-sm text-slate-600 font-medium leading-relaxed italic border-l-4 border-orange-100 pl-6 group-hover:border-orange-500 transition-colors">
@@ -314,12 +313,12 @@ const ProductDetails = () => {
             <div className="lg:col-span-1">
               <div id="review-form" className="sticky top-32 bg-white border border-slate-100 p-10 rounded-3xl shadow-2xl backdrop-blur-3xl">
                 <h3 className="text-lg font-black text-slate-900 mb-6 tracking-tight">Submit Feedback</h3>
-                
+
                 {!userInfo ? (
                   <div className="text-center py-8">
-                     <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-loose">
-                       Please <Link to="/login" className="text-orange-500 hover:underline">Log In</Link> to share <br/> your professional opinion.
-                     </p>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest leading-loose">
+                      Please <Link to="/login" className="text-orange-500 hover:underline">Log In</Link> to share <br /> your professional opinion.
+                    </p>
                   </div>
                 ) : (
                   <ReviewForm productId={id} onReviewAdded={(newReview) => setReviews([newReview, ...reviews])} />
@@ -338,48 +337,48 @@ const ProductDetails = () => {
                   <h3 className="text-xl font-black text-slate-900 tracking-tight">Payment Procedure</h3>
                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">{selectedPaymentInfo}</p>
                 </div>
-                <button 
+                <button
                   onClick={() => setSelectedPaymentInfo(null)}
                   className="p-2 bg-white rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors shadow-sm border border-slate-100"
                 >
                   <X size={20} />
                 </button>
               </div>
-              
+
               <div className="p-8 space-y-6">
                 {(selectedPaymentInfo === 'VISA' || selectedPaymentInfo === 'Mastercard') && (
                   <div className="space-y-4">
-                     <p className="text-sm font-semibold text-slate-600 leading-relaxed">
-                       To complete your purchase with your {selectedPaymentInfo} card, please add the item to your cart and proceed to checkout.
-                     </p>
-                     <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl flex items-start space-x-3 text-blue-800">
-                        <ShieldCheck size={20} className="flex-shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-xs font-black uppercase tracking-wider">Bank-Grade Encryption</p>
-                          <p className="text-xs font-medium text-blue-700/80 mt-1">Your card details are fully encrypted and never stored on our servers.</p>
-                        </div>
-                     </div>
+                    <p className="text-sm font-semibold text-slate-600 leading-relaxed">
+                      To complete your purchase with your {selectedPaymentInfo} card, please add the item to your cart and proceed to checkout.
+                    </p>
+                    <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl flex items-start space-x-3 text-blue-800">
+                      <ShieldCheck size={20} className="flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-xs font-black uppercase tracking-wider">Bank-Grade Encryption</p>
+                        <p className="text-xs font-medium text-blue-700/80 mt-1">Your card details are fully encrypted and never stored on our servers.</p>
+                      </div>
+                    </div>
                   </div>
                 )}
-                
+
                 {(selectedPaymentInfo === 'MTN MoMo' || selectedPaymentInfo === 'Airtel Money') && (
                   <div className="space-y-4">
-                     <p className="text-sm font-semibold text-slate-600 leading-relaxed">
-                       To complete your purchase via Mobile Money, please follow these steps to send the money:
-                     </p>
-                     <ol className="list-decimal list-inside space-y-3 text-sm font-bold text-slate-800 bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                       <li>Dial <span className="text-orange-500 font-black">*182#</span> on your mobile phone</li>
-                       <li>Select <span className="text-orange-500 font-black">1</span> (Send Money)</li>
-                       <li>Select <span className="text-orange-500 font-black">1</span> (To MTN number)</li>
-                       <li>Enter our payment number: <span className="text-orange-500 font-black">0790087715</span></li>
-                       <li>Enter the total amount for your order</li>
-                       <li>Confirm the payment with your Mobile Money PIN</li>
-                       <li>Keep your transaction message and click <span className="text-orange-500">Add to Cart</span> to checkout</li>
-                     </ol>
+                    <p className="text-sm font-semibold text-slate-600 leading-relaxed">
+                      To complete your purchase via Mobile Money, please follow these steps to send the money:
+                    </p>
+                    <ol className="list-decimal list-inside space-y-3 text-sm font-bold text-slate-800 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                      <li>Dial <span className="text-orange-500 font-black">*182#</span> on your mobile phone</li>
+                      <li>Select <span className="text-orange-500 font-black">1</span> (Send Money)</li>
+                      <li>Select <span className="text-orange-500 font-black">1</span> (To MTN number)</li>
+                      <li>Enter our payment number: <span className="text-orange-500 font-black">0790087715</span></li>
+                      <li>Enter the total amount for your order</li>
+                      <li>Confirm the payment with your Mobile Money PIN</li>
+                      <li>Keep your transaction message and click <span className="text-orange-500">Add to Cart</span> to checkout</li>
+                    </ol>
                   </div>
                 )}
-                
-                <button 
+
+                <button
                   onClick={() => setSelectedPaymentInfo(null)}
                   className="w-full py-4 bg-slate-900 text-white rounded-xl text-xs font-black uppercase tracking-wider hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20"
                 >
@@ -420,12 +419,12 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && <div className="p-3 bg-rose-50 text-rose-500 text-[10px] font-black uppercase rounded-xl border border-rose-100 text-center">{error}</div>}
-      
+
       <div>
         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Quality Rating</label>
         <div className="flex space-x-3">
-          {[1,2,3,4,5].map(i => (
-            <button 
+          {[1, 2, 3, 4, 5].map(i => (
+            <button
               key={i}
               type="button"
               onClick={() => setRating(i)}
@@ -439,7 +438,7 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
 
       <div>
         <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Detailed Insights</label>
-        <textarea 
+        <textarea
           required
           rows="4"
           className="w-full bg-slate-50 border border-slate-100 rounded-3xl p-5 text-xs font-semibold focus:ring-4 focus:ring-orange-500/10 focus:bg-white outline-none transition-all placeholder:text-slate-300"
@@ -449,8 +448,8 @@ const ReviewForm = ({ productId, onReviewAdded }) => {
         ></textarea>
       </div>
 
-      <button 
-        type="submit" 
+      <button
+        type="submit"
         id="submit-review-btn"
         disabled={submitting}
         className="w-full btn-primary py-4 rounded-xl flex items-center justify-center space-x-3 text-xs font-black uppercase tracking-wider active:scale-95 transition-all shadow-lg shadow-orange-500/10"

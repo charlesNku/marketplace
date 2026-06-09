@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MessageCircle, X, Send } from 'lucide-react';
 
 const FloatingChat = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
 
   const handleSend = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      alert('Thank you for your message! A support representative will reply shortly.');
+      // Redirect to full chat page
+      navigate('/messages');
       setMessage('');
       setIsOpen(false);
     }
@@ -33,9 +36,9 @@ const FloatingChat = () => {
             </div>
           </div>
           <form onSubmit={handleSend} className="p-3 border-t border-slate-100 bg-white flex items-center gap-2">
-            <input 
-              type="text" 
-              placeholder="Type a message..." 
+            <input
+              type="text"
+              placeholder="Type a message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               className="flex-1 bg-slate-50 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-orange-500/20"
@@ -46,7 +49,7 @@ const FloatingChat = () => {
           </form>
         </div>
       ) : (
-        <button 
+        <button
           onClick={() => setIsOpen(true)}
           className="bg-orange-500 text-white p-4 rounded-full shadow-xl shadow-orange-500/30 hover:scale-110 active:scale-95 transition-all flex items-center justify-center group"
         >

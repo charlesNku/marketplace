@@ -1,5 +1,6 @@
 const express = require('express');
 const { registerUser, loginUser, getUsers } = require('../controllers/authController.js');
+const supabase = require('../config/supabaseClient');
 const { protect } = require('../middleware/authMiddleware.js');
 const { admin } = require('../middleware/roleMiddleware.js');
 

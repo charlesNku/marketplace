@@ -39,11 +39,11 @@ const OrderHistory = () => {
             <p className="text-slate-500 mt-2 font-medium italic">Review and track your recent orders.</p>
           </div>
           <Link to="/products" className="btn-primary py-4 px-8 inline-flex items-center space-x-3">
-             <ShoppingBag size={18} />
-             <span>Continue Shopping</span>
+            <ShoppingBag size={18} />
+            <span>Continue Shopping</span>
           </Link>
         </div>
-        
+
         {orders.length === 0 ? (
           <div className="glass-card rounded-[3rem] p-24 text-center border-slate-100 shadow-xl animate-in fade-in zoom-in duration-700">
             <div className="bg-slate-50 w-24 h-24 rounded-[1.5rem] flex items-center justify-center mb-8 mx-auto">
@@ -59,7 +59,7 @@ const OrderHistory = () => {
               <div key={order._id} className="glass-card rounded-[2.5rem] border-slate-100 overflow-hidden shadow-2xl transition-all duration-500 hover:shadow-indigo-500/5 group">
                 <div className="bg-slate-900 px-10 py-8 flex flex-wrap justify-between items-center text-white gap-8 relative overflow-hidden">
                   <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl"></div>
-                  
+
                   <div className="flex gap-12 relative z-10">
                     <div>
                       <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Order Authenticated</span>
@@ -70,20 +70,19 @@ const OrderHistory = () => {
                       <span className="text-sm font-black tracking-tight text-indigo-400">RWF {order.totalPrice.toLocaleString()}</span>
                     </div>
                   </div>
-                  
+
                   <div className="relative z-10 text-right">
                     <span className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 italic">Reference ID</span>
                     <span className="text-xs font-black tracking-[0.2em]">#PRO-{order._id.substring(18).toUpperCase()}</span>
                   </div>
                 </div>
-                
+
                 <div className="p-10">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-10">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-6">
-                        <span className={`text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${
-                          order.orderStatus === 'delivered' ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-50 text-indigo-600'
-                        }`}>
+                        <span className={`text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest ${order.orderStatus === 'delivered' ? 'bg-emerald-50 text-emerald-600' : 'bg-indigo-50 text-indigo-600'
+                          }`}>
                           {order.orderStatus}
                         </span>
                         <div className="h-1 w-1 bg-slate-300 rounded-full"></div>
@@ -97,27 +96,37 @@ const OrderHistory = () => {
                         {order.products.map((item, idx) => (
                           <div key={idx} className="group/item relative flex-shrink-0">
                             <div className="w-full aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm transition-transform duration-500 group-hover/item:scale-105">
-                              <img 
-                                src={item.productId?.image || 'https://via.placeholder.com/200'} 
-                                alt={item.productId?.title} 
-                                className="w-full h-full object-cover" 
+                              <img
+                                src={item.productId?.image || 'https://via.placeholder.com/200'}
+                                alt={item.productId?.title}
+                                className="w-full h-full object-cover"
                               />
                             </div>
                             <span className="absolute -top-2 -right-2 bg-slate-900 text-white text-[10px] w-6 h-6 flex items-center justify-center rounded-lg font-black shadow-lg border-2 border-white">{item.quantity}</span>
                           </div>
                         ))}
                       </div>
+
+                      {order.products.length > 0 && order.products[0].productId && (
+                        <Link
+                          to={`/chat/${order.products[0].productId.traderId}/${order.products[0].productId._id}`}
+                          className="inline-flex items-center space-x-2 mt-6 text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:underline"
+                        >
+                          <span>Questions about this order? Chat with seller</span>
+                          <ChevronRight size={12} />
+                        </Link>
+                      )}
                     </div>
 
                     <div className="lg:w-72 space-y-4">
-                       <Link to={`/tracking/${order._id}`} className="w-full btn-primary py-4 px-6 inline-flex items-center justify-center space-x-3 group-hover:bg-indigo-700 transition-colors">
-                          <MapPin size={18} />
-                          <span>Track Order</span>
-                       </Link>
-                       <button className="w-full py-4 px-6 bg-slate-50 text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all border border-slate-100 inline-flex items-center justify-center space-x-3">
-                          <CreditCard size={18} />
-                          <span>View Invoice</span>
-                       </button>
+                      <Link to={`/tracking/${order._id}`} className="w-full btn-primary py-4 px-6 inline-flex items-center justify-center space-x-3 group-hover:bg-indigo-700 transition-colors">
+                        <MapPin size={18} />
+                        <span>Track Order</span>
+                      </Link>
+                      <button className="w-full py-4 px-6 bg-slate-50 text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all border border-slate-100 inline-flex items-center justify-center space-x-3">
+                        <CreditCard size={18} />
+                        <span>View Invoice</span>
+                      </button>
                     </div>
                   </div>
                 </div>

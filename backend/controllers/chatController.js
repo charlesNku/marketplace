@@ -8,7 +8,7 @@ const getConversations = async (req, res) => {
   try {
     const { data: conversations, error } = await supabase
       .from('conversations')
-      .select('*, users!user1_id(name, profile_image, role), users!user2_id(name, profile_image, role), products(title, image)')
+      .select('*, user1:users!user1_id(name, profile_image, role), user2:users!user2_id(name, profile_image, role), products(title, image)')
       .or(`user1_id.eq.${req.user.id},user2_id.eq.${req.user.id}`)
       .order('updated_at', { ascending: false });
 
@@ -19,8 +19,8 @@ const getConversations = async (req, res) => {
       ...c,
       _id: c.id,
       participants: [
-        { _id: c.user1_id, name: c.users_user1_id.name, profileImage: c.users_user1_id.profile_image, role: c.users_user1_id.role },
-        { _id: c.user2_id, name: c.users_user2_id.name, profileImage: c.users_user2_id.profile_image, role: c.users_user2_id.role }
+        { _id: c.user1_id, name: c.user1.name, profileImage: c.user1.profile_image, role: c.user1.role },
+        { _id: c.user2_id, name: c.user2.name, profileImage: c.user2.profile_image, role: c.user2.role }
       ],
       productId: c.products ? { _id: c.product_id, title: c.products.title, image: c.products.image } : null
     }));
@@ -36,7 +36,7 @@ const getMessages = async (req, res) => {
   try {
     const { data: messages, error } = await supabase
       .from('messages')
-      .select('*')
+      .select('*, parentMessage:parent_message_id(message, sender_id)')
       .eq('conversation_id', req.params.conversationId)
       .order('created_at', { ascending: true });
 
@@ -50,6 +50,7 @@ const getMessages = async (req, res) => {
       createdAt: m.created_at,
       isRead: m.is_read,
       conversationId: m.conversation_id,
+      parentMessage: m.parentMessage ? { message: m.parentMessage.message, senderId: m.parentMessage.sender_id } : null
     }));
     res.json(mappedMessages);
   } catch (error) {
@@ -60,7 +61,7 @@ const getMessages = async (req, res) => {
 // POST /api/chat/message
 const sendMessage = async (req, res) => {
   try {
-    const { receiverId, productId, messageText } = req.body;
+    const { receiverId, productId, messageText, parentMessageId } = req.body;
 
     // Check if conversation exists (in either order)
     let { data: conversation } = await supabase
@@ -94,9 +95,10 @@ const sendMessage = async (req, res) => {
         conversation_id: conversation.id,
         sender_id: req.user.id,
         receiver_id: receiverId,
-        message: messageText
+        message: messageText,
+        parent_message_id: parentMessageId || null
       }])
-      .select()
+      .select('*, parentMessage:parent_message_id(message, sender_id)')
       .single();
 
     if (msgError) throw msgError;
@@ -120,6 +122,7 @@ const sendMessage = async (req, res) => {
       createdAt: message.created_at,
       isRead: message.is_read,
       conversationId: message.conversation_id,
+      parentMessage: message.parentMessage ? { message: message.parentMessage.message, senderId: message.parentMessage.sender_id } : null
     };
 
     const io = req.app.get('socketio');

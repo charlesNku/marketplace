@@ -53,7 +53,7 @@ router.post('/', protect, trader, upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
-  
+
   // Use relative URL to work on both Vercel and local
   const imageUrl = `/api/uploads/${req.file.filename}`;
   res.status(200).json({

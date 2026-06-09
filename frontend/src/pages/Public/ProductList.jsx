@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { 
-  Search, Filter, Star, ChevronRight, LayoutGrid, 
+import {
+  Search, Filter, Star, ChevronRight, LayoutGrid,
   List, SlidersHorizontal, PackageX, ArrowUpDown, Heart
 } from 'lucide-react';
 import api from '../../services/api';
+import { getImageUrl } from '../../utils/urlHelper';
 
 const ProductList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -13,9 +14,9 @@ const ProductList = () => {
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
   const [category, setCategory] = useState(searchParams.get('category') || '');
   const [sortBy, setSortBy] = useState('newest');
-  
+
   const categories = [
-    'Electronics', 'Fashion', 'Home & Kitchen', 
+    'Electronics', 'Fashion', 'Home & Kitchen',
     'Groceries', 'Health & Beauty'
   ];
 
@@ -62,7 +63,7 @@ const ProductList = () => {
     <div className="min-h-screen bg-slate-50 pt-32 pb-20">
       <div className="max-w-[1600px] mx-auto px-6 xl:px-10">
         <div className="flex flex-col lg:flex-row gap-8">
-          
+
           {/* Sidebar Filters */}
           <aside className="lg:w-64 flex-shrink-0">
             <div className="bg-white p-6 rounded-2xl border border-slate-200">
@@ -71,7 +72,7 @@ const ProductList = () => {
                   <SlidersHorizontal size={15} className="mr-2 text-orange-500" />
                   Filters
                 </h3>
-                <button 
+                <button
                   onClick={() => {
                     setSearchParams({});
                     setCategory('');
@@ -87,9 +88,9 @@ const ProductList = () => {
               <div className="mb-10">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Search keyword</label>
                 <form onSubmit={handleSearch} className="relative">
-                  <input 
-                    type="text" 
-                    placeholder="Find premium goods..." 
+                  <input
+                    type="text"
+                    placeholder="Find premium goods..."
                     value={keyword}
                     onChange={(e) => setKeyword(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-100 rounded-xl py-3 pl-4 pr-10 text-xs font-semibold focus:ring-2 focus:ring-orange-500 focus:bg-white focus:border-transparent outline-none transition-all placeholder:text-slate-400"
@@ -105,12 +106,11 @@ const ProductList = () => {
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Categories</label>
                 <div className="space-y-2">
                   {categories.map(cat => (
-                    <button 
+                    <button
                       key={cat}
                       onClick={() => handleCategoryClick(cat)}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all group ${
-                        category === cat ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/25 border-transparent' : 'text-slate-600 hover:bg-slate-50 border border-transparent'
-                      }`}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all group ${category === cat ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/25 border-transparent' : 'text-slate-600 hover:bg-slate-50 border border-transparent'
+                        }`}
                     >
                       <span>{cat}</span>
                       <ChevronRight size={14} className={`transition-transform ${category === cat ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
@@ -137,7 +137,7 @@ const ProductList = () => {
               <div className="flex items-center space-x-4 w-full sm:w-auto">
                 <div className="relative flex-grow sm:flex-grow-0">
                   <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={14} />
-                  <select 
+                  <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
                     className="w-full sm:w-48 pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none appearance-none cursor-pointer"
@@ -149,8 +149,8 @@ const ProductList = () => {
                   </select>
                 </div>
                 <div className="flex bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
-                   <button className="p-1.5 text-orange-600 bg-orange-50 rounded-lg"><LayoutGrid size={18} /></button>
-                   <button className="p-1.5 text-slate-400 hover:text-orange-500 transition-colors rounded-lg"><List size={18} /></button>
+                  <button className="p-1.5 text-orange-600 bg-orange-50 rounded-lg"><LayoutGrid size={18} /></button>
+                  <button className="p-1.5 text-slate-400 hover:text-orange-500 transition-colors rounded-lg"><List size={18} /></button>
                 </div>
               </div>
             </div>
@@ -168,7 +168,7 @@ const ProductList = () => {
                 </div>
                 <h2 className="text-2xl font-black text-slate-900 mb-4">No products found</h2>
                 <p className="text-slate-500 font-semibold mb-10 px-8">We couldn't find any products matching your specific search query. Try resetting filters.</p>
-                <button 
+                <button
                   onClick={() => {
                     setSearchParams({});
                     setCategory('');
@@ -182,25 +182,25 @@ const ProductList = () => {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5">
                 {products.map(product => (
-                  <Link 
-                    key={product._id} 
+                  <Link
+                    key={product._id}
                     to={`/product/${product._id}`}
                     className="group bg-white rounded-2xl border border-slate-200 hover:border-orange-500 hover:shadow-lg transition-all duration-300 flex flex-col h-full overflow-hidden"
                   >
                     {/* Image Container */}
                     <div className="relative aspect-square bg-slate-50 overflow-hidden border-b border-slate-100">
-                      <img 
-                        src={product.image || `https://placehold.co/400x400/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`} 
-                        alt={product.title} 
+                      <img
+                        src={getImageUrl(product.image)}
+                        alt={product.title}
                         className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${product.stock === 0 ? 'opacity-85 grayscale-[20%]' : ''}`}
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src = `https://placehold.co/400x400/f8fafc/94a3b8?text=${encodeURIComponent(product.category || 'Product')}`;
                         }}
                       />
-                      
+
                       {/* Wishlist badge */}
-                      <button 
+                      <button
                         onClick={(e) => { e.preventDefault(); /* wishlist logic */ }}
                         className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-2 rounded-full text-slate-400 hover:text-rose-500 shadow-sm transition-colors z-20"
                       >
@@ -214,7 +214,7 @@ const ProductList = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     {/* Content */}
                     <div className="p-3 sm:p-4 flex-grow flex flex-col justify-between">
                       <div>
@@ -226,7 +226,7 @@ const ProductList = () => {
                           <span className="text-xs text-slate-500">{product.category}</span>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-end justify-between mt-2 pt-2 border-t border-slate-50">
                         <p className="text-sm sm:text-lg font-bold text-slate-900 tracking-tight">RWF {product.price.toLocaleString()}</p>
                       </div>

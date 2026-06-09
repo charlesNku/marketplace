@@ -7,7 +7,8 @@ import {
   Edit, Trash2, Plus, X, Save, Package, DollarSign, Tag, Eye, MessageSquare,
   UploadCloud
 } from 'lucide-react';
-import api from '../../services/api';
+import api, { BASE_URL } from '../../services/api';
+import { getImageUrl } from '../../utils/urlHelper';
 import useAuthStore from '../../store/authStore';
 
 const AdminDashboard = () => {
@@ -84,7 +85,7 @@ const AdminDashboard = () => {
         const allProducts = productsRes.data.products || [];
         const allOrders = Array.isArray(ordersRes.data) ? ordersRes.data : ordersRes.data?.orders || [];
         const allUsers = Array.isArray(usersRes.data) ? usersRes.data : [];
-        
+
         // Fetch some reviews for all products
         const reviewsRes = await Promise.all(
           allProducts.slice(0, 5).map(p => api.get(`/reviews/${p._id}`).catch(() => ({ data: [] })))
@@ -215,11 +216,11 @@ const AdminDashboard = () => {
                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
                 </div>
               ))}
-              
+
               {/* Premium Image Upload Area */}
               <div className="space-y-2">
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Product Image</label>
-                <div 
+                <div
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
                     e.preventDefault();
@@ -228,8 +229,8 @@ const AdminDashboard = () => {
                   }}
                   className="border-2 border-dashed border-slate-200 hover:border-blue-500 rounded-2xl p-5 transition-all bg-slate-50 hover:bg-blue-50/20 cursor-pointer flex flex-col items-center justify-center group relative overflow-hidden min-h-[140px]"
                 >
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     id="file-upload-edit"
                     className="absolute inset-0 opacity-0 cursor-pointer"
@@ -245,14 +246,14 @@ const AdminDashboard = () => {
                     </div>
                   ) : editingProduct.image ? (
                     <div className="flex flex-col items-center space-y-2 w-full">
-                      <img src={editingProduct.image} alt="Preview" className="h-16 w-16 object-cover rounded-xl border border-slate-200 shadow-sm" />
+                      <img src={getImageUrl(editingProduct.image)} alt="Preview" className="h-16 w-16 object-cover rounded-xl border border-slate-200 shadow-sm" />
                       <div className="text-center">
                         <p className="text-xs font-semibold text-emerald-600 flex items-center justify-center space-x-1">
                           <CheckCircle2 size={12} /> <span>Image uploaded successfully</span>
                         </p>
                         <p className="text-[10px] text-slate-400 mt-0.5 max-w-[250px] truncate mx-auto">{editingProduct.image}</p>
                       </div>
-                      <button 
+                      <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -272,19 +273,19 @@ const AdminDashboard = () => {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Fallback Image URL Input */}
                 <div className="relative flex py-1 items-center">
                   <div className="flex-grow border-t border-slate-100"></div>
                   <span className="flex-shrink mx-3 text-[10px] font-black uppercase text-slate-400 tracking-wider">Or Paste URL</span>
                   <div className="flex-grow border-t border-slate-100"></div>
                 </div>
-                <input 
-                  type="text" 
-                  value={editingProduct.image || ''} 
+                <input
+                  type="text"
+                  value={editingProduct.image || ''}
                   onChange={e => setEditingProduct(prev => ({ ...prev, image: e.target.value }))}
                   placeholder="https://example.com/image.jpg"
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
               </div>
 
@@ -340,11 +341,11 @@ const AdminDashboard = () => {
                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
                 </div>
               ))}
-              
+
               {/* Premium Image Upload Area */}
               <div className="space-y-2">
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Product Image</label>
-                <div 
+                <div
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
                     e.preventDefault();
@@ -353,8 +354,8 @@ const AdminDashboard = () => {
                   }}
                   className="border-2 border-dashed border-slate-200 hover:border-blue-500 rounded-2xl p-5 transition-all bg-slate-50 hover:bg-blue-50/20 cursor-pointer flex flex-col items-center justify-center group relative overflow-hidden min-h-[140px]"
                 >
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept="image/*"
                     id="file-upload-add"
                     className="absolute inset-0 opacity-0 cursor-pointer"
@@ -370,14 +371,14 @@ const AdminDashboard = () => {
                     </div>
                   ) : newProduct.image ? (
                     <div className="flex flex-col items-center space-y-2 w-full">
-                      <img src={newProduct.image} alt="Preview" className="h-16 w-16 object-cover rounded-xl border border-slate-200 shadow-sm" />
+                      <img src={getImageUrl(newProduct.image)} alt="Preview" className="h-16 w-16 object-cover rounded-xl border border-slate-200 shadow-sm" />
                       <div className="text-center">
                         <p className="text-xs font-semibold text-emerald-600 flex items-center justify-center space-x-1">
                           <CheckCircle2 size={12} /> <span>Image uploaded successfully</span>
                         </p>
                         <p className="text-[10px] text-slate-400 mt-0.5 max-w-[250px] truncate mx-auto">{newProduct.image}</p>
                       </div>
-                      <button 
+                      <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -397,19 +398,19 @@ const AdminDashboard = () => {
                     </div>
                   )}
                 </div>
-                
+
                 {/* Fallback Image URL Input */}
                 <div className="relative flex py-1 items-center">
                   <div className="flex-grow border-t border-slate-100"></div>
                   <span className="flex-shrink mx-3 text-[10px] font-black uppercase text-slate-400 tracking-wider">Or Paste URL</span>
                   <div className="flex-grow border-t border-slate-100"></div>
                 </div>
-                <input 
-                  type="text" 
-                  value={newProduct.image} 
+                <input
+                  type="text"
+                  value={newProduct.image}
                   onChange={e => setNewProduct(prev => ({ ...prev, image: e.target.value }))}
                   placeholder="https://example.com/image.jpg"
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" 
+                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
               </div>
 
@@ -469,8 +470,8 @@ const AdminDashboard = () => {
           </div>
           <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 shadow-sm overflow-x-auto">
             {[
-              ['overview', BarChart3, 'Overview'], 
-              ['products', Package, 'Products'], 
+              ['overview', BarChart3, 'Overview'],
+              ['products', Package, 'Products'],
               ['orders', ShoppingCart, 'Orders'],
               ['users', Users, 'Users'],
               ['reviews', MessageSquare, 'Reviews']
@@ -611,7 +612,7 @@ const AdminDashboard = () => {
                         <tr key={product._id} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center space-x-3">
-                              <img src={product.image || 'https://via.placeholder.com/40'} className="h-10 w-10 rounded-xl object-cover border border-slate-200" alt="" />
+                              <img src={getImageUrl(product.image)} className="h-10 w-10 rounded-xl object-cover border border-slate-200" alt="" />
                               <p className="text-sm font-bold text-slate-900 max-w-[180px] truncate">{product.title}</p>
                             </div>
                           </td>
@@ -665,12 +666,12 @@ const AdminDashboard = () => {
             </div>
 
             <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-               {orders.length === 0 ? (
-                 <div className="p-16 text-center text-slate-400">
-                   <ShoppingCart size={48} className="mx-auto mb-4 opacity-30" />
-                   <p className="font-bold">No orders found.</p>
-                 </div>
-               ) : (
+              {orders.length === 0 ? (
+                <div className="p-16 text-center text-slate-400">
+                  <ShoppingCart size={48} className="mx-auto mb-4 opacity-30" />
+                  <p className="font-bold">No orders found.</p>
+                </div>
+              ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full">
                     <thead className="bg-slate-50 border-b border-slate-100">
@@ -691,9 +692,8 @@ const AdminDashboard = () => {
                           <td className="px-6 py-4 text-sm text-slate-600">{new Date(order.createdAt).toLocaleDateString()}</td>
                           <td className="px-6 py-4 text-sm font-black text-slate-900">${order.totalPrice?.toFixed(2)}</td>
                           <td className="px-6 py-4">
-                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full ${
-                              order.isDelivered ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                            }`}>
+                            <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full ${order.isDelivered ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                              }`}>
                               {order.isDelivered ? 'Delivered' : 'Processing'}
                             </span>
                           </td>
@@ -705,7 +705,7 @@ const AdminDashboard = () => {
                     </tbody>
                   </table>
                 </div>
-               )}
+              )}
             </div>
           </div>
         )}
@@ -743,11 +743,10 @@ const AdminDashboard = () => {
                         </td>
                         <td className="px-6 py-4 text-sm text-slate-600 italic">{user.email}</td>
                         <td className="px-6 py-4">
-                          <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full ${
-                            user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 
-                            user.role === 'trader' ? 'bg-orange-100 text-orange-700' : 
-                            'bg-blue-100 text-blue-700'
-                          }`}>
+                          <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' :
+                              user.role === 'trader' ? 'bg-orange-100 text-orange-700' :
+                                'bg-blue-100 text-blue-700'
+                            }`}>
                             {user.role}
                           </span>
                         </td>
@@ -758,7 +757,7 @@ const AdminDashboard = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <button 
+                          <button
                             onClick={() => navigate(`/chat/${user._id}`)}
                             className="flex items-center space-x-2 bg-slate-900 text-white px-4 py-2 rounded-xl font-bold text-xs hover:bg-blue-600 transition-all shadow-sm opacity-0 group-hover:opacity-100"
                           >
@@ -802,7 +801,7 @@ const AdminDashboard = () => {
                         <div>
                           <p className="text-sm font-bold text-slate-900">{review.name}</p>
                           <div className="flex items-center space-x-0.5 text-amber-500">
-                            {[1,2,3,4,5].map(i => <Star key={i} size={10} fill={i <= review.rating ? 'currentColor' : 'none'} />)}
+                            {[1, 2, 3, 4, 5].map(i => <Star key={i} size={10} fill={i <= review.rating ? 'currentColor' : 'none'} />)}
                           </div>
                         </div>
                       </div>
@@ -810,11 +809,11 @@ const AdminDashboard = () => {
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed italic">"{review.comment}"</p>
                     <div className="mt-4 pt-4 border-t border-slate-50 flex items-center justify-between">
-                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Moderation</span>
-                       <div className="flex items-center space-x-2">
-                         <button className="text-[10px] font-black text-emerald-600 hover:underline uppercase">Approve</button>
-                         <button className="text-[10px] font-black text-red-500 hover:underline uppercase">Hide</button>
-                       </div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Moderation</span>
+                      <div className="flex items-center space-x-2">
+                        <button className="text-[10px] font-black text-emerald-600 hover:underline uppercase">Approve</button>
+                        <button className="text-[10px] font-black text-red-500 hover:underline uppercase">Hide</button>
+                      </div>
                     </div>
                   </div>
                 ))

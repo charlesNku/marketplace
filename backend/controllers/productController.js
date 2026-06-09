@@ -5,7 +5,7 @@ const getProducts = async (req, res) => {
   try {
     const pageSize = Number(req.query.pageSize) || 1000;
     const page = Number(req.query.pageNumber) || 1;
-    
+
     let query = supabase.from('products').select('*', { count: 'exact' });
 
     // Search keyword
@@ -92,7 +92,7 @@ const getProductById = async (req, res) => {
 const createProduct = async (req, res) => {
   try {
     const { title, price, description, image, category, stock } = req.body;
-    
+
     const { data: product, error } = await supabase
       .from('products')
       .insert([{
@@ -100,7 +100,7 @@ const createProduct = async (req, res) => {
         title: title || 'Sample title',
         price: Number(price) || 0,
         description: description || 'Sample description',
-        image: image || '/images/sample.jpg',
+        image: image || '/api/uploads/sample.jpg',
         category: category || 'Uncategorized',
         stock: Number(stock) || 0
       }])
@@ -108,7 +108,7 @@ const createProduct = async (req, res) => {
       .single();
 
     if (error) throw error;
-    
+
     res.status(201).json({ ...product, _id: product.id, traderId: product.trader_id });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -119,7 +119,7 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   try {
     const { title, price, description, image, category, stock } = req.body;
-    
+
     // First, check ownership
     const { data: product, error: fetchError } = await supabase
       .from('products')

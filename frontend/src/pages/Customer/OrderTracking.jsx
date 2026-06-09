@@ -49,7 +49,7 @@ const OrderTracking = () => {
   const currentStepIndex = steps.indexOf(order.deliveryStatus);
 
   const getStatusIcon = (step) => {
-    switch(step) {
+    switch (step) {
       case 'pending': return <Clock size={20} />;
       case 'processing': return <Package size={20} />;
       case 'shipped': return <Truck size={20} />;
@@ -60,7 +60,7 @@ const OrderTracking = () => {
   };
 
   const getStepName = (step) => {
-     return step.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+    return step.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   };
 
   return (
@@ -74,21 +74,32 @@ const OrderTracking = () => {
             <h1 className="text-4xl font-black text-slate-900 tracking-tight">Order Tracking</h1>
             <p className="text-xs font-black text-indigo-600 uppercase tracking-[0.2em] mt-2">ID: #{order._id.substring(order._id.length - 8).toUpperCase()}</p>
           </div>
-          <div className="text-left sm:text-right">
-             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Estimated Delivery</p>
-             <p className="text-xl font-black text-emerald-600 tracking-tight">3-5 Business Days</p>
+          <div className="text-left sm:text-right flex flex-col items-start sm:items-end gap-3">
+            <div className="flex flex-col items-start sm:items-end">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Estimated Delivery</p>
+              <p className="text-xl font-black text-emerald-600 tracking-tight">3-5 Business Days</p>
+            </div>
+            {order.products.length > 0 && order.products[0].productId && (
+              <Link
+                to={`/chat/${order.products[0].productId.traderId}/${order.products[0].productId._id}`}
+                className="flex items-center space-x-2 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+              >
+                <Package size={14} />
+                <span>Message Seller</span>
+              </Link>
+            )}
           </div>
         </div>
 
         <div className="glass-card rounded-[2.5rem] p-8 sm:p-12 mb-10 overflow-hidden relative">
           <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-indigo-50 rounded-full blur-3xl pointer-events-none"></div>
-          
+
           <div className="mb-12 relative z-10">
             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Tracking Number</h3>
             <div className="flex items-center space-x-3">
               <p className="text-3xl font-black text-slate-900">{order.trackingNumber}</p>
               <button className="text-indigo-600 hover:bg-indigo-50 p-2 rounded-xl transition-colors">
-                 <ExternalLink size={20} />
+                <ExternalLink size={20} />
               </button>
             </div>
           </div>
@@ -96,28 +107,26 @@ const OrderTracking = () => {
           {/* Progress Bar */}
           <div className="relative pt-4 pb-8 z-10">
             <div className="absolute top-9 left-0 w-full h-1 bg-slate-100 rounded-full"></div>
-            <div 
+            <div
               className="absolute top-9 left-0 h-1 bg-indigo-600 rounded-full transition-all duration-1000"
               style={{ width: `${(Math.max(0, currentStepIndex) / (steps.length - 1)) * 100}%` }}
             ></div>
-            
+
             <div className="flex justify-between relative">
               {steps.map((step, index) => {
                 const isCompleted = index <= currentStepIndex;
                 const isCurrent = index === currentStepIndex;
-                
+
                 return (
                   <div key={step} className="flex flex-col items-center w-20 sm:w-24">
-                    <div className={`relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl ${
-                      isCompleted 
-                        ? 'bg-indigo-600 text-white shadow-indigo-500/20' 
+                    <div className={`relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl ${isCompleted
+                        ? 'bg-indigo-600 text-white shadow-indigo-500/20'
                         : 'bg-white text-slate-300 border-2 border-slate-100 shadow-slate-200/20'
-                    } ${isCurrent ? 'scale-110 ring-4 ring-indigo-100' : ''}`}>
+                      } ${isCurrent ? 'scale-110 ring-4 ring-indigo-100' : ''}`}>
                       {getStatusIcon(step)}
                     </div>
-                    <div className={`text-[10px] sm:text-xs mt-4 font-black uppercase tracking-wider text-center ${
-                      isCurrent ? 'text-indigo-600' : isCompleted ? 'text-slate-900' : 'text-slate-400'
-                    }`}>
+                    <div className={`text-[10px] sm:text-xs mt-4 font-black uppercase tracking-wider text-center ${isCurrent ? 'text-indigo-600' : isCompleted ? 'text-slate-900' : 'text-slate-400'
+                      }`}>
                       {getStepName(step)}
                     </div>
                   </div>
@@ -136,14 +145,14 @@ const OrderTracking = () => {
               <span className="text-xl font-black text-indigo-400">RWF {order.totalPrice.toLocaleString()}</span>
             </div>
           </div>
-          
+
           <div className="divide-y divide-slate-100/50">
             {order.products.map((item, index) => (
               <div key={index} className="p-8 flex flex-col sm:flex-row items-center gap-6 group hover:bg-slate-50/50 transition-colors">
                 <div className="w-24 h-24 rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 flex-shrink-0">
-                   <img src={item.productId?.image || 'https://via.placeholder.com/80'} alt={item.productId?.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  <img src={item.productId?.image || 'https://via.placeholder.com/80'} alt={item.productId?.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                 </div>
-                
+
                 <div className="flex-1 text-center sm:text-left">
                   <Link to={`/product/${item.productId?._id}`} className="text-lg font-black text-slate-900 hover:text-indigo-600 transition">
                     {item.productId?.title || 'Unknown Product'}
@@ -153,7 +162,7 @@ const OrderTracking = () => {
                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 px-2 py-1 rounded-md">RWF {(item.price || 0).toLocaleString()} each</span>
                   </div>
                 </div>
-                
+
                 <div className="text-xl font-black text-slate-900 sm:text-right">
                   RWF {((item.quantity * item.price) || 0).toLocaleString()}
                 </div>
