@@ -51,14 +51,24 @@ const AdminDashboard = () => {
         }
       });
 
+      console.log('Upload response:', data);
+
       if (type === 'edit') {
-        setEditingProduct(prev => ({ ...prev, image: data.imageUrl }));
+        setEditingProduct(prev => {
+          const updated = { ...prev, image: data.imageUrl };
+          console.log('Updated editingProduct:', updated);
+          return updated;
+        });
       } else {
-        setNewProduct(prev => ({ ...prev, image: data.imageUrl }));
+        setNewProduct(prev => {
+          const updated = { ...prev, image: data.imageUrl };
+          console.log('Updated newProduct:', updated);
+          return updated;
+        });
       }
       showNotif('Image uploaded successfully!');
     } catch (err) {
-      console.error(err);
+      console.error('Upload Error Details:', err);
       showNotif(err.response?.data?.message || 'Failed to upload image.', 'error');
     } finally {
       setUploadingState(prev => ({ ...prev, [type]: false }));
@@ -612,7 +622,15 @@ const AdminDashboard = () => {
                         <tr key={product._id} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4">
                             <div className="flex items-center space-x-3">
-                              <img src={getImageUrl(product.image)} className="h-10 w-10 rounded-xl object-cover border border-slate-200" alt="" />
+                              <img
+                                src={getImageUrl(product.image)}
+                                className="h-10 w-10 rounded-xl object-cover border border-slate-200"
+                                alt=""
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = 'https://placehold.co/40x40/f8fafc/94a3b8?text=Error';
+                                }}
+                              />
                               <p className="text-sm font-bold text-slate-900 max-w-[180px] truncate">{product.title}</p>
                             </div>
                           </td>
@@ -744,8 +762,8 @@ const AdminDashboard = () => {
                         <td className="px-6 py-4 text-sm text-slate-600 italic">{user.email}</td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-wider rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' :
-                              user.role === 'trader' ? 'bg-orange-100 text-orange-700' :
-                                'bg-blue-100 text-blue-700'
+                            user.role === 'trader' ? 'bg-orange-100 text-orange-700' :
+                              'bg-blue-100 text-blue-700'
                             }`}>
                             {user.role}
                           </span>

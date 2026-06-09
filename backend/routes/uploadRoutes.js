@@ -1,32 +1,14 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const supabase = require('../config/supabaseClient');
 const { protect } = require('../middleware/authMiddleware');
 const { trader } = require('../middleware/roleMiddleware');
 
 const router = express.Router();
 
-// Ensure uploads directory exists
-const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
-const uploadDir = isVercel ? '/tmp' : path.join(__dirname, '../uploads');
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// Configure storage
-const storage = multer.diskStorage({
-  destination(req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename(req, file, cb) {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
+// Configure storage in memory for uploading to Supabase
+const storage = multer.memoryStorage();
 
 // File filter (accept images only)
 function checkFileType(file, cb) {
@@ -48,20 +30,43 @@ const upload = multer({
   },
 });
 
-// POST /api/upload - Protected, only trader and admin can upload
-router.post('/', protect, trader, upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: 'No file uploaded' });
-  }
+// POST /api/upload - Protected, only trader and admin can upload to Supabase
+router.post('/', protect, trader, upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
 
-  // Use relative URL to work on both Vercel and local
-  const imageUrl = `/api/uploads/${req.file.filename}`;
-  res.status(200).json({
-    message: 'Image uploaded successfully',
-    imageUrl
-  });
+    const fileName = `${Date.now()}-${req.file.originalname.replace(/\s+/g, '_')}`;
+    const filePath = `${fileName}`;
+
+    // Upload to Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('products')
+      .upload(filePath, req.file.buffer, {
+        contentType: req.file.mimetype,
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Supabase Storage Error:', error);
+      return res.status(500).json({ message: 'Failed to upload to permanent storage. Make sure "products" bucket exists and is public.' });
+    }
+
+    // Get Public URL
+    const { data: publicUrlData } = supabase.storage
+      .from('products')
+      .getPublicUrl(filePath);
+
+    res.status(200).json({
+      message: 'Image uploaded successfully to permanent storage',
+      imageUrl: publicUrlData.publicUrl
+    });
+  } catch (error) {
+    console.error('Upload Error:', error);
+    res.status(500).json({ message: error.message });
+  }
 }, (error, req, res, next) => {
-  // Multer error handling middleware
   res.status(400).json({ message: error.message });
 });
 
