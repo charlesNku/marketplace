@@ -50,7 +50,22 @@ router.post('/', protect, trader, upload.single('image'), async (req, res) => {
 
     if (error) {
       console.error('Supabase Storage Error:', error);
-      return res.status(500).json({ message: 'Failed to upload to permanent storage. Make sure "products" bucket exists and is public.' });
+
+      // Fallback to local storage if Supabase fails (e.g. bucket missing)
+      try {
+        const fs = require('fs').promises;
+        const localPath = path.join(__dirname, '..', 'uploads', fileName);
+        await fs.writeFile(localPath, req.file.buffer);
+        console.log('Saved to local storage fallback:', localPath);
+
+        return res.status(200).json({
+          message: 'Image uploaded successfully to local storage (Supabase fallback)',
+          imageUrl: `/api/uploads/${fileName}`
+        });
+      } catch (localError) {
+        console.error('Local Storage Fallback Error:', localError);
+        return res.status(500).json({ message: 'Failed to upload to permanent storage. Make sure "products" bucket exists and is public.' });
+      }
     }
 
     // Get Public URL
