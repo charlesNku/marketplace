@@ -12,8 +12,8 @@ export const getImageUrl = (path, type = 'product') => {
         return 'https://placehold.co/400x400/f8fafc/94a3b8?text=Product';
     }
 
-    // If it's already an absolute URL, return it
-    if (path.startsWith('http')) {
+    // If it's already an absolute URL or Base64 data, return it
+    if (path.startsWith('http') || path.startsWith('data:')) {
         return path;
     }
 
