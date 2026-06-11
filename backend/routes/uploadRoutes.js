@@ -56,25 +56,15 @@ router.post('/', protect, trader, upload.single('image'), async (req, res) => {
         const fs = require('fs').promises;
         const fsSync = require('fs');
 
-        // Use /tmp on Vercel (writable), and backend/uploads locally
-        const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
-        const uploadDir = isVercel ? '/tmp' : path.join(__dirname, '..', 'uploads');
-
-        // Ensure local directory exists
-        if (!isVercel && !fsSync.existsSync(uploadDir)) {
-          fsSync.mkdirSync(uploadDir, { recursive: true });
-        }
-
-        const localPath = path.join(uploadDir, fileName);
-        await fs.writeFile(localPath, req.file.buffer);
-        console.log('Saved to local storage fallback:', localPath);
+        console.log('Using Base64 fallback (Supabase bucket missing)');
+        const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
         return res.status(200).json({
-          message: isVercel ? 'Image uploaded to temporary storage' : 'Image uploaded successfully to local storage (Supabase fallback)',
-          imageUrl: `/api/uploads/${fileName}`
+          message: 'Image processed as Base64 (Supabase persistent fallback)',
+          imageUrl: base64Image
         });
       } catch (localError) {
-        console.error('Local Storage Fallback Error:', localError);
+        console.error('Base64 Fallback Error:', localError);
         return res.status(500).json({ message: `Storage Error: ${localError.message}` });
       }
     }
