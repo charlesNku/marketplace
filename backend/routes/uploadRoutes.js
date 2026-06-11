@@ -54,17 +54,28 @@ router.post('/', protect, trader, upload.single('image'), async (req, res) => {
       // Fallback to local storage if Supabase fails (e.g. bucket missing)
       try {
         const fs = require('fs').promises;
-        const localPath = path.join(__dirname, '..', 'uploads', fileName);
+        const fsSync = require('fs');
+
+        // Use /tmp on Vercel (writable), and backend/uploads locally
+        const isVercel = process.env.VERCEL || process.env.NODE_ENV === 'production';
+        const uploadDir = isVercel ? '/tmp' : path.join(__dirname, '..', 'uploads');
+
+        // Ensure local directory exists
+        if (!isVercel && !fsSync.existsSync(uploadDir)) {
+          fsSync.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const localPath = path.join(uploadDir, fileName);
         await fs.writeFile(localPath, req.file.buffer);
         console.log('Saved to local storage fallback:', localPath);
 
         return res.status(200).json({
-          message: 'Image uploaded successfully to local storage (Supabase fallback)',
+          message: isVercel ? 'Image uploaded to temporary storage' : 'Image uploaded successfully to local storage (Supabase fallback)',
           imageUrl: `/api/uploads/${fileName}`
         });
       } catch (localError) {
         console.error('Local Storage Fallback Error:', localError);
-        return res.status(500).json({ message: 'Failed to upload to permanent storage. Make sure "products" bucket exists and is public.' });
+        return res.status(500).json({ message: `Storage Error: ${localError.message}` });
       }
     }
 
