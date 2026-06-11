@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import api, { BASE_URL } from '../../services/api';
 import { getImageUrl } from '../../utils/urlHelper';
+import { compressImage } from '../../utils/imageCompressor';
 import useAuthStore from '../../store/authStore';
 
 const AdminDashboard = () => {
@@ -42,8 +43,12 @@ const AdminDashboard = () => {
   const handleImageUpload = async (file, type) => {
     setUploadingState(prev => ({ ...prev, [type]: true }));
     try {
+      console.log('Original file size:', (file.size / 1024).toFixed(2), 'KB');
+      const compressedBlob = await compressImage(file, { maxWidth: 1000, maxHeight: 1000, quality: 0.7 });
+      console.log('Compressed size:', (compressedBlob.size / 1024).toFixed(2), 'KB');
+
       const formData = new FormData();
-      formData.append('image', file);
+      formData.append('image', compressedBlob, file.name);
 
       const { data } = await api.post('/upload', formData, {
         headers: {
