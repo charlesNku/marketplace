@@ -132,28 +132,28 @@ const Home = () => {
 
         <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 text-center lg:text-left">
-            <div className="inline-flex items-center space-x-2 bg-orange-500/10 border border-orange-500/20 px-4 py-2 rounded-full">
-              <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-ping"></span>
-              <span className="text-[10px] font-black text-orange-400 uppercase tracking-[0.2em]">Platform Live Seeding v2.4</span>
+            <div className="inline-flex items-center space-x-2 bg-orange-500/5 border border-orange-500/10 px-3 py-1.5 rounded-full">
+              <span className="flex h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+              <span className="text-[9px] font-bold text-orange-400 uppercase tracking-[0.2em]">Platform Live Seeding v2.4</span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.15] tracking-tight">
+            <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">
               A Smarter Way <br />
               To Buy <span className="text-orange-500">Premium</span> <br />
               Products Online.
             </h1>
 
-            <p className="text-sm md:text-base text-slate-400 max-w-lg leading-relaxed font-semibold mx-auto lg:mx-0">
+            <p className="text-xs md:text-sm text-slate-400 max-w-lg leading-relaxed mx-auto lg:mx-0">
               Discover verified quality products shipped directly to your home. Explore exclusive vendor collections and enjoy secure local payment protocols.
             </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
-              <Link to="/products" className="btn-primary py-4 px-8 text-sm font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 flex items-center space-x-2">
+              <Link to="/products" className="btn-primary py-3 px-6 text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 flex items-center space-x-2">
                 <span>Shop Catalog</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={14} />
               </Link>
-              <Link to="/register?redirect=/trader/dashboard&role=trader" className="py-4 px-8 text-sm font-black uppercase tracking-widest border-2 border-white/20 text-white rounded-2xl hover:bg-white/10 backdrop-blur-md transition-all duration-300 flex items-center space-x-2 group">
-                <Store size={16} className="text-emerald-400 group-hover:rotate-12 transition-transform" />
+              <Link to="/register?redirect=/trader/dashboard&role=trader" className="py-3 px-6 text-xs font-bold uppercase tracking-wider border border-white/20 text-white rounded-2xl hover:bg-white/5 backdrop-blur-md transition-all flex items-center space-x-2 group">
+                <Store size={14} className="text-emerald-400 group-hover:rotate-12 transition-transform" />
                 <span>Sell Products</span>
               </Link>
             </div>
