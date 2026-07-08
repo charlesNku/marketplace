@@ -138,33 +138,32 @@ const Home = () => {
             </div>
 
             <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">
-              A Smarter Way <br />
-              To Buy <span className="text-orange-500">Premium</span> <br />
-              Products Online.
+              One Marketplace. <br />
+              Endless <span className="text-orange-500">Possibilities.</span>
             </h1>
 
             <p className="text-xs md:text-sm text-slate-400 max-w-lg leading-relaxed mx-auto lg:mx-0">
-              Discover verified quality products shipped directly to your home. Explore exclusive vendor collections and enjoy secure local payment protocols.
+              From fashion and electronics to home essentials and more, find everything you need in one trusted destination. Shop smarter and discover incredible value every day.
             </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <Link to="/products" className="btn-primary py-3 px-6 text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 flex items-center space-x-2">
-                <span>Shop Catalog</span>
+                <span>Start Shopping</span>
                 <ArrowRight size={14} />
               </Link>
               <Link to="/register?redirect=/trader/dashboard&role=trader" className="py-3 px-6 text-xs font-bold uppercase tracking-wider border border-white/20 text-white rounded-2xl hover:bg-white/5 backdrop-blur-md transition-all flex items-center space-x-2 group">
                 <Store size={14} className="text-emerald-400 group-hover:rotate-12 transition-transform" />
-                <span>Sell Products</span>
+                <span>Become a Vendor</span>
               </Link>
             </div>
           </div>
 
-          <div className="relative hidden lg:block">
+          <div className="relative mt-8 lg:mt-0">
             <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-xl border border-white/5 bg-slate-800/10 p-2 max-w-md mx-auto">
               <img
                 src="/api/uploads/premium_shopping_medium.png"
                 alt="Nihemart Showcase"
-                className="w-full h-[400px] object-cover object-top rounded-[2rem]"
+                className="w-full h-[300px] sm:h-[400px] object-cover object-top rounded-[2rem]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
             </div>
