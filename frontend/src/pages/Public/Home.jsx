@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ArrowRight, ShoppingBag, Star, Zap, ShieldCheck, 
-  Truck, ArrowUpRight, Smartphone, Shirt, Home as HomeIcon, 
+import {
+  ArrowRight, ShoppingBag, Star, Zap, ShieldCheck,
+  Truck, ArrowUpRight, Smartphone, Shirt, Home as HomeIcon,
   ShoppingBasket, Sparkles, Heart, ChevronLeft, ChevronRight,
   Store, DollarSign, Users, Package, TrendingUp, User
 } from 'lucide-react';
@@ -129,24 +129,24 @@ const Home = () => {
           <div className="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-orange-600/10 rounded-full blur-[120px] animate-pulse"></div>
           <div className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[120px]"></div>
         </div>
-        
+
         <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 text-center lg:text-left">
             <div className="inline-flex items-center space-x-2 bg-orange-500/10 border border-orange-500/20 px-4 py-2 rounded-full">
               <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-ping"></span>
               <span className="text-[10px] font-black text-orange-400 uppercase tracking-[0.2em]">Platform Live Seeding v2.4</span>
             </div>
-            
+
             <h1 className="text-4xl md:text-6xl font-black text-white leading-[1.15] tracking-tight">
               A Smarter Way <br />
               To Buy <span className="text-orange-500">Premium</span> <br />
               Products Online.
             </h1>
-            
+
             <p className="text-sm md:text-base text-slate-400 max-w-lg leading-relaxed font-semibold mx-auto lg:mx-0">
               Discover verified quality products shipped directly to your home. Explore exclusive vendor collections and enjoy secure local payment protocols.
             </p>
-            
+
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
               <Link to="/products" className="btn-primary py-4 px-8 text-sm font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 flex items-center space-x-2">
                 <span>Shop Catalog</span>
@@ -160,13 +160,13 @@ const Home = () => {
           </div>
 
           <div className="relative hidden lg:block">
-            <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/5 bg-slate-800/20 p-2">
-              <img 
-                src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1000" 
-                alt="Nihemart Showcase" 
-                className="w-full object-cover aspect-[4/3] rounded-[2rem]" 
+            <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-xl border border-white/5 bg-slate-800/10 p-2 max-w-lg mx-auto">
+              <img
+                src="/api/uploads/premium_shopping_medium.png"
+                alt="Nihemart Showcase"
+                className="w-full h-auto object-cover rounded-[2rem]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
             </div>
           </div>
         </div>
@@ -184,9 +184,9 @@ const Home = () => {
 
           <div className="flex overflow-x-auto gap-5 pb-4 scrollbar-hide scroll-smooth">
             {categories.map((cat, i) => (
-              <Link 
-                key={i} 
-                to={`/products?category=${cat.name}`} 
+              <Link
+                key={i}
+                to={`/products?category=${cat.name}`}
                 className="flex-shrink-0 w-44 bg-white border border-slate-100 rounded-3xl p-5 hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center group relative shadow-sm"
               >
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-500 border ${cat.color}`}>
@@ -201,29 +201,29 @@ const Home = () => {
       </section>
 
       {/* Top Rated Section */}
-      <Section 
-        title="Customer Favorites" 
-        subtitle="Highly Rated Selection" 
-        products={sections.top} 
-        badge="Top Rated" 
+      <Section
+        title="Customer Favorites"
+        subtitle="Highly Rated Selection"
+        products={sections.top}
+        badge="Top Rated"
         color="bg-orange-500"
       />
 
       {/* Premium Products Section */}
-      <Section 
-        title="Premium Collection" 
-        subtitle="Exclusive Quality Essentials" 
-        products={sections.highest} 
-        badge="Premium" 
+      <Section
+        title="Premium Collection"
+        subtitle="Exclusive Quality Essentials"
+        products={sections.highest}
+        badge="Premium"
         color="bg-orange-500"
       />
 
       {/* Budget Selection Section */}
-      <Section 
-        title="Best Value Picks" 
-        subtitle="Best Price Opportunities" 
-        products={sections.lowest} 
-        badge="Best Value" 
+      <Section
+        title="Best Value Picks"
+        subtitle="Best Price Opportunities"
+        products={sections.lowest}
+        badge="Best Value"
         color="bg-orange-500"
       />
 
@@ -242,12 +242,12 @@ const Home = () => {
                 <Store size={14} className="text-emerald-400" />
                 <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Become a Seller</span>
               </div>
-              
+
               <h2 className="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight">
                 Turn Your Products Into <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Profit Today.</span>
               </h2>
-              
+
               <p className="text-slate-400 text-sm md:text-base max-w-lg leading-relaxed font-semibold mx-auto lg:mx-0">
                 Join hundreds of successful vendors on Rwanda Digital Market. List your products, reach thousands of buyers, and grow your business — all with zero upfront costs.
               </p>
@@ -290,7 +290,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
                 <Link to="/register?redirect=/trader/dashboard&role=trader" className="py-4 px-8 text-sm font-black uppercase tracking-widest bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl hover:from-emerald-600 hover:to-teal-600 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center space-x-2 group">
                   <Store size={16} className="group-hover:rotate-12 transition-transform" />
