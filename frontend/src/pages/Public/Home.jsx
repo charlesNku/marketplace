@@ -160,11 +160,11 @@ const Home = () => {
           </div>
 
           <div className="relative hidden lg:block">
-            <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-xl border border-white/5 bg-slate-800/10 p-2 max-w-lg mx-auto">
+            <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-xl border border-white/5 bg-slate-800/10 p-2 max-w-md mx-auto">
               <img
                 src="/api/uploads/premium_shopping_medium.png"
                 alt="Nihemart Showcase"
-                className="w-full h-auto object-cover rounded-[2rem]"
+                className="w-full h-[400px] object-cover object-top rounded-[2rem]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
             </div>
