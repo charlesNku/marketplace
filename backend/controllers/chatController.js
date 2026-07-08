@@ -61,15 +61,29 @@ const getMessages = async (req, res) => {
 // POST /api/chat/message
 const sendMessage = async (req, res) => {
   try {
-    const { receiverId, productId, messageText, parentMessageId } = req.body;
+    const { receiverId, messageText, parentMessageId } = req.body;
+    let { productId } = req.body;
+
+    // Normalize productId to null if it's empty, "null", or undefined
+    if (!productId || productId === 'null' || productId === 'undefined' || productId === '') {
+      productId = null;
+    }
 
     // Check if conversation exists (in either order)
-    let { data: conversation } = await supabase
+    let query = supabase
       .from('conversations')
       .select('id')
-      .or(`and(user1_id.eq.${req.user.id},user2_id.eq.${receiverId}),and(user1_id.eq.${receiverId},user2_id.eq.${req.user.id})`)
-      .eq('product_id', productId)
-      .single();
+      .or(`and(user1_id.eq.${req.user.id},user2_id.eq.${receiverId}),and(user1_id.eq.${receiverId},user2_id.eq.${req.user.id})`);
+
+    if (productId) {
+      query = query.eq('product_id', productId);
+    } else {
+      query = query.is('product_id', null);
+    }
+
+    let { data: conversation, error: findError } = await query.maybeSingle();
+
+    if (findError) throw findError;
 
     if (!conversation) {
       const { data: newConv, error: convError } = await supabase
@@ -112,7 +126,7 @@ const sendMessage = async (req, res) => {
         content: `New message from ${req.user.name}: "${messageText.substring(0, 30)}${messageText.length > 30 ? '...' : ''}"`
       }])
       .select()
-      .single();
+      .maybeSingle();
 
     const normalizedMessage = {
       ...message,
@@ -130,7 +144,7 @@ const sendMessage = async (req, res) => {
       if (notification) {
         io.to(receiverId).emit('new_notification', { ...notification, _id: notification.id });
       }
-      // Emit the message to both sender and receiver rooms (or conversation room)
+      // Emit the message to participants
       io.to(conversation.id).to(req.user.id).to(receiverId).emit('receive_message', normalizedMessage);
     }
 

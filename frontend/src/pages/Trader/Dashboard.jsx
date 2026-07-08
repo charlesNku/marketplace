@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  Package, DollarSign, List, Edit, Trash2, 
+import {
+  Package, DollarSign, List, Edit, Trash2,
   TrendingUp, Users, ShoppingBag, Plus, MoreVertical,
   Search, ExternalLink, X, MessageSquare
 } from 'lucide-react';
@@ -15,7 +15,7 @@ const TraderDashboard = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     title: '', description: '', price: '', category: '', image: '', stock: ''
   });
@@ -110,7 +110,7 @@ const TraderDashboard = () => {
   return (
     <div className="min-h-screen bg-slate-50 pt-24 pb-20 px-6">
       <div className="max-w-[1400px] mx-auto">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-8">
           <div>
@@ -119,14 +119,18 @@ const TraderDashboard = () => {
             <p className="text-slate-500 mt-2 font-medium italic">Welcome back, {userInfo?.name?.split(' ')[0]}. Here's your store's performance at a glance.</p>
           </div>
           <div className="flex items-center space-x-4">
-             <Link to="/messages" className="bg-white text-slate-700 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 font-bold py-4 px-6 rounded-2xl transition-all shadow-sm flex items-center space-x-2">
-                <MessageSquare size={18} />
-                <span>Customer Inquiries</span>
-             </Link>
-             <button onClick={() => handleOpenModal()} className="btn-primary py-4 px-8 inline-flex items-center space-x-2">
-                <Plus size={18} />
-                <span>List New Product</span>
-             </button>
+            <Link to="/messages" className="bg-white text-slate-700 border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 font-bold py-4 px-6 rounded-2xl transition-all shadow-sm flex items-center space-x-2">
+              <MessageSquare size={18} />
+              <span>Customer Inquiries</span>
+            </Link>
+            <Link to="/chat/4b1227bd-1873-4792-8ced-dc448c151f43" className="bg-slate-900 text-white hover:bg-indigo-600 font-bold py-4 px-6 rounded-2xl transition-all shadow-lg flex items-center space-x-2">
+              <Users size={18} />
+              <span>Contact Admin</span>
+            </Link>
+            <button onClick={() => handleOpenModal()} className="btn-primary py-4 px-8 inline-flex items-center space-x-2">
+              <Plus size={18} />
+              <span>List New Product</span>
+            </button>
           </div>
         </div>
 
@@ -158,15 +162,15 @@ const TraderDashboard = () => {
               <p className="text-sm font-medium text-slate-400">Manage and track your listed products</p>
             </div>
             <div className="relative">
-              <input 
-                type="text" 
-                placeholder="Search collection..." 
+              <input
+                type="text"
+                placeholder="Search collection..."
                 className="bg-slate-50 border-none rounded-2xl py-3 pl-10 pr-6 text-xs font-bold w-full md:w-64 focus:ring-2 focus:ring-indigo-500 outline-none shadow-inner"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
             </div>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -194,8 +198,8 @@ const TraderDashboard = () => {
                           <div>
                             <p className="text-sm font-black text-slate-900 line-clamp-1">{product.title}</p>
                             <div className="flex items-center space-x-2 mt-1">
-                               <TrendingUp size={12} className="text-emerald-500" />
-                               <span className="text-[10px] font-black text-emerald-500 uppercase tracking-wider">Top Performing</span>
+                              <TrendingUp size={12} className="text-emerald-500" />
+                              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-wider">Top Performing</span>
                             </div>
                           </div>
                         </div>
@@ -206,12 +210,11 @@ const TraderDashboard = () => {
                       </td>
                       <td className="px-6 py-6">
                         <div className="flex flex-col">
-                           <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest inline-block w-fit ${
-                             product.stock > 10 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
-                           }`}>
-                             {product.stock > 10 ? 'High Stock' : product.stock === 0 ? 'Out of Stock' : 'Low Stock'}
-                           </span>
-                           <span className="text-[10px] font-bold text-slate-400 mt-1 ml-1">{product.stock} Units Remaining</span>
+                          <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest inline-block w-fit ${product.stock > 10 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
+                            }`}>
+                            {product.stock > 10 ? 'High Stock' : product.stock === 0 ? 'Out of Stock' : 'Low Stock'}
+                          </span>
+                          <span className="text-[10px] font-bold text-slate-400 mt-1 ml-1">{product.stock} Units Remaining</span>
                         </div>
                       </td>
                       <td className="px-6 py-6">
@@ -221,20 +224,20 @@ const TraderDashboard = () => {
                       </td>
                       <td className="px-10 py-6">
                         <div className="flex items-center justify-end space-x-3">
-                           <Link to={`/product/${product._id}`} className="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-900 hover:text-white transition-all">
-                              <ExternalLink size={18} />
-                           </Link>
-                           <button onClick={() => handleOpenModal(product)} className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all">
-                              <Edit size={18} />
-                           </button>
-                           <button onClick={() => handleDelete(product._id)} className="p-3 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition-all">
-                              <Trash2 size={18} />
-                           </button>
+                          <Link to={`/product/${product._id}`} className="p-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-900 hover:text-white transition-all">
+                            <ExternalLink size={18} />
+                          </Link>
+                          <button onClick={() => handleOpenModal(product)} className="p-3 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all">
+                            <Edit size={18} />
+                          </button>
+                          <button onClick={() => handleDelete(product._id)} className="p-3 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition-all">
+                            <Trash2 size={18} />
+                          </button>
                         </div>
                       </td>
                     </tr>
                   )
-                ))}
+                  ))}
               </tbody>
             </table>
           </div>
@@ -255,19 +258,19 @@ const TraderDashboard = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Product Title</label>
-                    <input 
-                      type="text" required 
+                    <input
+                      type="text" required
                       className="premium-input"
-                      value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})}
+                      value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })}
                       placeholder="e.g. Premium Wireless Headphones"
                     />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Category</label>
-                    <select 
-                      required 
+                    <select
+                      required
                       className="premium-input"
-                      value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}
+                      value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}
                     >
                       <option value="">Select Category</option>
                       <option value="Electronics">Electronics</option>
@@ -278,38 +281,38 @@ const TraderDashboard = () => {
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Price (RWF)</label>
-                    <input 
+                    <input
                       type="number" required min="0" step="1"
                       className="premium-input"
-                      value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})}
+                      value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })}
                       placeholder="0"
                     />
                   </div>
                   <div>
                     <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Initial Stock</label>
-                    <input 
+                    <input
                       type="number" required min="0" step="1"
                       className="premium-input"
-                      value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})}
+                      value={formData.stock} onChange={e => setFormData({ ...formData, stock: e.target.value })}
                       placeholder="0"
                     />
                   </div>
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Image URL</label>
-                  <input 
-                    type="url" required 
+                  <input
+                    type="url" required
                     className="premium-input"
-                    value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})}
+                    value={formData.image} onChange={e => setFormData({ ...formData, image: e.target.value })}
                     placeholder="https://example.com/image.jpg"
                   />
                 </div>
                 <div>
                   <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Description</label>
-                  <textarea 
+                  <textarea
                     required rows="4"
                     className="premium-input resize-none"
-                    value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}
+                    value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })}
                     placeholder="Describe your product in detail..."
                   ></textarea>
                 </div>

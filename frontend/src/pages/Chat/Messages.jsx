@@ -8,7 +8,9 @@ import {
 import { io } from 'socket.io-client';
 
 import useAuthStore from '../../store/authStore';
-import api from '../../services/api';
+import api, { BASE_URL } from '../../services/api';
+import { getImageUrl } from '../../utils/urlHelper';
+import EmojiPicker from 'emoji-picker-react';
 
 const Messages = () => {
   const { receiverId, productId } = useParams();
@@ -26,12 +28,18 @@ const Messages = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [showShareProductModal, setShowShareProductModal] = useState(false);
   const [traders, setTraders] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const typingTimeoutRef = useRef(null);
 
   const [replyTo, setReplyTo] = useState(null);
   const endOfMessagesRef = useRef(null);
   const socketRef = useRef(null);
+
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [uploadingFile, setUploadingFile] = useState(false);
+  const fileInputRef = useRef(null);
 
   // Normalize Supabase message fields
   const normalizeMessage = (m) => ({
@@ -46,7 +54,7 @@ const Messages = () => {
   // Socket.io initialization
   useEffect(() => {
     if (userInfo?._id) {
-      socketRef.current = io(`http://${window.location.hostname}:5000`);
+      socketRef.current = io(BASE_URL || window.location.origin);
       socketRef.current.emit('join_user', userInfo._id);
 
       socketRef.current.on('receive_message', (msg) => {
@@ -181,6 +189,44 @@ const Messages = () => {
     fetchMessages();
   }, [activeConversation]);
 
+  // Polling for production (where Socket.io fails on Vercel)
+  useEffect(() => {
+    let interval;
+    if (activeConversation && activeConversation._id !== 'new') {
+      const isProd = import.meta.env.PROD || window.location.hostname.includes('vercel.app');
+      if (isProd) {
+        interval = setInterval(async () => {
+          try {
+            const { data: msgs } = await api.get(`/chat/messages/${activeConversation._id}`);
+            const normalized = msgs.map(normalizeMessage);
+
+            setMessages(prev => {
+              const newMsgs = normalized.filter(nm => !prev.some(pm => (pm._id || pm.id) === (nm._id || nm.id)));
+              if (newMsgs.length > 0) {
+                // Play notification sound for new incoming messages only
+                const hasIncoming = newMsgs.some(m => m.senderId !== userInfo._id);
+                if (hasIncoming) {
+                  try {
+                    const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+                    audio.volume = 0.5;
+                    audio.play().catch(() => { });
+                  } catch (e) { }
+                }
+                return [...prev, ...newMsgs].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+              }
+              return prev;
+            });
+          } catch (e) {
+            console.error('Polling error', e);
+          }
+        }, 5000); // Poll every 5 seconds
+      }
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [activeConversation, userInfo]);
+
   // Scroll to bottom
   useEffect(() => {
     if (endOfMessagesRef.current) {
@@ -202,12 +248,26 @@ const Messages = () => {
       targetReceiverId = otherUser._id;
     }
 
+    if (!targetReceiverId) {
+      setSendError('Recipient not identified. Please select a conversation first.');
+      setNewMessage(textToSend);
+      setSending(false);
+      return;
+    }
+
     try {
-      await api.post('/chat/message', {
+      const { data: sentMsg } = await api.post('/chat/message', {
         receiverId: targetReceiverId,
         productId: product?._id || activeConversation?.productId?._id,
         messageText: textToSend,
         parentMessageId: replyTo?._id
+      });
+
+      // Optimistic Update: Add message immediately if Socket.io didn't already
+      const normalizedSent = normalizeMessage(sentMsg);
+      setMessages(prev => {
+        if (prev.some(m => m._id === normalizedSent._id)) return prev;
+        return [...prev, normalizedSent];
       });
 
       setReplyTo(null);
@@ -230,9 +290,58 @@ const Messages = () => {
     }
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingFile(true);
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      const fileUrl = res.data.imageUrl;
+      setNewMessage(prev => prev + (prev.trim() ? '\n' : '') + `[FILE]${fileUrl}[/FILE]`);
+      setSendError(null);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setSendError(err.response?.data?.message || 'File upload failed');
+    } finally {
+      setUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = null;
+    }
+  };
+
   const getOtherUser = (conv) => {
     if (!conv || !conv.participants) return { name: 'Unknown' };
     return conv.participants.find(p => p._id !== userInfo._id) || conv.participants[0];
+  };
+
+  const renderMessageContent = (text) => {
+    if (!text) return null;
+    if (text.includes('[FILE]') && text.includes('[/FILE]')) {
+      return text.split(/(?<=\[\/FILE\])|(?=\[FILE\])/).map((part, idx) => {
+        if (part.startsWith('[FILE]') && part.endsWith('[/FILE]')) {
+          const url = part.replace('[FILE]', '').replace('[/FILE]', '');
+          const isImage = url.match(/\.(jpeg|jpg|gif|png|webp)(\?.*)?$/i);
+          if (isImage) {
+            return <img key={idx} src={url} alt="attachment" className="max-w-[200px] max-h-[200px] object-cover rounded-md my-1" />;
+          } else {
+            return (
+              <a key={idx} href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center space-x-2 bg-slate-100 p-2 rounded-md my-1 underline break-all text-indigo-600 block">
+                <Paperclip size={16} />
+                <span>View Document</span>
+              </a>
+            );
+          }
+        }
+        return <span key={idx}>{part}</span>;
+      });
+    }
+    return text;
   };
 
   if (loading) {
@@ -436,7 +545,7 @@ const Messages = () => {
                           </div>
                         )}
 
-                        <p className="text-[14.2px] text-[#111b21] leading-[19px] whitespace-pre-wrap break-words pr-12">{msg.message}</p>
+                        <div className="text-[14.2px] text-[#111b21] leading-[19px] whitespace-pre-wrap break-words pr-12 pb-1">{renderMessageContent(msg.message)}</div>
                         <div className="absolute bottom-1 right-2 flex items-center space-x-1">
                           <span className="text-[10px] text-[#667781] leading-none">
                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -448,7 +557,7 @@ const Messages = () => {
                         {/* Reply Button on Bubble */}
                         <button
                           onClick={() => setReplyTo(msg)}
-                          className="absolute top-2 right-2 p-1 text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute top-2 right-2 p-1 text-slate-400 hover:text-slate-600 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
                         >
                           <Plus size={14} className="rotate-45" />
                         </button>
@@ -462,6 +571,13 @@ const Messages = () => {
 
             {/* Chat Input Area - WhatsApp Style */}
             <div className="bg-[#f0f2f5] p-2 lg:px-4 z-20 flex flex-col shrink-0">
+              {sendError && (
+                <div className="mb-2 p-2 bg-red-100 text-red-600 text-[10px] font-bold rounded-lg flex items-center space-x-2 animate-in fade-in slide-in-from-top-1">
+                  <AlertCircle size={12} />
+                  <span>{sendError}</span>
+                  <button onClick={() => setSendError(null)} className="ml-auto underline">Dismiss</button>
+                </div>
+              )}
               {/* Reply Preview */}
               {replyTo && (
                 <div className="bg-white/80 backdrop-blur-sm border-l-4 border-emerald-500 p-2 mb-2 rounded-lg flex items-center justify-between animate-in slide-in-from-bottom-2">
@@ -475,10 +591,32 @@ const Messages = () => {
                 </div>
               )}
 
-              <div className="flex items-center space-x-3 w-full">
+              <div className="flex items-center space-x-3 w-full relative">
+                {showEmojiPicker && (
+                  <div className="absolute bottom-14 left-2 z-50">
+                    <EmojiPicker
+                      onEmojiClick={(emojiData) => setNewMessage(prev => prev + emojiData.emoji)}
+                      width={300}
+                      height={400}
+                    />
+                  </div>
+                )}
                 <div className="flex items-center space-x-4 text-slate-500 mx-2">
-                  <Smile size={24} className="cursor-pointer hover:text-slate-700" />
-                  <Plus size={24} className="cursor-pointer hover:text-slate-700" />
+                  <Smile size={24} className="cursor-pointer hover:text-slate-700" onClick={() => setShowEmojiPicker(!showEmojiPicker)} />
+                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf,.doc,.docx,.txt,.csv" onChange={handleFileUpload} />
+                  <Paperclip size={24} className={`cursor-pointer hover:text-slate-700 ${uploadingFile ? 'opacity-50' : ''}`} onClick={() => !uploadingFile && fileInputRef.current?.click()} />
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setShowShareProductModal(true);
+                      const { data } = await api.get('/products?pageSize=50');
+                      setAllProducts(data.products || []);
+                    }}
+                    className="text-slate-500 hover:text-indigo-600 transition-colors"
+                    title="Share Product"
+                  >
+                    <Plus size={24} />
+                  </button>
                 </div>
 
                 <div className="flex-1">
@@ -565,6 +703,49 @@ const Messages = () => {
           </div>
         )}
       </div>
+
+      {/* Share Product Modal */}
+      {showShareProductModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100">
+            <div className="p-6 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-lg font-black text-slate-900 uppercase">Share a Product</h3>
+              <button
+                onClick={() => setShowShareProductModal(false)}
+                className="p-2 hover:bg-white rounded-full text-slate-400 hover:text-rose-500 transition-all"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-4 max-h-[400px] overflow-y-auto">
+              {allProducts.length === 0 ? (
+                <div className="text-center py-10 text-slate-400 text-xs italic">Loading products...</div>
+              ) : (
+                <div className="grid grid-cols-1 gap-3">
+                  {allProducts.map(p => (
+                    <button
+                      key={p._id}
+                      onClick={async () => {
+                        setNewMessage(`Check out this product: ${p.title}\n${window.location.origin}/product/${p._id}`);
+                        setProduct(p);
+                        setShowShareProductModal(false);
+                      }}
+                      className="flex items-center space-x-4 p-3 hover:bg-indigo-50 rounded-2xl transition-all border border-slate-50 text-left"
+                    >
+                      <img src={getImageUrl(p.image)} className="h-12 w-12 rounded-xl object-cover" alt="" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-black text-slate-900 truncate">{p.title}</p>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">RWF {p.price.toLocaleString()}</p>
+                      </div>
+                      <Plus size={16} className="text-indigo-400" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* New Chat Modal */}
       {showNewChatModal && (

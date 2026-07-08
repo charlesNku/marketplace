@@ -10,18 +10,19 @@ const router = express.Router();
 // Configure storage in memory for uploading to Supabase
 const storage = multer.memoryStorage();
 
-// File filter (accept images only)
+// File filter (accept images and documents)
 function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png|webp|gif/;
+  const filetypes = /jpg|jpeg|png|webp|gif|pdf|doc|docx|csv|txt/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
+  const mimetype = filetypes.test(file.mimetype) || file.mimetype.includes('pdf') || file.mimetype.includes('document') || file.mimetype.includes('text') || file.mimetype.includes('csv');
 
   if (extname && mimetype) {
     return cb(null, true);
   } else {
-    cb(new Error('Only image files (JPG, JPEG, PNG, WEBP, GIF) are allowed!'));
+    cb(new Error('Only images and document files are allowed!'));
   }
 }
+
 
 const upload = multer({
   storage,
