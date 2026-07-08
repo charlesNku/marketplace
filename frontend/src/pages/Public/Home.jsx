@@ -124,7 +124,7 @@ const Home = () => {
   return (
     <div className="flex flex-col pt-16">
       {/* 🌟 Immersive Nihemart Hero carousel banner */}
-      <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-slate-900 pt-20">
+      <section className="relative min-h-[50vh] flex items-center overflow-hidden bg-slate-900 pb-12 pt-28">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute -top-[10%] -right-[10%] w-[50%] h-[50%] bg-orange-600/10 rounded-full blur-[120px] animate-pulse"></div>
           <div className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[120px]"></div>
