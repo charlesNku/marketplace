@@ -132,18 +132,19 @@ const Home = () => {
 
         <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 text-center lg:text-left">
-            <div className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
-              <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-[0.2em]">Mix & Shop in Rwanda</span>
+            <div className="inline-flex items-center space-x-2 bg-orange-500/5 border border-orange-500/10 px-3 py-1.5 rounded-full">
+              <span className="flex h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse"></span>
+              <span className="text-[9px] font-bold text-orange-400 uppercase tracking-[0.2em]">Platform Live Seeding v2.4</span>
             </div>
 
             <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">
-              Mix. Match. <br />
-              <span className="text-emerald-500">Shop</span> Your Way.
+              A Smarter Way <br />
+              To Buy <span className="text-orange-500">Premium</span> <br />
+              Products Online.
             </h1>
 
             <p className="text-xs md:text-sm text-slate-400 max-w-lg leading-relaxed mx-auto lg:mx-0">
-              Explore a world of products. Combine your favorites, get the best prices, and enjoy fast delivery with secure payments across Rwanda.
+              Discover verified quality products shipped directly to your home. Explore exclusive vendor collections and enjoy secure local payment protocols.
             </p>
 
             <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
@@ -161,8 +162,8 @@ const Home = () => {
           <div className="relative hidden lg:block">
             <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-xl border border-white/5 bg-slate-800/10 p-2 max-w-lg mx-auto">
               <img
-                src="/api/uploads/mix_match_shop.png"
-                alt="Mix Match Shop Showcase"
+                src="/api/uploads/premium_shopping_medium.png"
+                alt="Nihemart Showcase"
                 className="w-full h-auto object-cover rounded-[2rem]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
