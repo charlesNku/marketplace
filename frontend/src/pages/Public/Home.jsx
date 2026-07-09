@@ -5,7 +5,8 @@ import {
   Truck, ArrowUpRight, Smartphone, Shirt, Home as HomeIcon,
   ShoppingBasket, Sparkles, Heart, ChevronLeft, ChevronRight,
   Store, DollarSign, Users, Package, TrendingUp, User,
-  Car, Book, Dumbbell, Gamepad2, Monitor
+  Car, Book, Dumbbell, Gamepad2, Monitor,
+  Palette, Gem, Music, Baby, Leaf, Briefcase, Wrench, Sofa, Luggage, Camera
 } from 'lucide-react';
 import api from '../../services/api';
 
@@ -51,6 +52,16 @@ const Home = () => {
     { name: 'Sports', icon: Dumbbell, color: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20', desc: 'Active Life' },
     { name: 'Toys & Games', icon: Gamepad2, color: 'bg-pink-500/10 text-pink-500 border-pink-500/20', desc: 'Fun for All' },
     { name: 'Computers & IT', icon: Monitor, color: 'bg-blue-600/10 text-blue-600 border-blue-600/20', desc: 'Laptops & PCs' },
+    { name: 'Art & Crafts', icon: Palette, color: 'bg-fuchsia-500/10 text-fuchsia-500 border-fuchsia-500/20', desc: 'Creative Tools' },
+    { name: 'Jewelry', icon: Gem, color: 'bg-rose-500/10 text-rose-500 border-rose-500/20', desc: 'Luxury Acc.' },
+    { name: 'Music', icon: Music, color: 'bg-violet-500/10 text-violet-500 border-violet-500/20', desc: 'Instruments' },
+    { name: 'Baby Products', icon: Baby, color: 'bg-sky-500/10 text-sky-500 border-sky-500/20', desc: 'Kids & More' },
+    { name: 'Outdoors', icon: Leaf, color: 'bg-lime-500/10 text-lime-500 border-lime-500/20', desc: 'Garden Life' },
+    { name: 'Office', icon: Briefcase, color: 'bg-slate-500/10 text-slate-500 border-slate-500/20', desc: 'Work Supplies' },
+    { name: 'Hardware', icon: Wrench, color: 'bg-gray-500/10 text-gray-500 border-gray-500/20', desc: 'Tools & Fix' },
+    { name: 'Furniture', icon: Sofa, color: 'bg-amber-600/10 text-amber-600 border-amber-600/20', desc: 'Home Setup' },
+    { name: 'Travel', icon: Luggage, color: 'bg-blue-400/10 text-blue-400 border-blue-400/20', desc: 'Luggage Bags' },
+    { name: 'Photography', icon: Camera, color: 'bg-stone-500/10 text-stone-500 border-stone-500/20', desc: 'Cameras & Lenses' },
   ];
 
   const ProductCard = ({ p, badge, color }) => (
@@ -165,18 +176,18 @@ const Home = () => {
 
             {/* Categories horizontal slider moved inside Hero */}
             <div className="w-full pt-16 pb-4">
-              <div className="flex overflow-x-auto gap-3 md:gap-4 pb-4 scrollbar-hide scroll-smooth justify-start w-full">
+              <div className="flex overflow-x-auto gap-2 md:gap-3 pb-4 scrollbar-hide scroll-smooth justify-start w-full px-2">
                 {categories.map((cat, i) => (
                   <Link
                     key={i}
                     to={`/products?category=${cat.name}`}
-                    className="flex-shrink-0 w-28 sm:w-36 bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-[1.5rem] p-3 sm:p-4 hover:bg-slate-800 hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center group relative shadow-sm"
+                    className="flex-shrink-0 w-24 sm:w-32 bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-2xl p-2.5 sm:p-3 hover:bg-slate-800 hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center group relative shadow-sm"
                   >
-                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-500 border ${cat.color}`}>
-                      <cat.icon size={22} className="sm:w-6 sm:h-6 w-5 h-5" />
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform duration-500 border ${cat.color}`}>
+                      <cat.icon size={20} className="sm:w-5 sm:h-5 w-4 h-4" />
                     </div>
-                    <h4 className="text-[11px] sm:text-xs font-black text-white leading-tight tracking-tight">{cat.name}</h4>
-                    <p className="text-[9px] text-slate-400 font-bold uppercase mt-1 tracking-wider whitespace-nowrap overflow-hidden text-ellipsis w-full px-1">{cat.desc}</p>
+                    <h4 className="text-[10px] sm:text-[11px] font-black text-white leading-tight tracking-tight whitespace-nowrap overflow-hidden text-ellipsis w-full px-1">{cat.name}</h4>
+                    <p className="text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase mt-1 tracking-wider whitespace-nowrap overflow-hidden text-ellipsis w-full px-1">{cat.desc}</p>
                   </Link>
                 ))}
               </div>
