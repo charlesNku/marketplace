@@ -4,7 +4,8 @@ import {
   ArrowRight, ShoppingBag, Star, Zap, ShieldCheck,
   Truck, ArrowUpRight, Smartphone, Shirt, Home as HomeIcon,
   ShoppingBasket, Sparkles, Heart, ChevronLeft, ChevronRight,
-  Store, DollarSign, Users, Package, TrendingUp, User
+  Store, DollarSign, Users, Package, TrendingUp, User,
+  Car, Book, Dumbbell, Gamepad2, Monitor
 } from 'lucide-react';
 import api from '../../services/api';
 
@@ -45,6 +46,11 @@ const Home = () => {
     { name: 'Home & Kitchen', icon: HomeIcon, color: 'bg-amber-500/10 text-amber-500 border-amber-500/20', desc: 'Living Better' },
     { name: 'Groceries', icon: ShoppingBasket, color: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20', desc: 'Daily Fresh' },
     { name: 'Health & Beauty', icon: Sparkles, color: 'bg-purple-500/10 text-purple-500 border-purple-500/20', desc: 'Care & Glow' },
+    { name: 'Automotive', icon: Car, color: 'bg-red-500/10 text-red-500 border-red-500/20', desc: 'Car Parts & Acc.' },
+    { name: 'Books & Media', icon: Book, color: 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20', desc: 'Read & Enjoy' },
+    { name: 'Sports', icon: Dumbbell, color: 'bg-cyan-500/10 text-cyan-500 border-cyan-500/20', desc: 'Active Life' },
+    { name: 'Toys & Games', icon: Gamepad2, color: 'bg-pink-500/10 text-pink-500 border-pink-500/20', desc: 'Fun for All' },
+    { name: 'Computers & IT', icon: Monitor, color: 'bg-blue-600/10 text-blue-600 border-blue-600/20', desc: 'Laptops & PCs' },
   ];
 
   const ProductCard = ({ p, badge, color }) => (
@@ -159,18 +165,18 @@ const Home = () => {
 
             {/* Categories horizontal slider moved inside Hero */}
             <div className="w-full pt-16 pb-4">
-              <div className="flex overflow-x-auto gap-4 md:gap-5 pb-4 scrollbar-hide scroll-smooth justify-start md:justify-center w-full">
+              <div className="flex overflow-x-auto gap-3 md:gap-4 pb-4 scrollbar-hide scroll-smooth justify-start w-full">
                 {categories.map((cat, i) => (
                   <Link
                     key={i}
                     to={`/products?category=${cat.name}`}
-                    className="flex-shrink-0 w-36 sm:w-44 bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-3xl p-4 sm:p-5 hover:bg-slate-800 hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center group relative shadow-sm"
+                    className="flex-shrink-0 w-28 sm:w-36 bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-[1.5rem] p-3 sm:p-4 hover:bg-slate-800 hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center group relative shadow-sm"
                   >
-                    <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-500 border ${cat.color}`}>
-                      <cat.icon size={26} />
+                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-500 border ${cat.color}`}>
+                      <cat.icon size={22} className="sm:w-6 sm:h-6 w-5 h-5" />
                     </div>
-                    <h4 className="text-xs sm:text-sm font-black text-white leading-tight tracking-tight">{cat.name}</h4>
-                    <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-wider">{cat.desc}</p>
+                    <h4 className="text-[11px] sm:text-xs font-black text-white leading-tight tracking-tight">{cat.name}</h4>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase mt-1 tracking-wider whitespace-nowrap overflow-hidden text-ellipsis w-full px-1">{cat.desc}</p>
                   </Link>
                 ))}
               </div>
