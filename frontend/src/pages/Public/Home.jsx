@@ -130,23 +130,23 @@ const Home = () => {
           <div className="absolute -bottom-[10%] -left-[10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[120px]"></div>
         </div>
 
-        <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8 text-center lg:text-left">
+        <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10 flex flex-col items-center justify-center">
+          <div className="space-y-8 text-center w-full max-w-4xl flex flex-col items-center">
             <div className="inline-flex items-center space-x-2 bg-orange-500/5 border border-orange-500/10 px-3 py-1.5 rounded-full">
               <span className="flex h-1.5 w-1.5 rounded-full bg-orange-500 animate-pulse"></span>
               <span className="text-[9px] font-bold text-orange-400 uppercase tracking-[0.2em]">Platform Live Seeding v2.4</span>
             </div>
 
-            <h1 className="text-3xl md:text-5xl font-extrabold text-white leading-tight tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">
               One Marketplace. <br />
               Endless <span className="text-orange-500">Possibilities.</span>
             </h1>
 
-            <p className="text-xs md:text-sm text-slate-400 max-w-lg leading-relaxed mx-auto lg:mx-0">
+            <p className="text-sm md:text-base text-slate-400 max-w-2xl leading-relaxed mx-auto">
               From fashion and electronics to home essentials and more, find everything you need in one trusted destination. Shop smarter and discover incredible value every day.
             </p>
 
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
               <Link to="/products" className="btn-primary py-3 px-6 text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-500/20 hover:shadow-orange-500/35 flex items-center space-x-2">
                 <span>Start Shopping</span>
                 <ArrowRight size={14} />
@@ -156,45 +156,25 @@ const Home = () => {
                 <span>Become a Vendor</span>
               </Link>
             </div>
-          </div>
 
-          <div className="relative mt-8 lg:mt-0">
-            <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-xl border border-white/5 bg-slate-800/10 p-2 max-w-md mx-auto">
-              <img
-                src="/api/uploads/premium_shopping_medium.png"
-                alt="Nihemart Showcase"
-                className="w-full h-[300px] sm:h-[400px] object-cover object-top rounded-[2rem]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent"></div>
+            {/* Categories horizontal slider moved inside Hero */}
+            <div className="w-full pt-16 pb-4">
+              <div className="flex overflow-x-auto gap-4 md:gap-5 pb-4 scrollbar-hide scroll-smooth justify-start md:justify-center w-full">
+                {categories.map((cat, i) => (
+                  <Link
+                    key={i}
+                    to={`/products?category=${cat.name}`}
+                    className="flex-shrink-0 w-36 sm:w-44 bg-slate-800/60 backdrop-blur-md border border-slate-700/50 rounded-3xl p-4 sm:p-5 hover:bg-slate-800 hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center group relative shadow-sm"
+                  >
+                    <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-500 border ${cat.color}`}>
+                      <cat.icon size={26} />
+                    </div>
+                    <h4 className="text-xs sm:text-sm font-black text-white leading-tight tracking-tight">{cat.name}</h4>
+                    <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-wider">{cat.desc}</p>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 🌟 Nihemart horizontal category slider */}
-      <section className="py-16 bg-white border-b border-slate-50">
-        <div className="max-w-[1400px] mx-auto px-6">
-          <div className="flex justify-between items-end mb-10">
-            <div>
-              <h2 className="text-xs font-black text-orange-500 uppercase tracking-[0.25em] mb-2">Explore Selection</h2>
-              <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Browse by Category</h3>
-            </div>
-          </div>
-
-          <div className="flex overflow-x-auto gap-5 pb-4 scrollbar-hide scroll-smooth">
-            {categories.map((cat, i) => (
-              <Link
-                key={i}
-                to={`/products?category=${cat.name}`}
-                className="flex-shrink-0 w-44 bg-white border border-slate-100 rounded-3xl p-5 hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 text-center flex flex-col items-center group relative shadow-sm"
-              >
-                <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-500 border ${cat.color}`}>
-                  <cat.icon size={26} />
-                </div>
-                <h4 className="text-sm font-black text-slate-800 leading-tight tracking-tight">{cat.name}</h4>
-                <p className="text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-wider">{cat.desc}</p>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
