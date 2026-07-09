@@ -17,7 +17,12 @@ const ProductList = () => {
 
   const categories = [
     'Electronics', 'Fashion', 'Home & Kitchen',
-    'Groceries', 'Health & Beauty'
+    'Groceries', 'Health & Beauty', 'Automotive',
+    'Books & Media', 'Sports', 'Toys & Games',
+    'Computers & IT', 'Art & Crafts', 'Jewelry',
+    'Music', 'Baby Products', 'Outdoors',
+    'Office', 'Hardware', 'Furniture',
+    'Travel', 'Photography'
   ];
 
   const fetchProducts = async () => {
