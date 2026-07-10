@@ -233,22 +233,22 @@ const Home = () => {
       />
 
       {/* 🌟 Start Selling CTA Section */}
-      <section className="py-24 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      <section className="py-16 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[120px]"></div>
         </div>
 
         <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
-            <div className="space-y-8 text-center lg:text-left">
+            <div className="space-y-6 text-center lg:text-left">
               <div className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full">
                 <Store size={14} className="text-emerald-400" />
-                <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Become a Seller</span>
+                <span className="text-[10px] font-medium text-emerald-400 uppercase tracking-[0.2em]">Become a Seller</span>
               </div>
 
-              <h2 className="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight">
+              <h2 className="text-2xl md:text-4xl font-medium text-white leading-tight tracking-tight">
                 Turn Your Products Into <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Profit Today.</span>
               </h2>
@@ -259,45 +259,45 @@ const Home = () => {
 
               <div className="grid grid-cols-2 gap-4 max-w-md mx-auto lg:mx-0">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400">
-                    <DollarSign size={18} />
+                  <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-400">
+                    <DollarSign size={16} />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-white">Zero Fees</p>
-                    <p className="text-[10px] font-semibold text-slate-500">Free to list</p>
+                    <p className="text-xs font-medium text-white">Zero Fees</p>
+                    <p className="text-[10px] font-medium text-slate-500">Free to list</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="p-2.5 bg-teal-500/10 rounded-xl text-teal-400">
-                    <Users size={18} />
+                  <div className="p-2 bg-teal-500/10 rounded-xl text-teal-400">
+                    <Users size={16} />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-white">1000+ Buyers</p>
-                    <p className="text-[10px] font-semibold text-slate-500">Active daily</p>
+                    <p className="text-xs font-medium text-white">1000+ Buyers</p>
+                    <p className="text-[10px] font-medium text-slate-500">Active daily</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="p-2.5 bg-emerald-500/10 rounded-xl text-emerald-400">
-                    <Package size={18} />
+                  <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-400">
+                    <Package size={16} />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-white">Easy Listing</p>
-                    <p className="text-[10px] font-semibold text-slate-500">In minutes</p>
+                    <p className="text-xs font-medium text-white">Easy Listing</p>
+                    <p className="text-[10px] font-medium text-slate-500">In minutes</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <div className="p-2.5 bg-teal-500/10 rounded-xl text-teal-400">
-                    <TrendingUp size={18} />
+                  <div className="p-2 bg-teal-500/10 rounded-xl text-teal-400">
+                    <TrendingUp size={16} />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-white">Grow Fast</p>
-                    <p className="text-[10px] font-semibold text-slate-500">Analytics built-in</p>
+                    <p className="text-xs font-medium text-white">Grow Fast</p>
+                    <p className="text-[10px] font-medium text-slate-500">Analytics built-in</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
-                <Link to="/register?redirect=/trader/dashboard&role=trader" className="py-4 px-8 text-sm font-black uppercase tracking-widest bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl hover:from-emerald-600 hover:to-teal-600 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center space-x-2 group">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-2">
+                <Link to="/register?redirect=/trader/dashboard&role=trader" className="py-3 px-6 text-sm font-medium uppercase tracking-widest bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:from-emerald-600 hover:to-teal-600 shadow-md shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all duration-300 flex items-center space-x-2 group">
                   <Store size={16} className="group-hover:rotate-12 transition-transform" />
                   <span>Start Selling Now</span>
                   <ArrowRight size={16} className="opacity-70 group-hover:translate-x-1 transition-transform" />
@@ -306,22 +306,22 @@ const Home = () => {
             </div>
 
             {/* Right — Steps */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               {[
                 { step: '01', title: 'Create Your Account', desc: 'Sign up for free as a vendor in under 2 minutes.', icon: User, color: 'emerald' },
                 { step: '02', title: 'List Your Products', desc: 'Add product images, descriptions, pricing, and stock levels.', icon: Package, color: 'teal' },
                 { step: '03', title: 'Start Earning', desc: 'Receive orders, chat with buyers, and get paid via Mobile Money.', icon: DollarSign, color: 'emerald' },
               ].map((item, i) => (
-                <div key={i} className="flex items-start space-x-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 hover:bg-white/10 transition-all duration-300 group">
-                  <div className={`flex-shrink-0 w-14 h-14 bg-${item.color}-500/10 rounded-2xl flex items-center justify-center text-${item.color}-400 group-hover:scale-110 transition-transform`}>
-                    <item.icon size={24} />
+                <div key={i} className="flex items-start space-x-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 group">
+                  <div className={`flex-shrink-0 w-12 h-12 bg-${item.color}-500/10 rounded-xl flex items-center justify-center text-${item.color}-400 group-hover:scale-110 transition-transform`}>
+                    <item.icon size={20} />
                   </div>
                   <div>
-                    <div className="flex items-center space-x-3 mb-2">
-                      <span className={`text-[10px] font-black text-${item.color}-400 uppercase tracking-widest bg-${item.color}-500/10 px-3 py-1 rounded-full`}>Step {item.step}</span>
+                    <div className="flex items-center space-x-3 mb-1">
+                      <span className={`text-[10px] font-medium text-${item.color}-400 uppercase tracking-widest bg-${item.color}-500/10 px-3 py-1 rounded-full`}>Step {item.step}</span>
                     </div>
-                    <h4 className="text-base font-black text-white mb-1">{item.title}</h4>
-                    <p className="text-sm font-medium text-slate-400">{item.desc}</p>
+                    <h4 className="text-sm font-medium text-white mb-0.5">{item.title}</h4>
+                    <p className="text-xs font-medium text-slate-400">{item.desc}</p>
                   </div>
                 </div>
               ))}
