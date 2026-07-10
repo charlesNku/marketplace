@@ -233,27 +233,27 @@ const Home = () => {
       />
 
       {/* 🌟 Start Selling CTA Section */}
-      <section className="py-16 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
+      <section className="py-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[120px]"></div>
           <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[120px]"></div>
         </div>
 
         <div className="max-w-[1400px] mx-auto px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
             {/* Left Content */}
-            <div className="space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full">
-                <Store size={14} className="text-emerald-400" />
-                <span className="text-[10px] font-medium text-emerald-400 uppercase tracking-[0.2em]">Become a Seller</span>
+            <div className="space-y-4 text-center lg:text-left">
+              <div className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                <Store size={12} className="text-emerald-400" />
+                <span className="text-[9px] font-medium text-emerald-400 uppercase tracking-[0.2em]">Become a Seller</span>
               </div>
 
-              <h2 className="text-2xl md:text-4xl font-medium text-white leading-tight tracking-tight">
+              <h2 className="text-xl md:text-2xl font-medium text-white leading-tight tracking-tight">
                 Turn Your Products Into <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-400">Profit Today.</span>
               </h2>
 
-              <p className="text-slate-400 text-sm md:text-base max-w-lg leading-relaxed font-semibold mx-auto lg:mx-0">
+              <p className="text-slate-400 text-xs md:text-sm max-w-lg leading-relaxed font-semibold mx-auto lg:mx-0">
                 Join hundreds of successful vendors on Rwanda Digital Market. List your products, reach thousands of buyers, and grow your business — all with zero upfront costs.
               </p>
 
@@ -306,22 +306,22 @@ const Home = () => {
             </div>
 
             {/* Right — Steps */}
-            <div className="space-y-4">
+            <div className="space-y-3 pt-6 lg:pt-0">
               {[
                 { step: '01', title: 'Create Your Account', desc: 'Sign up for free as a vendor in under 2 minutes.', icon: User, color: 'emerald' },
                 { step: '02', title: 'List Your Products', desc: 'Add product images, descriptions, pricing, and stock levels.', icon: Package, color: 'teal' },
                 { step: '03', title: 'Start Earning', desc: 'Receive orders, chat with buyers, and get paid via Mobile Money.', icon: DollarSign, color: 'emerald' },
               ].map((item, i) => (
-                <div key={i} className="flex items-start space-x-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 group">
-                  <div className={`flex-shrink-0 w-12 h-12 bg-${item.color}-500/10 rounded-xl flex items-center justify-center text-${item.color}-400 group-hover:scale-110 transition-transform`}>
-                    <item.icon size={20} />
+                <div key={i} className="flex items-start space-x-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-3 hover:bg-white/10 transition-all duration-300 group">
+                  <div className={`flex-shrink-0 w-10 h-10 bg-${item.color}-500/10 rounded-lg flex items-center justify-center text-${item.color}-400 group-hover:scale-110 transition-transform`}>
+                    <item.icon size={16} />
                   </div>
                   <div>
-                    <div className="flex items-center space-x-3 mb-1">
-                      <span className={`text-[10px] font-medium text-${item.color}-400 uppercase tracking-widest bg-${item.color}-500/10 px-3 py-1 rounded-full`}>Step {item.step}</span>
+                    <div className="flex items-center space-x-2 mb-1">
+                      <span className={`text-[9px] font-medium text-${item.color}-400 uppercase tracking-widest bg-${item.color}-500/10 px-2 py-0.5 rounded-full`}>Step {item.step}</span>
                     </div>
-                    <h4 className="text-sm font-medium text-white mb-0.5">{item.title}</h4>
-                    <p className="text-xs font-medium text-slate-400">{item.desc}</p>
+                    <h4 className="text-xs font-medium text-white mb-0.5">{item.title}</h4>
+                    <p className="text-[10px] sm:text-xs font-medium text-slate-400 break-words">{item.desc}</p>
                   </div>
                 </div>
               ))}
