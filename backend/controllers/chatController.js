@@ -150,7 +150,8 @@ const sendMessage = async (req, res) => {
 
     res.status(201).json(normalizedMessage);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('sendMessage error:', error);
+    res.status(500).json({ message: error.message, detail: error.details || error.hint || null });
   }
 };
 
