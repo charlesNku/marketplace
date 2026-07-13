@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  ShoppingBag, User, LogOut, Menu, X, Search, 
+import {
+  ShoppingBag, User, LogOut, Menu, X, Search,
   ShoppingCart, Heart, MessageSquare, ChevronDown,
   Phone, Globe, Smartphone, Facebook, Instagram, Twitter, Youtube,
   Store, PlusCircle
@@ -82,7 +82,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-6">
           {/* Custom Language Selector */}
           <div className="relative">
-            <button 
+            <button
               onClick={() => setLangDropdown(!langDropdown)}
               className="flex items-center space-x-1.5 hover:text-white/80 focus:outline-none transition-colors"
             >
@@ -90,21 +90,21 @@ const Navbar = () => {
               <span>{currentLang}</span>
               <ChevronDown size={11} />
             </button>
-            
+
             <div className={`absolute right-0 mt-2 bg-white text-slate-800 rounded-xl shadow-2xl p-2 w-48 border border-slate-100 z-50 text-left font-semibold ${langDropdown ? 'block' : 'hidden'}`}>
-              <button 
+              <button
                 onClick={() => handleTranslate('en', 'English')}
                 className="w-full text-left px-3 py-2 hover:bg-slate-50 rounded-lg text-xs transition-colors"
               >
                 English
               </button>
-              <button 
+              <button
                 onClick={() => handleTranslate('fr', 'Français')}
                 className="w-full text-left px-3 py-2 hover:bg-slate-50 rounded-lg text-xs transition-colors"
               >
                 Français
               </button>
-              <button 
+              <button
                 onClick={() => handleTranslate('sw', 'Kiswahili')}
                 className="w-full text-left px-3 py-2 hover:bg-slate-50 rounded-lg text-xs transition-colors"
               >
@@ -115,7 +115,7 @@ const Navbar = () => {
                 Any Language:
               </div>
               <div className="px-1 pb-1">
-                 <div id="google_translate_element" className="w-full overflow-hidden rounded-md"></div>
+                <div id="google_translate_element" className="w-full overflow-hidden rounded-md"></div>
               </div>
             </div>
           </div>
@@ -138,30 +138,28 @@ const Navbar = () => {
               <ShoppingBag className="text-white" size={22} />
             </div>
             <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
-              RWANDA <span className="text-orange-500 font-extrabold">DIGITAL MARKET</span>
+              ONLINE <span className="text-orange-500 font-extrabold">SHOPPING MARKET</span>
             </span>
           </Link>
 
           {/* Desktop Links with animated underline */}
           <div className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                to={link.path} 
-                className={`relative py-3 px-1 text-sm font-black uppercase tracking-wider group transition-colors ${
-                  location.pathname === link.path ? 'text-orange-500' : 'text-slate-600 hover:text-orange-500'
-                }`}
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`relative py-3 px-1 text-sm font-black uppercase tracking-wider group transition-colors ${location.pathname === link.path ? 'text-orange-500' : 'text-slate-600 hover:text-orange-500'
+                  }`}
               >
                 <span>{link.name}</span>
-                <span className={`absolute bottom-0 left-0 w-full h-[3px] bg-orange-500 rounded-full transition-transform duration-300 origin-left ${
-                  location.pathname === link.path ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
-                }`} />
+                <span className={`absolute bottom-0 left-0 w-full h-[3px] bg-orange-500 rounded-full transition-transform duration-300 origin-left ${location.pathname === link.path ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                  }`} />
               </Link>
             ))}
             {/* Sell Button — always visible in desktop nav */}
             {userInfo?.role !== 'admin' && (
-              <Link 
-                to={getSellLink()} 
+              <Link
+                to={getSellLink()}
                 className="relative py-2.5 px-5 text-xs font-black uppercase tracking-wider bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 flex items-center space-x-2 group"
               >
                 <Store size={15} className="group-hover:rotate-12 transition-transform" />
@@ -172,17 +170,17 @@ const Navbar = () => {
 
           {/* Search Bar */}
           <div className="hidden md:flex items-center flex-grow max-w-md mx-8">
-            <form 
-              onSubmit={(e) => { 
-                e.preventDefault(); 
-                if (searchQuery.trim()) navigate(`/products?keyword=${encodeURIComponent(searchQuery.trim())}`); 
-              }} 
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (searchQuery.trim()) navigate(`/products?keyword=${encodeURIComponent(searchQuery.trim())}`);
+              }}
               className="relative w-full group"
             >
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors" size={18} />
-              <input 
-                type="text" 
-                placeholder="What products are you looking for today?" 
+              <input
+                type="text"
+                placeholder="What products are you looking for today?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-slate-50 border border-slate-100 rounded-2xl py-3 pl-12 pr-4 text-xs font-semibold focus:ring-2 focus:ring-orange-500 focus:bg-white focus:border-transparent outline-none transition-all placeholder:text-slate-400"
@@ -196,7 +194,7 @@ const Navbar = () => {
               <button className="text-slate-500 hover:text-orange-500 transition-colors relative p-2 hover:bg-slate-50 rounded-xl">
                 <Heart size={20} />
               </button>
-              
+
               <Link to="/cart" className="text-slate-500 hover:text-orange-500 transition-colors relative p-2 hover:bg-slate-50 rounded-xl">
                 <ShoppingCart size={20} />
                 {cartCount > 0 && (
@@ -236,8 +234,8 @@ const Navbar = () => {
             )}
 
             {/* Mobile Menu Toggle */}
-            <button 
-              className="lg:hidden p-2.5 rounded-2xl bg-slate-50 text-slate-700 hover:bg-orange-50 hover:text-orange-500 hover:shadow-inner transition-all duration-300 border border-slate-100" 
+            <button
+              className="lg:hidden p-2.5 rounded-2xl bg-slate-50 text-slate-700 hover:bg-orange-50 hover:text-orange-500 hover:shadow-inner transition-all duration-300 border border-slate-100"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle Menu"
             >
@@ -252,32 +250,32 @@ const Navbar = () => {
         <div className="lg:hidden absolute top-full left-0 w-full bg-white border-t border-slate-100 shadow-2xl animate-in slide-in-from-top-4 duration-300 z-50">
           <div className="p-6 space-y-4">
             {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
-                to={link.path} 
+              <Link
+                key={link.name}
+                to={link.path}
                 onClick={() => setIsMenuOpen(false)}
                 className="block text-lg font-black uppercase tracking-wide text-slate-900 hover:text-orange-500"
               >
                 {link.name}
               </Link>
             ))}
-              {/* Mobile Sell Button */}
-              {userInfo?.role !== 'admin' && (
-                <Link 
-                  to={getSellLink()} 
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center space-x-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-5 py-4 rounded-2xl font-black uppercase tracking-wider text-sm shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all"
-                >
-                  <Store size={20} />
-                  <span>{getSellLabel()}</span>
-                </Link>
-              )}
-            
+            {/* Mobile Sell Button */}
+            {userInfo?.role !== 'admin' && (
+              <Link
+                to={getSellLink()}
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center space-x-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-5 py-4 rounded-2xl font-black uppercase tracking-wider text-sm shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all"
+              >
+                <Store size={20} />
+                <span>{getSellLabel()}</span>
+              </Link>
+            )}
+
             <div className="pt-4 border-t border-slate-100 flex flex-col space-y-4">
               <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-slate-600 font-bold hover:text-orange-500 transition-colors">
                 <ShoppingCart size={20} /><span>My Cart ({cartCount})</span>
               </Link>
-              
+
               {userInfo ? (
                 <>
                   <Link to="/messages" onClick={() => setIsMenuOpen(false)} className="flex items-center space-x-2 text-slate-600 font-bold hover:text-orange-500 transition-colors">
@@ -293,7 +291,7 @@ const Navbar = () => {
               ) : (
                 <div className="flex flex-col space-y-3 pt-2">
                   <Link to="/login" onClick={() => setIsMenuOpen(false)} className="btn-secondary w-full text-center py-3 font-bold uppercase tracking-wider">Log In</Link>
-                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="btn-primary w-full text-center py-3 font-bold uppercase tracking-wider">Join Rwanda Digital Market</Link>
+                  <Link to="/register" onClick={() => setIsMenuOpen(false)} className="btn-primary w-full text-center py-3 font-bold uppercase tracking-wider">Join Online Shopping Market</Link>
                 </div>
               )}
             </div>

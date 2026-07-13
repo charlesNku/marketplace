@@ -6,7 +6,7 @@ import useAuthStore from '../../store/authStore';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   const { login, userInfo, error, loading } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,19 +37,19 @@ const Login = () => {
       <div className="absolute bottom-[-10%] right-[-5%] w-[40vw] h-[40vw] bg-amber-400/10 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="w-full max-w-6xl bg-white rounded-[2.5rem] sm:rounded-[3.5rem] shadow-2xl shadow-slate-200/50 flex overflow-hidden relative z-10 border border-slate-100 min-h-[700px]">
-        
+
         {/* Left Marketing Panel (Hidden on Mobile) */}
         <div className="hidden lg:flex w-5/12 bg-slate-900 relative flex-col justify-between p-12 overflow-hidden">
           <div className="absolute inset-0 pointer-events-none z-0">
-             <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-orange-500/20 to-transparent"></div>
-             <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Login" className="w-full h-full object-cover opacity-20 mix-blend-luminosity" />
-             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
+            <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-orange-500/20 to-transparent"></div>
+            <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800" alt="Login" className="w-full h-full object-cover opacity-20 mix-blend-luminosity" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent"></div>
           </div>
 
           <div className="relative z-10">
             <Link to="/" className="inline-flex items-center space-x-2 text-white hover:text-orange-400 transition-colors">
               <ShoppingBag className="text-orange-500" size={28} />
-              <span className="text-xl font-black tracking-tight">Rwanda Digital Market</span>
+              <span className="text-xl font-black tracking-tight">Online Shopping Market</span>
             </Link>
           </div>
 
@@ -59,7 +59,7 @@ const Login = () => {
               <span className="text-xs font-bold text-white tracking-widest uppercase">Welcome Back</span>
             </div>
             <h1 className="text-4xl xl:text-5xl font-black text-white leading-tight mb-6 tracking-tight">
-              Ready to <br/><span className="text-orange-500">resume</span> shopping?
+              Ready to <br /><span className="text-orange-500">resume</span> shopping?
             </h1>
             <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm mb-10">
               Access your personalized dashboard, track your orders, and explore the latest premium drops.
@@ -81,10 +81,10 @@ const Login = () => {
         {/* Right Form Panel */}
         <div className="w-full lg:w-7/12 p-8 sm:p-14 lg:p-16 flex flex-col justify-center bg-white">
           <div className="max-w-md w-full mx-auto">
-            
+
             <div className="mb-10 text-center lg:text-left">
               <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-3">Sign In</h2>
-              <p className="text-sm font-semibold text-slate-500">Welcome back to Rwanda Digital Market.</p>
+              <p className="text-sm font-semibold text-slate-500">Welcome back to Online Shopping Market.</p>
             </div>
 
             {error && (
@@ -93,12 +93,12 @@ const Login = () => {
                 <span>{error}</span>
               </div>
             )}
-            
+
             <form onSubmit={submitHandler} className="space-y-6">
-              
+
               <div className="relative group">
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   required
                   id="login-email"
                   className="peer w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 text-slate-900 text-sm font-bold focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 focus:bg-white outline-none transition-all placeholder-transparent"
@@ -114,8 +114,8 @@ const Login = () => {
 
               <div className="space-y-2">
                 <div className="relative group">
-                  <input 
-                    type="password" 
+                  <input
+                    type="password"
                     required
                     id="login-password"
                     className="peer w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-5 text-slate-900 text-sm font-bold focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 focus:bg-white outline-none transition-all placeholder-transparent"
@@ -135,8 +135,8 @@ const Login = () => {
                 </div>
               </div>
 
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 disabled={loading}
                 className="w-full btn-primary py-5 rounded-2xl flex items-center justify-center space-x-3 text-sm group mt-4 shadow-xl shadow-orange-500/20 hover:shadow-orange-500/30 active:scale-[0.98] transition-all"
               >
@@ -150,7 +150,7 @@ const Login = () => {
                 )}
               </button>
             </form>
-            
+
             <div className="mt-10 pt-8 border-t border-slate-100 text-center">
               <p className="text-sm font-semibold text-slate-500">
                 Don't have an account?{' '}
@@ -166,9 +166,9 @@ const Login = () => {
                 </p>
               )}
             </div>
-            
+
             <p className="text-center mt-8 text-[10px] font-medium text-slate-400">
-              Your data is encrypted and protected by Rwanda Digital Market.
+              Your data is encrypted and protected by Online Shopping Market.
             </p>
           </div>
         </div>

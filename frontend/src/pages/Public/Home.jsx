@@ -254,7 +254,7 @@ const Home = () => {
               </h2>
 
               <p className="text-slate-400 text-xs md:text-sm max-w-lg leading-relaxed font-semibold mx-auto lg:mx-0">
-                Join hundreds of successful vendors on Rwanda Digital Market. List your products, reach thousands of buyers, and grow your business — all with zero upfront costs.
+                Join hundreds of successful vendors on Online Shopping Market. List your products, reach thousands of buyers, and grow your business — all with zero upfront costs.
               </p>
 
               <div className="grid grid-cols-2 gap-4 max-w-md mx-auto lg:mx-0">

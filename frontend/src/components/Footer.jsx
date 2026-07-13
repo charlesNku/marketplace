@@ -18,7 +18,7 @@ const Footer = () => {
               <ShoppingBag className="text-white" size={24} />
             </div>
             <span className="text-xl font-black tracking-tight uppercase">
-              RWANDA DIGITAL <span className="text-orange-500">MARKET</span>
+              ONLINE SHOPPING <span className="text-orange-500">MARKET</span>
             </span>
           </Link>
           <p className="text-slate-400 text-sm leading-relaxed max-w-xs font-medium">
@@ -92,7 +92,7 @@ const Footer = () => {
           </Link>
         </div>
         <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-          &copy; {new Date().getFullYear()} RWANDA DIGITAL MARKET. ALL RIGHTS RESERVED.
+          &copy; {new Date().getFullYear()} ONLINE SHOPPING MARKET. ALL RIGHTS RESERVED.
         </p>
       </div>
     </footer>
