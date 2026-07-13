@@ -3,12 +3,13 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import {
   Send, ArrowLeft, Check, CheckCheck, MoreHorizontal,
   Info, ShieldCheck, Phone, Video, Star, Search, Clock,
-  MessageSquare, ShoppingBag, Smile, Plus, Mic, Paperclip, X
+  MessageSquare, ShoppingBag, Smile, Plus, Mic, Paperclip, X,
+  AlertCircle
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
 import useAuthStore from '../../store/authStore';
-import api, { BASE_URL } from '../../services/api';
+import api from '../../services/api';
 import { getImageUrl } from '../../utils/urlHelper';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -54,7 +55,7 @@ const Messages = () => {
   // Socket.io initialization
   useEffect(() => {
     if (userInfo?._id) {
-      socketRef.current = io(BASE_URL || window.location.origin);
+      socketRef.current = io(window.location.origin);
       socketRef.current.emit('join_user', userInfo._id);
 
       socketRef.current.on('receive_message', (msg) => {
