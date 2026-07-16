@@ -4,7 +4,7 @@ import {
   Send, ArrowLeft, Check, CheckCheck, MoreHorizontal,
   Info, ShieldCheck, Phone, Video, Star, Search, Clock,
   MessageSquare, ShoppingBag, Smile, Plus, Mic, Paperclip, X,
-  AlertCircle
+  AlertCircle, Square
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
@@ -41,6 +41,14 @@ const Messages = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Recording State
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const timerIntervalRef = useRef(null);
+  const cancelRecordingRef = useRef(false);
 
   // Normalize Supabase message fields
   const normalizeMessage = (m) => ({
@@ -235,13 +243,10 @@ const Messages = () => {
     }
   }, [messages]);
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || sending) return;
+  const sendDirectMessage = async (textToSend) => {
+    if (!textToSend.trim() || sending) return;
     setSendError(null);
     setSending(true);
-    const textToSend = newMessage;
-    setNewMessage('');
 
     let targetReceiverId = receiverId;
     if (!targetReceiverId && activeConversation) {
@@ -251,7 +256,6 @@ const Messages = () => {
 
     if (!targetReceiverId) {
       setSendError('Recipient not identified. Please select a conversation first.');
-      setNewMessage(textToSend);
       setSending(false);
       return;
     }
@@ -264,7 +268,6 @@ const Messages = () => {
         parentMessageId: replyTo?._id
       });
 
-      // Optimistic Update: Add message immediately if Socket.io didn't already
       const normalizedSent = normalizeMessage(sentMsg);
       setMessages(prev => {
         if (prev.some(m => m._id === normalizedSent._id)) return prev;
@@ -281,14 +284,98 @@ const Messages = () => {
         );
         if (foundConv) setActiveConversation(foundConv);
       }
-
     } catch (err) {
       console.error('Failed to send message', err);
       setSendError(err.response?.data?.message || 'Failed to send.');
-      setNewMessage(textToSend);
+      if (textToSend === newMessage) setNewMessage(textToSend);
     } finally {
       setSending(false);
     }
+  };
+
+  const handleSendMessage = async (e) => {
+    if (e) e.preventDefault();
+    if (!newMessage.trim()) return;
+    const textToSend = newMessage;
+    setNewMessage('');
+    await sendDirectMessage(textToSend);
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        if (cancelRecordingRef.current) return;
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        await uploadAudio(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingSeconds(0);
+      cancelRecordingRef.current = false;
+      timerIntervalRef.current = setInterval(() => {
+        setRecordingSeconds(prev => prev + 1);
+      }, 1000);
+    } catch (err) {
+      console.error('Error accessing microphone', err);
+      setSendError('Microphone access denied or unavailable. Please check permissions.');
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      clearInterval(timerIntervalRef.current);
+    }
+  };
+
+  const cancelRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      cancelRecordingRef.current = true;
+      mediaRecorderRef.current.stream.getTracks().forEach(t => t.stop());
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      clearInterval(timerIntervalRef.current);
+      setRecordingSeconds(0);
+    }
+  };
+
+  const uploadAudio = async (blob) => {
+    setUploadingFile(true);
+    const formData = new FormData();
+    formData.append('image', blob, 'voicenote.webm');
+
+    try {
+      const res = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      const fileUrl = res.data.imageUrl;
+      await sendDirectMessage(`[AUDIO]${fileUrl}[/AUDIO]`);
+    } catch (err) {
+      console.error("Audio upload error:", err);
+      setSendError(err.response?.data?.message || 'Voice note upload failed');
+    } finally {
+      setUploadingFile(false);
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
   };
 
   const handleFileUpload = async (e) => {
@@ -323,6 +410,24 @@ const Messages = () => {
 
   const renderMessageContent = (text) => {
     if (!text) return null;
+
+    if (text.includes('[AUDIO]') && text.includes('[/AUDIO]')) {
+      const parts = text.split(/(?<=\[\/AUDIO\])|(?=\[AUDIO\])/);
+      return parts.map((part, idx) => {
+        if (part.startsWith('[AUDIO]') && part.endsWith('[/AUDIO]')) {
+          const url = part.replace('[AUDIO]', '').replace('[/AUDIO]', '');
+          return (
+            <div key={idx} className="my-1 flex items-center">
+              <audio controls className="h-[44px] w-[220px] lg:w-[260px] outline-none rounded-full shadow-sm" src={url} preload="metadata">
+                Your browser does not support audio playback.
+              </audio>
+            </div>
+          );
+        }
+        return <span key={idx}>{renderMessageContent(part)}</span>;
+      });
+    }
+
     if (text.includes('[FILE]') && text.includes('[/FILE]')) {
       return text.split(/(?<=\[\/FILE\])|(?=\[FILE\])/).map((part, idx) => {
         if (part.startsWith('[FILE]') && part.endsWith('[/FILE]')) {
@@ -621,38 +726,58 @@ const Messages = () => {
                 </div>
 
                 <div className="flex-1">
-                  <form onSubmit={handleSendMessage} className="relative">
-                    <input
-                      type="text"
-                      className="w-full bg-white border-none rounded-lg py-2.5 px-4 text-[14px] focus:ring-0 outline-none placeholder:text-slate-500 shadow-sm"
-                      placeholder="Type a message"
-                      value={newMessage}
-                      onChange={(e) => {
-                        setNewMessage(e.target.value);
-                        setSendError(null);
+                  {isRecording ? (
+                    <div className="flex items-center space-x-3 w-full bg-slate-50 border border-rose-200 rounded-lg py-2.5 px-4 shadow-inner">
+                      <div className="h-3 w-3 bg-rose-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div>
+                      <span className="text-sm font-bold text-rose-600 tracking-wider">Recording <span className="tabular-nums ml-1">({formatTime(recordingSeconds)})</span></span>
+                      <div className="flex-1"></div>
+                      <button onClick={cancelRecording} className="text-xs font-black text-rose-500 uppercase tracking-widest hover:bg-rose-100 px-3 py-1.5 rounded transition-colors border border-transparent hover:border-rose-200">
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSendMessage} className="relative">
+                      <input
+                        type="text"
+                        className="w-full bg-white border-none rounded-lg py-2.5 px-4 text-[14px] focus:ring-0 outline-none placeholder:text-slate-500 shadow-sm"
+                        placeholder="Type a message"
+                        value={newMessage}
+                        onChange={(e) => {
+                          setNewMessage(e.target.value);
+                          setSendError(null);
 
-                        // Typing indicator logic
-                        if (socketRef.current && activeConversation) {
-                          socketRef.current.emit('typing', {
-                            conversationId: activeConversation._id,
-                            userId: userInfo._id
-                          });
-
-                          if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-                          typingTimeoutRef.current = setTimeout(() => {
-                            socketRef.current.emit('stop_typing', {
+                          // Typing indicator logic
+                          if (socketRef.current && activeConversation) {
+                            socketRef.current.emit('typing', {
                               conversationId: activeConversation._id,
                               userId: userInfo._id
                             });
-                          }, 2000);
-                        }
-                      }}
-                    />
-                  </form>
+
+                            if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+                            typingTimeoutRef.current = setTimeout(() => {
+                              socketRef.current.emit('stop_typing', {
+                                conversationId: activeConversation._id,
+                                userId: userInfo._id
+                              });
+                            }, 2000);
+                          }
+                        }}
+                      />
+                    </form>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-center h-10 w-10">
-                  {newMessage.trim() ? (
+                  {isRecording ? (
+                    <button
+                      onClick={stopRecording}
+                      disabled={uploadingFile}
+                      className="text-rose-600 hover:scale-110 transition-transform bg-rose-100 p-2 rounded-full shadow-sm hover:shadow-md hover:bg-rose-200 flex items-center justify-center"
+                      title="Stop & Send"
+                    >
+                      <Square fill="currentColor" size={16} />
+                    </button>
+                  ) : newMessage.trim() ? (
                     <button
                       onClick={handleSendMessage}
                       disabled={sending}
@@ -661,7 +786,13 @@ const Messages = () => {
                       <Send size={24} />
                     </button>
                   ) : (
-                    <Mic size={24} className="text-slate-500 cursor-pointer hover:text-slate-700" />
+                    <button
+                      onClick={startRecording}
+                      disabled={uploadingFile || sending}
+                      className="text-slate-500 cursor-pointer hover:text-indigo-600 transition-colors active:scale-95"
+                    >
+                      <Mic size={24} />
+                    </button>
                   )}
                 </div>
               </div>

@@ -10,16 +10,16 @@ const router = express.Router();
 // Configure storage in memory for uploading to Supabase
 const storage = multer.memoryStorage();
 
-// File filter (accept images and documents)
+// File filter (accept images, documents, and audio)
 function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png|webp|gif|pdf|doc|docx|csv|txt/;
+  const filetypes = /jpg|jpeg|png|webp|gif|pdf|doc|docx|csv|txt|webm|mp3|wav|ogg|m4a|weba/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype) || file.mimetype.includes('pdf') || file.mimetype.includes('document') || file.mimetype.includes('text') || file.mimetype.includes('csv');
+  const mimetype = filetypes.test(file.mimetype) || file.mimetype.includes('pdf') || file.mimetype.includes('document') || file.mimetype.includes('text') || file.mimetype.includes('csv') || file.mimetype.includes('audio');
 
   if (extname && mimetype) {
     return cb(null, true);
   } else {
-    cb(new Error('Only images and document files are allowed!'));
+    cb(new Error('Only images, documents, and audio files are allowed!'));
   }
 }
 
@@ -31,8 +31,8 @@ const upload = multer({
   },
 });
 
-// POST /api/upload - Protected, only trader and admin can upload to Supabase
-router.post('/', protect, trader, upload.single('image'), async (req, res) => {
+// POST /api/upload - Protected, any authenticated user can upload
+router.post('/', protect, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
