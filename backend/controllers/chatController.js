@@ -34,15 +34,32 @@ const getConversations = async (req, res) => {
 // GET /api/chat/messages/:conversationId
 const getMessages = async (req, res) => {
   try {
-    const { data: messages, error } = await supabase
+    let messages;
+    const queryResponse = await supabase
       .from('messages')
       .select('*, parentMessage:parent_message_id(message, sender_id)')
       .eq('conversation_id', req.params.conversationId)
       .order('created_at', { ascending: true });
 
-    if (error) throw error;
+    if (queryResponse.error) {
+      // Fallback: If parent_message_id column or relationship is missing
+      if (queryResponse.error.code === '42703' || queryResponse.error.code === 'PGRST200' || (queryResponse.error.message && queryResponse.error.message.includes('parent_message_id'))) {
+        const fallbackResponse = await supabase
+          .from('messages')
+          .select('*')
+          .eq('conversation_id', req.params.conversationId)
+          .order('created_at', { ascending: true });
 
-    const mappedMessages = messages.map(m => ({
+        if (fallbackResponse.error) throw fallbackResponse.error;
+        messages = fallbackResponse.data;
+      } else {
+        throw queryResponse.error;
+      }
+    } else {
+      messages = queryResponse.data;
+    }
+
+    const mappedMessages = (messages || []).map(m => ({
       ...m,
       _id: m.id,
       senderId: m.sender_id,
@@ -54,6 +71,7 @@ const getMessages = async (req, res) => {
     }));
     res.json(mappedMessages);
   } catch (error) {
+    console.error('getMessages error details:', error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -103,19 +121,43 @@ const sendMessage = async (req, res) => {
       await supabase.from('conversations').update({ updated_at: new Date() }).eq('id', conversation.id);
     }
 
-    const { data: message, error: msgError } = await supabase
-      .from('messages')
-      .insert([{
-        conversation_id: conversation.id,
-        sender_id: req.user.id,
-        receiver_id: receiverId,
-        message: messageText,
-        parent_message_id: parentMessageId || null
-      }])
-      .select('*, parentMessage:parent_message_id(message, sender_id)')
-      .single();
+    // Insert payload
+    const insertPayload = {
+      conversation_id: conversation.id,
+      sender_id: req.user.id,
+      receiver_id: receiverId,
+      message: messageText
+    };
 
-    if (msgError) throw msgError;
+    if (parentMessageId) {
+      insertPayload.parent_message_id = parentMessageId;
+    }
+
+    let message;
+    const msgResponse = await supabase
+      .from('messages')
+      .insert([insertPayload])
+      .select('*, parentMessage:parent_message_id(message, sender_id)')
+      .maybeSingle();
+
+    if (msgResponse.error) {
+      // Fallback if parent_message_id is not supported or relationship missing
+      if (msgResponse.error.code === '42703' || msgResponse.error.code === 'PGRST200' || (msgResponse.error.message && msgResponse.error.message.includes('parent_message_id'))) {
+        delete insertPayload.parent_message_id;
+        const fallbackMsgResponse = await supabase
+          .from('messages')
+          .insert([insertPayload])
+          .select('*')
+          .single();
+
+        if (fallbackMsgResponse.error) throw fallbackMsgResponse.error;
+        message = fallbackMsgResponse.data;
+      } else {
+        throw msgResponse.error;
+      }
+    } else {
+      message = msgResponse.data;
+    }
 
     // Create Notification
     const { data: notification } = await supabase
@@ -127,6 +169,8 @@ const sendMessage = async (req, res) => {
       }])
       .select()
       .maybeSingle();
+
+    if (!message) throw new Error("Failed to insert message, received null data.");
 
     const normalizedMessage = {
       ...message,
