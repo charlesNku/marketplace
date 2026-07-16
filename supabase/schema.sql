@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS messages (
   receiver_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   message TEXT NOT NULL,
   is_read BOOLEAN DEFAULT false,
+  parent_message_id UUID REFERENCES messages(id) ON DELETE SET NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
