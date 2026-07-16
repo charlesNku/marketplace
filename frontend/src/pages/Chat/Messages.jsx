@@ -4,7 +4,7 @@ import {
   Send, ArrowLeft, Check, CheckCheck, MoreHorizontal,
   Info, ShieldCheck, Phone, Video, Star, Search, Clock,
   MessageSquare, ShoppingBag, Smile, Plus, Mic, Paperclip, X,
-  AlertCircle, Square
+  AlertCircle, Square, Trash2, Pause, Play
 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
@@ -44,6 +44,7 @@ const Messages = () => {
 
   // Recording State
   const [isRecording, setIsRecording] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
@@ -323,6 +324,7 @@ const Messages = () => {
 
       mediaRecorder.start();
       setIsRecording(true);
+      setIsPaused(false);
       setRecordingSeconds(0);
       cancelRecordingRef.current = false;
       timerIntervalRef.current = setInterval(() => {
@@ -340,8 +342,11 @@ const Messages = () => {
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
+      if (mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      }
       setIsRecording(false);
+      setIsPaused(false);
       clearInterval(timerIntervalRef.current);
     }
   };
@@ -350,10 +355,31 @@ const Messages = () => {
     if (mediaRecorderRef.current && isRecording) {
       cancelRecordingRef.current = true;
       mediaRecorderRef.current.stream.getTracks().forEach(t => t.stop());
-      mediaRecorderRef.current.stop();
+      if (mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      }
       setIsRecording(false);
+      setIsPaused(false);
       clearInterval(timerIntervalRef.current);
       setRecordingSeconds(0);
+    }
+  };
+
+  const pauseRecording = () => {
+    if (mediaRecorderRef.current && isRecording && mediaRecorderRef.current.state === 'recording') {
+      mediaRecorderRef.current.pause();
+      setIsPaused(true);
+      clearInterval(timerIntervalRef.current);
+    }
+  };
+
+  const resumeRecording = () => {
+    if (mediaRecorderRef.current && isRecording && mediaRecorderRef.current.state === 'paused') {
+      mediaRecorderRef.current.resume();
+      setIsPaused(false);
+      timerIntervalRef.current = setInterval(() => {
+        setRecordingSeconds(prev => prev + 1);
+      }, 1000);
     }
   };
 
@@ -701,45 +727,70 @@ const Messages = () => {
                 </div>
               )}
 
-              <div className="flex items-center space-x-3 w-full relative">
-                {showEmojiPicker && (
-                  <div className="absolute bottom-14 left-2 z-50">
-                    <EmojiPicker
-                      onEmojiClick={(emojiData) => setNewMessage(prev => prev + emojiData.emoji)}
-                      width={300}
-                      height={400}
-                    />
-                  </div>
-                )}
-                <div className="flex items-center space-x-4 text-slate-500 mx-2">
-                  <Smile size={24} className="cursor-pointer hover:text-slate-700" onClick={() => setShowEmojiPicker(!showEmojiPicker)} />
-                  <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf,.doc,.docx,.txt,.csv" onChange={handleFileUpload} />
-                  <Paperclip size={24} className={`cursor-pointer hover:text-slate-700 ${uploadingFile ? 'opacity-50' : ''}`} onClick={() => !uploadingFile && fileInputRef.current?.click()} />
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      setShowShareProductModal(true);
-                      const { data } = await api.get('/products?pageSize=50');
-                      setAllProducts(data.products || []);
-                    }}
-                    className="text-slate-500 hover:text-indigo-600 transition-colors"
-                    title="Share Product"
-                  >
-                    <Plus size={24} />
-                  </button>
-                </div>
-
-                <div className="flex-1">
-                  {isRecording ? (
-                    <div className="flex items-center space-x-3 w-full bg-slate-50 border border-rose-200 rounded-lg py-2.5 px-4 shadow-inner">
-                      <div className="h-3 w-3 bg-rose-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]"></div>
-                      <span className="text-sm font-bold text-rose-600 tracking-wider">Recording <span className="tabular-nums ml-1">({formatTime(recordingSeconds)})</span></span>
-                      <div className="flex-1"></div>
-                      <button onClick={cancelRecording} className="text-xs font-black text-rose-500 uppercase tracking-widest hover:bg-rose-100 px-3 py-1.5 rounded transition-colors border border-transparent hover:border-rose-200">
-                        Cancel
-                      </button>
+              {isRecording ? (
+                <div className="w-full bg-[#1e2428] rounded-3xl flex flex-col justify-between max-w-[380px] mx-auto shadow-2xl p-4 animate-in fade-in slide-in-from-bottom-2">
+                  <div className="flex items-center space-x-3 w-full mb-6">
+                    <Play size={24} fill="white" className="text-white ml-2 shrink-0" />
+                    <div className={`h-3.5 w-3.5 rounded-full shrink-0 ${isPaused ? 'bg-rose-500' : 'bg-[#25D366]'}`}></div>
+                    <div className="flex-1 flex items-center space-x-[3px] overflow-hidden px-2 h-6">
+                      <span className="w-1 h-1 bg-[#8696a0] rounded-full"></span>
+                      <span className="w-1 h-1 bg-[#8696a0] rounded-full"></span>
+                      <span className="w-1 h-1 bg-[#8696a0] rounded-full"></span>
+                      <span className="w-1 h-1 bg-[#8696a0] rounded-full"></span>
+                      {[8, 12, 18, 14, 10, 6, 12, 22, 24, 16, 10, 8, 14, 20, 16, 10, 6].map((height, i) => (
+                        <div key={i} className="w-[3px] bg-[#8696a0] rounded-full" style={{ height: isPaused ? '4px' : `${height}px` }}></div>
+                      ))}
+                      <span className="w-1 h-1 bg-[#8696a0] rounded-full"></span>
+                      <span className="w-1 h-1 bg-[#8696a0] rounded-full"></span>
                     </div>
-                  ) : (
+                    <span className="text-white text-[19px] shrink-0 tabular-nums mr-2">{formatTime(recordingSeconds)}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <button onClick={cancelRecording} className="h-[52px] w-[52px] rounded-full bg-[#3d242a] flex items-center justify-center transition-colors shrink-0">
+                      <Trash2 size={24} className="text-[#f15c6d]" />
+                    </button>
+
+                    <button onClick={isPaused ? resumeRecording : pauseRecording} className="flex-1 h-[52px] mx-4 rounded-full bg-[#1b3b2c] flex items-center justify-center space-x-2 hover:bg-[#1e4432] transition-colors">
+                      <Mic size={22} className="text-white" />
+                      <span className="text-white font-medium text-[16px]">{isPaused ? 'Resume' : 'Pause'}</span>
+                    </button>
+
+                    <button onClick={stopRecording} disabled={uploadingFile} className="h-[52px] w-[52px] rounded-full bg-[#25D366] flex items-center justify-center hover:bg-[#20bd5a] transition-colors shrink-0 disabled:opacity-50">
+                      <Send size={24} fill="currentColor" className="text-black ml-1" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-3 w-full relative">
+                  {showEmojiPicker && (
+                    <div className="absolute bottom-14 left-2 z-50">
+                      <EmojiPicker
+                        onEmojiClick={(emojiData) => setNewMessage(prev => prev + emojiData.emoji)}
+                        width={300}
+                        height={400}
+                      />
+                    </div>
+                  )}
+                  <div className="flex items-center space-x-4 text-slate-500 mx-2">
+                    <Smile size={24} className="cursor-pointer hover:text-slate-700" onClick={() => setShowEmojiPicker(!showEmojiPicker)} />
+                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*,.pdf,.doc,.docx,.txt,.csv" onChange={handleFileUpload} />
+                    <Paperclip size={24} className={`cursor-pointer hover:text-slate-700 ${uploadingFile ? 'opacity-50' : ''}`} onClick={() => !uploadingFile && fileInputRef.current?.click()} />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        setShowShareProductModal(true);
+                        const { data } = await api.get('/products?pageSize=50');
+                        setAllProducts(data.products || []);
+                      }}
+                      className="text-slate-500 hover:text-indigo-600 transition-colors"
+                      title="Share Product"
+                    >
+                      <Plus size={24} />
+                    </button>
+                  </div>
+
+                  <div className="flex-1">
                     <form onSubmit={handleSendMessage} className="relative">
                       <input
                         type="text"
@@ -768,38 +819,29 @@ const Messages = () => {
                         }}
                       />
                     </form>
-                  )}
-                </div>
+                  </div>
 
-                <div className="flex items-center justify-center h-10 w-10">
-                  {isRecording ? (
-                    <button
-                      onClick={stopRecording}
-                      disabled={uploadingFile}
-                      className="text-rose-600 hover:scale-110 transition-transform bg-rose-100 p-2 rounded-full shadow-sm hover:shadow-md hover:bg-rose-200 flex items-center justify-center"
-                      title="Stop & Send"
-                    >
-                      <Square fill="currentColor" size={16} />
-                    </button>
-                  ) : newMessage.trim() ? (
-                    <button
-                      onClick={handleSendMessage}
-                      disabled={sending}
-                      className="text-slate-500 hover:text-indigo-600 transition-colors"
-                    >
-                      <Send size={24} />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={startRecording}
-                      disabled={uploadingFile || sending}
-                      className="text-slate-500 cursor-pointer hover:text-indigo-600 transition-colors active:scale-95"
-                    >
-                      <Mic size={24} />
-                    </button>
-                  )}
+                  <div className="flex items-center justify-center h-10 w-10">
+                    {newMessage.trim() ? (
+                      <button
+                        onClick={handleSendMessage}
+                        disabled={sending}
+                        className="text-slate-500 hover:text-indigo-600 transition-colors"
+                      >
+                        <Send size={24} />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={startRecording}
+                        disabled={uploadingFile || sending}
+                        className="text-slate-500 cursor-pointer hover:text-indigo-600 transition-colors active:scale-95"
+                      >
+                        <Mic size={24} />
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </>
         ) : (
