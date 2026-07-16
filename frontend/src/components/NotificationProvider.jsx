@@ -10,21 +10,22 @@ const NotificationProvider = ({ children }) => {
 
   useEffect(() => {
     if (userInfo?._id) {
-      socketRef.current = io(`http://${window.location.hostname}:5000`);
-      
+      const socketUrl = import.meta.env.PROD ? window.location.origin : 'http://localhost:5000';
+      socketRef.current = io(socketUrl);
+
       // Join personal room for targeted notifications
       socketRef.current.emit('join_user', userInfo._id);
 
       // Listen for new notifications
       socketRef.current.on('new_notification', (notification) => {
         addNotification(notification);
-        
+
         // Browser notification (optional)
         if (Notification.permission === 'granted') {
-           new Notification('Platform Alert', {
-             body: notification.message,
-             icon: '/favicon.ico'
-           });
+          new Notification('Platform Alert', {
+            body: notification.message,
+            icon: '/favicon.ico'
+          });
         }
       });
 

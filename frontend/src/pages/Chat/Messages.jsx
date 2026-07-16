@@ -330,7 +330,11 @@ const Messages = () => {
       }, 1000);
     } catch (err) {
       console.error('Error accessing microphone', err);
-      setSendError('Microphone access denied or unavailable. Please check permissions.');
+      if (err.name === 'NotFoundError') {
+        setSendError('No microphone found. Please connect a microphone to send voice notes.');
+      } else {
+        setSendError('Microphone access denied or unavailable. Please check permissions.');
+      }
     }
   };
 
