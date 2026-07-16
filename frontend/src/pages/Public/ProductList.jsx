@@ -22,7 +22,10 @@ const ProductList = () => {
     'Computers & IT', 'Art & Crafts', 'Jewelry',
     'Music', 'Baby Products', 'Outdoors',
     'Office', 'Hardware', 'Furniture',
-    'Travel', 'Photography'
+    'Travel', 'Photography', 'Pet Supplies',
+    'Industrial', 'Watches', 'Salon & Spa',
+    'Components', 'Gifts', 'Cafe & Tea',
+    'Pharmacy'
   ];
 
   const fetchProducts = async () => {

@@ -274,9 +274,33 @@ const TraderDashboard = () => {
                     >
                       <option value="">Select Category</option>
                       <option value="Electronics">Electronics</option>
-                      <option value="Clothing">Clothing</option>
-                      <option value="Home">Home</option>
-                      <option value="Beauty">Beauty</option>
+                      <option value="Fashion">Fashion</option>
+                      <option value="Home & Kitchen">Home & Kitchen</option>
+                      <option value="Groceries">Groceries</option>
+                      <option value="Health & Beauty">Health & Beauty</option>
+                      <option value="Automotive">Automotive</option>
+                      <option value="Books & Media">Books & Media</option>
+                      <option value="Sports">Sports</option>
+                      <option value="Toys & Games">Toys & Games</option>
+                      <option value="Computers & IT">Computers & IT</option>
+                      <option value="Art & Crafts">Art & Crafts</option>
+                      <option value="Jewelry">Jewelry</option>
+                      <option value="Music">Music</option>
+                      <option value="Baby Products">Baby Products</option>
+                      <option value="Outdoors">Outdoors</option>
+                      <option value="Office">Office</option>
+                      <option value="Hardware">Hardware</option>
+                      <option value="Furniture">Furniture</option>
+                      <option value="Travel">Travel</option>
+                      <option value="Photography">Photography</option>
+                      <option value="Pet Supplies">Pet Supplies</option>
+                      <option value="Industrial">Industrial</option>
+                      <option value="Watches">Watches</option>
+                      <option value="Salon & Spa">Salon & Spa</option>
+                      <option value="Components">Components</option>
+                      <option value="Gifts">Gifts</option>
+                      <option value="Cafe & Tea">Cafe & Tea</option>
+                      <option value="Pharmacy">Pharmacy</option>
                     </select>
                   </div>
                   <div>
