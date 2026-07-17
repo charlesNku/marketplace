@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   Search, Filter, Star, ChevronRight, LayoutGrid,
-  List, SlidersHorizontal, PackageX, ArrowUpDown, Heart
+  List, SlidersHorizontal, PackageX, ArrowUpDown, Heart, ChevronDown
 } from 'lucide-react';
 import api from '../../services/api';
 import { getImageUrl } from '../../utils/urlHelper';
@@ -14,6 +14,7 @@ const ProductList = () => {
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
   const [category, setCategory] = useState(searchParams.get('category') || '');
   const [sortBy, setSortBy] = useState('newest');
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const categories = [
     'Electronics', 'Fashion', 'Home & Kitchen',
@@ -74,7 +75,19 @@ const ProductList = () => {
 
           {/* Sidebar Filters */}
           <aside className="lg:w-64 flex-shrink-0">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200">
+            {/* Mobile Filter Toggle */}
+            <button
+              onClick={() => setFilterOpen(!filterOpen)}
+              className="lg:hidden w-full flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 mb-4"
+            >
+              <span className="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center">
+                <SlidersHorizontal size={15} className="mr-2 text-orange-500" />
+                Filters {category && <span className="ml-2 bg-orange-500 text-white text-[9px] px-2 py-0.5 rounded-full">{category}</span>}
+              </span>
+              <ChevronDown size={16} className={`text-slate-400 transition-transform ${filterOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            <div className={`${filterOpen ? 'block' : 'hidden'} lg:block bg-white p-6 rounded-2xl border border-slate-200 lg:sticky lg:top-32`}>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center">
                   <SlidersHorizontal size={15} className="mr-2 text-orange-500" />
@@ -112,7 +125,7 @@ const ProductList = () => {
               {/* Category Filter */}
               <div>
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Categories</label>
-                <div className="space-y-2">
+                <div className="space-y-2 max-h-[480px] overflow-y-auto pr-1 scrollbar-hide">
                   {categories.map(cat => (
                     <button
                       key={cat}

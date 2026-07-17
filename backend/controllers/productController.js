@@ -15,7 +15,7 @@ const getProducts = async (req, res) => {
 
     // Filter by category
     if (req.query.category) {
-      query = query.eq('category', req.query.category);
+      query = query.ilike('category', req.query.category.trim());
     }
 
     // Filter by price
